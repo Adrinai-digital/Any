@@ -1,0 +1,10 @@
+.env
+.node_modules
+.log
+
+# Directorios de herramientas de desarrollo
+.vscode/
+.idea/
+
+# Archivos de prueba
+test.http

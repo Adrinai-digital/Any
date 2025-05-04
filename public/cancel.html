@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Cancelado</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 50px;
+        }
+        h1 {
+            color: #721c24;
+        }
+        p {
+            font-size: 18px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 16px;
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Pago Cancelado</h1>
+    <p>El proceso de pago ha sido cancelado. Si deseas volver a intentarlo, haz clic en el siguiente enlace:</p>
+    <a href="/perfil" class="btn">Volver a mi perfil</a>
+    <script>
+        window.onload = function() {
+            const userEmail = localStorage.getItem('userEmail');  // Verifica si está en localStorage
+    
+            if (userEmail) {
+                document.getElementById('go-to-courses').href = '/perfil';  // Redirigir a perfil si hay email
+            } else {
+                document.getElementById('go-to-courses').href = '/formulario.html';  // Redirigir al login si no hay email
+            }
+        };
+    </script>
+    
+</body>
+</html>

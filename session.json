@@ -1,0 +1,17 @@
+{
+    "payment_method_types": ["card"],
+    "mode": "payment",
+    "line_items": [
+      {
+        "price": "price_1RDj5ZHaR43tMVsONJzyIrKd",
+        "quantity": 1
+      }
+    ],
+    "customer_email": "adrianai.conchi@gmail.com",
+    "success_url": "http://localhost:3000/success.html",
+    "cancel_url": "http://localhost:3000/cancel.html",
+    "metadata": {
+      "price_ids": "[\"price_1RDj5ZHaR43tMVsONJzyIrKd\"]"
+    }
+  }
+  

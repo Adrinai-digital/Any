@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+        h1 {
+            color: #28a745;
+        }
+        .user-info {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .course-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .course-item {
+            background-color: #fff;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+            text-align: left;
+            width: 280px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .course-item img {
+            width: 100%;
+            border-radius: 5px;
+        }
+        .btn {
+            display: inline-block;
+            margin: 10px 5px 0 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .top-buttons {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenido, <%= usuario.nombre %></h1>
+        <p class="user-info"><strong>Email:</strong> <%= usuario.email %></p>
+
+        <div class="top-buttons">
+            <a href="/" class="btn">Ir a la tienda</a>
+            <a href="/logout" class="btn">Cerrar sesión</a>
+        </div>
+
+        <p class="user-info">Estos son tus cursos comprados:</p>
+
+        <div class="course-list" id="course-list">
+            <% if (cursos.length === 0) { %>
+                <p><strong>No has comprado ningún curso aún.</strong></p>
+            <% } else { %>
+                <% cursos.forEach(function(curso) { %>
+                    <div class="course-item">
+                        <img src="<%= curso.imagen_url || '/images/default-course-image.jpg' %>" alt="Imagen de <%= curso.nombre %>">
+                        <h3><%= curso.nombre %></h3>
+                        <p><%= curso.descripcion %></p>
+                        <a href="<%= curso.url_contenido %>" class="btn">Acceder al curso</a>
+                    </div>
+                <% }); %>
+            <% } %>
+        </div>
+    </div>
+
+ 
+      <!-- Script JS para obtener el perfil y los cursos -->
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert("❌ Necesitas estar logueado para acceder a esta página.");
+            window.location.href = '/formulario.html';  // Redirige al formulario de inicio de sesión
+        }
+
+        fetch('/perfil-data', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`  // Enviar el token en las cabeceras
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const usuario = data.usuario;
+            const cursos = data.cursos;
+
+            if (cursos.length === 0) {
+                document.getElementById('course-list').innerHTML = '<p><strong>No has comprado ningún curso aún.</strong></p>';
+            } else {
+                const courseList = document.getElementById('course-list');
+                courseList.innerHTML = '';  // Limpiar la lista existente
+
+                cursos.forEach(curso => {
+                    const courseItem = document.createElement('div');
+                    courseItem.classList.add('course-item');
+                    courseItem.innerHTML = `
+                        <img src="${curso.imagen_url || '/images/default-course-image.jpg'}" alt="Imagen de ${curso.nombre}">
+                        <h3>${curso.nombre}</h3>
+                        <p>${curso.descripcion}</p>
+                        <a href="${curso.url_contenido}" class="btn">Acceder al curso</a>
+                    `;
+                    courseList.appendChild(courseItem);
+                });
+            }
+        })
+        .catch(error => {
+            console.error("⚠️ Error al obtener el perfil:", error);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* Encabezado del curso */
+.course-header {
+    position: relative;
+    width: 100%;
+    height: 65vh; /* Ajusta la altura según prefieras */
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    padding: 50px 20px;
+    background-image: url("/images/cursoArcangel.png");
+    background-size: cover; /* La imagen se ajusta sin recortarse */
+    background-position: top center; /* Mantiene la parte superior visible */
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: flex-end; /* Mueve el contenido hacia abajo */
+    padding-bottom: 50px; /* Ajusta según necesites */
+}
+.header-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.course-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Capa traslúcida */
+}
+
+.course-header .container {
+    position: absolute;
+    bottom: 40px; /* Ajusta según necesites */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: white;
+    width: 100%;
+    max-width: 800px;
+}
+
+.course-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.course-header p {
+    font-size: 1.2rem;
+    color: white;
+    line-height: 1.6;
+    margin-top: 20px;
+}
+.tarot-header {
+    position: relative;
+    width: 100vw;
+    height: auto; /* Deja que crezca según el contenido */
+    background-image: url("/images/tarot.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-align: center;
+    padding: 60px 20px;
+}
+.mentes-header{
+    position: relative;
+    width: 100vw;
+    height: 60vh; /* Ajusta la altura a tu necesidad */
+    background-image: url("/images/cursomilagrospor.jpg"); /* Ruta correcta de la imagen */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center; /* Asegura que los elementos se centren horizontalmente */
+    align-items: center; /* Asegura que los elementos se centren verticalmente */
+    text-align: center;
+    padding: 50px;
+    padding: 40px 20px;
+}
+
+
+.gratitud-header{
+    position: relative;
+    width: 100vw;
+    height: 60vh; /* Ajusta la altura a tu necesidad */
+    background-image: url("/images/fondo.jpg"); /* Ruta correcta de la imagen */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center; /* Asegura que los elementos se centren horizontalmente */
+    align-items: center; /* Asegura que los elementos se centren verticalmente */
+    text-align: center;
+    padding: 50px;
+}
+
+/* Capa oscura para mejorar la legibilidad */
+.tarot-header::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+}
+
+.tarot-header .container {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.tarot-header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    color: white;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.tarot-header p {
+    font-size: 1.2rem;
+    color: white;
+    margin: 0;
+}
+
+.responsive-video {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* Proporción 16:9 */
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+
+/* Estilos del video */
+.video-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 20px;
+}
+.not-completed {
+    color: red;
+    font-weight: bold;
+  }
+
+  .completed {
+    color: green;
+    font-weight: bold;
+  }
+
+  .lesson {
+    margin-bottom: 40px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+  }
+
+  .lesson-video iframe {
+    max-width: 100%;
+  }
+  .content { display: none; }
+.content.active { display: block; }
+
+
+  
+/*.video-container iframe {
+    width: 860px;
+    height: 515px;
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}*/
+
+#video-status-text {
+    font-size: 16px;
+    color: #f00;  /* Rojo para 'No completado' */
+}
+
+#video-status-text.completed,
+.completed {
+    color: #0f0;  /* Verde para 'Completado' */
+    font-weight: bold;
+}
+
+
+/* Contenido del curso */
+.course-content {
+    padding: 40px 20px;
+    background-color: white;
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+.course-content h2 {
+    font-size: 28px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Estilo para cada módulo */
+.module {
+    background-color: #f9f9f9;
+    margin-bottom: 15px;
+    padding: 20px;
+    border-radius: 5px;
+    border-left: 5px solid #af7d8a;
+}
+
+.module h3 {
+    font-size: 24px;
+    color: #d810ad;
+}
+
+.module p {
+    font-size: 16px;
+    color: #b4799e;
+}
+
+.module-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #af7d8a;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.module-link:hover {
+    background-color: #af7d8a;
+}
+
+/* Pie de página */
+.course-footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.course-footer p {
+    font-size: 14px;
+}
+
+/* Contenedor general */
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.tabs {
+    display: flex;
+    cursor: pointer;
+    background: #f4f4f4;
+    padding: 10px;
+}
+.tab {
+    padding: 10px;
+    margin-right: 5px;
+    background: #db9dc7;
+    border-radius: 5px;
+}
+
+.content {
+    padding: 20px;
+    border: 1px solid #ddd;
+    width: 100%; /* O el tamaño que quieras */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.content.active {
+    display: block;
+}
+.lesson {
+    padding: 10px;
+    border-bottom: 2px solid #aa67aa;
+    cursor: pointer;
+}
+.lesson-video{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+}
+iframe{
+    width: 50%;
+  height: 50%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;  /* Mantiene la proporción 16:9 */
+  border: none; 
+}
+.lesson.completed {
+    text-decoration: line-through;
+    color: green;
+}
+        .tabs { display: flex; cursor: pointer; margin-bottom: 10px; }
+        .tab { padding: 10px; border: 1px solid #cf96be; margin-right: 5px; }
+        .tab.active { background-color: #ce21a9; }
+        .content { display: none; }
+        .content.active { display: block; }
+        .lesson { margin: 20px 0; }
+        .completed { color: green; font-weight: bold; }
+    
+        .course-header img {
+            max-width: 100%; /* La imagen no será más grande que su contenedor */
+            width: 300px; /* Ajusta el tamaño a tu preferencia */
+            height: auto; /* Mantiene la proporción de la imagen */
+            display: block; /* Evita márgenes innecesarios */
+            margin: 0 auto; /* Centra la imagen horizontalmente */
+        }
+        @media (max-width: 600px) {
+            .course-header img {
+                width: 200px;
+            }
+        }
+        

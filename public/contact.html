@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <title>Mejoramos tu bien Estar</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link id="switcher" href="/css/themes/default-theme.css" rel="stylesheet">
+    <link href="/css/slick.css" rel="stylesheet">
+    <link href="/css/photoswipe.css" rel="stylesheet">
+    <link href="/css/default-skin.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"/>
+    <link href="/css/style1.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+   
+    <!-- Google fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>  
+    <link href='https://fonts.googleapis.com/css?family=Habibi' rel='stylesheet' type='text/css'>  
+    <link href='https://fonts.googleapis.com/css?family=Cinzel+Decorative:900' rel='stylesheet' type='text/css'>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Anysabel Acosta - Coaching y Terapias",
+        "image": "https://autoconocimientoygratitud.com/images/sobrenosotros.jpg",
+        "@id": "https://autoconocimientoygratitud.com",
+        "url": "https://autoconocimientoygratitud.com",
+        "telephone": "+34 627 78 18 46",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Cam. Lomo los Giles",
+          "addressLocality": "Icod de los Vinos",
+          "addressRegion": "Santa Cruz de Tenerife",
+          "postalCode": "38434",
+          "addressCountry": "ES"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 28.3719,
+          "longitude": -16.7244
+        },
+        "sameAs": [
+          "https://www.facebook.com/ani.acosta.5015",
+          "https://www.instagram.com/anysabelvidacoach/",
+          "https://wa.me/34627781846"
+        ]
+      }
+      </script>
+      <style>
+        .btn{
+                  display: inline-block;
+                  padding: 10px 20px;
+                  font-size: 16px;
+                  color: #fff;
+                  background-color: #615054;
+                  border: none;
+                  border-radius: 5px;
+                  text-decoration: none;
+                  text-align: center;
+                  transition: background-color 0.3s ease;
+               }
+  .menu2.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  position: relative;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.4); /* negro con 40% de opacidad */
+  border-radius: 10px;
+  }
+  
+  .logo img {
+  height: 50px;
+  }
+  
+  .menu-icono {
+  display: none;
+  width: 30px;
+  cursor: pointer;
+  }
+  
+  .navbar2 ul {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+  }
+  
+  .navbar2 a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  }
+  
+  .navbar2 .active a {
+  border-bottom: 2px solid white;
+  }
+  
+  #menu {
+  display: none;
+  }
+  
+  @media (max-width: 768px) {
+  .menu2.container {
+    position: relative;
+  }
+  
+  .logo {
+    order: 1;
+  }
+  
+  label[for="menu"] {
+    order: 2;
+  }
+  
+  .menu-icono {
+    display: block;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    z-index: 10000;
+  }
+  
+  .navbar2 {
+    display: none;
+    position: fixed;
+    top: 70px; /* altura del header */
+    left: 0;
+    right: 0;
+    background: rgba(48, 48, 48, 0.6); 
+    backdrop-filter: blur(10px);       /* desenfoque del fondo */
+    -webkit-backdrop-filter: blur(10px);/* gris oscuro con 90% de opacidad */
+    padding: 20px 0;
+    z-index: 9999;
+    height: auto;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .navbar2 ul {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #menu:checked + label + .navbar2 {
+    display: flex;
+    flex-direction: column;
+  }
+  }
+  
+      </style>
+ 
+  </head>
+  <body>    
+    <!-- BEGAIN PRELOADER -->
+    <div id="preloader">
+      <div id="status">&nbsp;</div>
+    </div>
+    <!-- END PRELOADER -->
+
+    
+    <!--=========== BEGIN HEADER SECTION ================-->
+    <header id="header2">
+  
+      <div class="menu2 container">
+          <a href="#" class="logo">
+              <img src="/images/LOGO REDONDO.png" alt="Logo de la Escuela">
+          </a>
+          <input type="checkbox" id="menu" />
+        
+        <!-- Etiqueta que activa el checkbox -->
+        <label for="menu">
+          <img src="/images/menu.icono.png" alt="Menú" class="menu-icono">
+        </label>
+          <nav class="navbar2">
+              <ul>
+                  <li><a href="/index.html">Inicio</a></li>
+                  <li><a href="/index.html#reseñas">Reseñas</a></li>
+                  <li><a href="/about-us.html">Sobre Nosotros</a></li>
+                  <li><a href="/servicios.html">Servicios</a></li>
+                  <li><a href="/index.html#cursos">Cursos</a></li>
+                  <li><a href="/noticias.html">Noticias</a></li>
+                  <li class="active"><a href="/contact.html">Contacto</a></li>
+                  <li><a href="/formulario.html">Usuario</a></li>
+              </ul>
+  
+          </nav>
+          
+      </div>
+      
+  </header>
+    <!--=========== END HEADER SECTION ================-->            
+    
+    <!--=========== BEGIN Google Map SECTION ================-->
+       
+    <!--=========== BEGIN Google Map SECTION ================-->
+    <section id="googleMap">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1755.1946842094476!2d-16.6878896!3d28.3773054!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xc6a7d3fad259ebd%3A0xa84501ab55d065d9!2sAnysabel%20Vida%20Coach!5e0!3m2!1ses!2ses!4v1721596324618!5m2!1ses!2ses" width="100%" height="500"  frameborder="0" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </section>
+    <br>
+    <!--=========== END Google Map SECTION ================-->
+    <section id="contact">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-7 col-md-7 col-sm-12">
+            <div class="contact-form">
+              <div class="section-heading">
+                <h2>Contactanos</h2>
+                <div class="line"></div>
+              </div>
+              <p>Rellene todos los campos obligatorios para enviar un mensaje!</p>
+              <div class="submitphoto_form">
+                <form action="https://formsubmit.co/info@autoconocimientoygratitud.com" method="POST">
+                  <input type="text" class="wp-form-control wpcf7-text" placeholder="Nombre" name="nombre" required>
+                  <input type="email" class="wp-form-control wpcf7-email" placeholder="Email" name="Email" required>          
+                  <input type="text" class="wp-form-control wpcf7-text" placeholder="Teléfono" name="telefono" required>
+                  <textarea class="wp-form-control wpcf7-textarea" cols="30" rows="10" placeholder="Tú pregunta" name="pregunta" required></textarea>
+                  <button class="wpcf7-submit button--itzel" type="submit" name="enviar">
+                    <i class="button__icon fa fa-envelope"></i><span>Enviar mensaje</span>
+                  </button>                
+                </form>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="col-lg-5 col-md-5 col-sm-12">
+            <div class="contact-address">
+              <div class="section-heading">
+                <h2>Información Contacto</h2>
+                <div class="line"></div>
+              </div>
+              <p>Para cualquier duda rellene el formulario, le responderemos a la mayor brevedad posible, gracias</p>
+              <address class="contact-info">               
+                <p><span class="fa fa-home"></span> Cam. Lomo los Giles, 38434 Icod de los Vinos, Santa Cruz de Tenerife</p>
+                <p><span class="fa fa-phone"></span> 627 78 18 46</p><p><span class="fa fa-phone"></span> 671 17 61 96</p>
+                <p><span class="fa fa-envelope"></span> hola@anysabelvidacoach.com</p>
+              </address>
+              <h3>Social Media</h3>
+              <div class="single-doctor-social">
+                <a href="https://www.facebook.com/ani.acosta.5015"><span class="fab fa-facebook-f"></span></a>
+                <a href="https://www.instagram.com/anysabelvidacoach/"><span class="fab fa-instagram"></span></a>
+                <a href="https://maps.app.goo.gl/MuRQwkW3fnepiLbG7"><span class="fa fa-google-plus"></span></a>
+                <a href="https://wa.me/34627781846?text=Estoy%20interesado/a%20en%20información%20sobre%20las%20terapias"><span class="fab fa-whatsapp"></span></a>
+                <a href="https://youtube.com/@gaiasoberanos1461?si=fApaHhvrykYppBZ4"><span class="fa-brands fa-square-youtube"></span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!--=========== Start Footer SECTION ================-->
+    <footer id="footer">
+      <!-- Start Footer Top -->
+      
+      <!-- Start Footer Middle -->
+      <div class="footer-middle">
+        <div class="container">
+          <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="footer-copyright">
+              <p>&copy; Copyright 2024
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="single-doctor-social">
+              <a href="https://www.facebook.com/ani.acosta.5015"><span class="fab fa-facebook-f"></span></a>
+              <a href="https://www.instagram.com/anysabelvidacoach/"><span class="fab fa-instagram"></span></a>
+              <a href="https://maps.app.goo.gl/MuRQwkW3fnepiLbG7"><span class="fa fa-google-plus"></span></a>
+              <a href="https://wa.me/34627781846?text=Estoy%20interesado/a%20en%20información%20sobre%20las%20terapias"><span class="fab fa-whatsapp"></span></a>
+              <a href="https://youtube.com/@gaiasoberanos1461?si=fApaHhvrykYppBZ4"><span class="fa-brands fa-square-youtube"></span></a>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      <!-- Start Footer Bottom -->
+      <div class="footer-bottom">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <p>Diseñado Por <a rel="nofollow" href="#">Concepción Casado</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!--=========== End Footer SECTION ================-->
+    <script src="https://kit.fontawesome.com/342eeb73cc.js" crossorigin="anonymous"></script>
+    <!-- jQuery Library  -->
+    <script src="js/jquery.js"></script>    
+    <!-- Bootstrap default js -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- slick slider -->
+    <script src="js/slick.min.js"></script>    
+    <script type="text/javascript" src="js/modernizr.custom.79639.js"></script>   
+    <!-- counter -->
+    <script src="js/waypoints.min.js"></script>
+    <script src="js/jquery.counterup.min.js"></script>
+    <!-- Doctors hover effect -->
+    <script src="js/snap.svg-min.js"></script>
+    <script src="js/hovers.js"></script>
+    <!-- Photo Swipe Gallery Slider -->
+    <script src='js/photoswipe.min.js'></script>
+    <script src='js/photoswipe-ui-default.min.js'></script>    
+    <script src="js/photoswipe-gallery.js"></script>
+
+    <!-- Custom JS -->
+    <script src="js/custom.js"></script>
+     
+  </body>
+</html>

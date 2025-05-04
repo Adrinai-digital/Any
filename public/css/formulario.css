@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* Fondo de toda la página */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    background: url('../images/fondo.jpg') no-repeat center center fixed;
+    background-size: cover;  /* Cubre toda la pantalla sin deformarse */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita repeticiones */
+    height: 100vh; /* Asegura que cubra toda la pantalla */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center; /* Centra verticalmente el contenido */
+    justify-content: center; /* Centra horizontalmente el contenido */
+    position: relative;
+}
+
+/* Capa oscura semi-transparente para mejorar la legibilidad */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* Oscurece un poco el fondo */
+    z-index: 0;
+    pointer-events: none; /* No bloquea clics */
+
+}
+
+/* Contenedor del formulario */
+.container {
+    width: 550px;
+    margin: 100px auto;
+    padding: 35px;
+    background: rgba(255, 255, 255, 0.1); 
+    -webkit-backdrop-filter: blur(10px);/* Fondo translúcido */
+    backdrop-filter: blur(10px); /* Efecto de desenfoque */
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    position: relative;
+    z-index: 1;
+}
+
+/* Estilos para los botones de las pestañas */
+.tabs {
+    display: flex;
+    justify-content: center;
+}
+
+.tab-link {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background: rgba(255, 255, 255, 0.5);
+    margin: 5px;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.tab-link.active {
+    background: chartreuse;
+    color: rgb(14, 14, 14);
+}
+
+/* Estilos para los formularios */
+.formulario {
+    display: none;
+    text-align: left;
+}
+
+.formulario.active {
+    display: block;
+}
+
+input, button {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+}
+/* Contenedor de los botones */
+/* Contenedor de los botones */
+.botones {
+    display: flex;
+    justify-content: center; /* Centra los botones horizontalmente */
+    align-items: center; /* Alinea verticalmente los botones */
+    gap: 15px; /* Espacio entre los botones */
+    margin-top: 20px;
+}
+
+/* Botón de enlace (Volver al inicio) */
+.btn, button {
+    width: 160px; /* Tamaño fijo para que sean iguales */
+    height: 44px; /* Altura fija para alineación */
+    padding: 0 20px; /* Ajuste de padding horizontal */
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    border: none;
+    display: flex; /* Asegura que el contenido se alinee correctamente */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Botón de enlace (Volver al inicio) */
+.btn {
+    background-color: chartreuse;
+    color: rgb(9, 9, 9);
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background-color: #a5e65c;
+}
+
+/* Botón normal */
+button {
+    background: chartreuse;
+    color: rgb(10, 10, 10);
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #a5e65c;
+}
+
+/* Estilos de los botones de pestañas */
+.tabs {
+    display: flex;
+    justify-content: center; /* Centra los botones */
+    gap: 10px; /* Espacio entre los botones */
+}
+
+.tab-link {
+    flex: 1; /* Hace que ocupen el mismo espacio */
+    max-width: 200px; /* Evita que sean demasiado anchos */
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.tab-link.active {
+    background: chartreuse;
+    color: rgb(14, 14, 14);
+}
+
+
+@media (max-width: 600px) {
+    .form-container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    h1, h2 {
+        font-size: 20px;
+    }
+
+    input, select, textarea, button {
+        font-size: 14px;
+        padding: 10px;
+    }
+}

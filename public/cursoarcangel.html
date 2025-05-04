@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso de Tarot</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"/>
+    <link rel="stylesheet" href="/css/cursos.css">
+    
+</head>
+<header class="course-header" data-image="/images/cursoArcangel.png">
+    <div class="container">
+        <h1>RESTABLECER TU VALIA_ARCANGEL</h1>
+        <p> Te regalo este curso especial para trabajar tu amor propio y tu valía con el Arcángel San Miguel Este curso incluye un libro electrónico único, diseñado para guiarte paso a paso en un viaje de transformación interior, donde descubrirás herramientas prácticas y mensajes inspiradores para conectar con la energía protectora y poderosa del Arcángel San Miguel.
+            
+            A través de meditaciones, afirmaciones y ejercicios, aprenderás a fortalecer tu confianza, descubrir tu auténtico poder y vivir con una profunda sensación de paz y seguridad. Este es un obsequio para recordarte que eres valioso/a, amado/ay capaz de manifestar lo mejor en tu vida. 
+            
+            ¡Que este regalo sea una fuente de luz y fuerza en tu camino!</p>
+        <br>
+        
+    </div>
+</header>
+<body>
+    <div class="tabs">
+        <div class="tab active" onclick="showModule(1)">Módulo 1</div>
+        
+    </div>
+    <section class="course-content">
+    <div id="module1" class="content active">
+        <h2>Módulo 1</h2>
+        <div class="lesson">
+            <h3>Lección 1: Regalo ebook</h3>
+            <p> Te regalo este curso especial para trabajar tu amor propio y tu valía con el Arcángel San Miguel 
+
+                Este curso incluye un libro electrónico único, diseñado para guiarte paso a paso en un viaje de transformación interior, donde descubrirás herramientas prácticas y mensajes inspiradores para conectar con la energía protectora y poderosa del Arcángel San Miguel.
+                
+                </p>
+                <br>
+                <p>A través de meditaciones, afirmaciones y ejercicios, aprenderás a fortalecer tu confianza, descubrir tu auténtico poder y vivir con una profunda sensación de paz y seguridad. Este es un obsequio para recordarte que eres valioso/a, amado/ay capaz de manifestar lo mejor en tu vida. 
+                
+                </p>
+                <br>
+                <p>¡Que este regalo sea una fuente de luz y fuerza en tu camino!</p>
+                <br>
+            <p>Aqui tienes tu ebook el cual te lo puedes Descargar:
+
+                <a href="/archivos/Arcangel_Miguel.pdf" class="module-link">Descargar material del curso</a>
+            <p id="lesson1-status">Estado: <span>No completado</span></p>
+        </div>
+        
+
+    </div>
+    </section>
+    <script>
+        function showModule(moduleNumber) {
+            document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+            document.querySelectorAll(".content").forEach(content => content.classList.remove("active"));
+            
+            document.querySelector(".tabs .tab:nth-child(" + moduleNumber + ")").classList.add("active");
+            document.getElementById("module" + moduleNumber).classList.add("active");
+        }
+        
+        document.querySelectorAll("iframe").forEach((iframe, index) => {
+            iframe.addEventListener("load", () => {
+                setTimeout(() => {
+                    document.querySelector(`#lesson${index + 1}-status span`).textContent = "Completado";
+                    document.querySelector(`#lesson${index + 1}-status span`).classList.add("completed");
+                }, 5000); // Simula que el video ha sido visto
+            });
+        });
+    </script>
+    <script src="/js/cursos.js"></script>
+</body>
+</html>
