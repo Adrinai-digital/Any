@@ -386,59 +386,86 @@ h2{
     margin-bottom: 25px;
     color: rgba(22, 22, 22, 0.6);
 }
-footer{
-    background-color: #af7d8a;
-}
-#footer{
-	float: left;
-	display: inline;
-	width: 100%;	
-}
-.footer-top {
-  background-color: #d9b4be;
-  border-top: 2px solid #e9e9e9;
-  display: inline;
-  float: left;
-  min-height: 100px;
-  padding: 45px 0;
-  width: 100%;
-}
-.single-footer-widget{
-	float: left;
-	display: inline;
-	width: 100%;
-	padding: 0 10px;
-	color: #555;
-}
-.single-footer-widget .section-heading{
-	text-align: left;
-}
-.single-footer-widget .section-heading > h2 {
-  font-size: 20px;
-  margin-bottom: 0px;
-  padding-bottom: 0px;
-  line-height: 25px;
-}
-.single-footer-widget .line {
-  margin: 0 0 20px;
-}
-.footer-service li > a {
-	color: #555;
-	display: block;
-	font-size: 15px;
-	padding: 6px 0;
-	-moz-transition: all 0.5s;
-	-o-transition: all 0.5s;
-	-webkit-transition: all 0.5s;
-	transition: all 0.5s
-}
-.footer-service li > a:hover{
-  text-decoration: none;
-  outline: none;
-}
-.footer-service li > a span {
-  margin-right: 8px;
-}
+#footer {
+    background-color: #d9b4be;
+    padding-top: 40px;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .footer-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .single-footer-widget {
+    flex: 1 1 300px;
+    margin: 10px;
+  }
+  
+  .section-heading h2 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .contact-info p {
+    margin: 8px 0;
+    font-size: 15px;
+  }
+  
+  .contact-info span {
+    margin-right: 8px;
+    font-size: 18px;
+    color: #555;
+  }
+  
+  .footer-social {
+    text-align: center;
+    padding: 20px 0;
+  }
+  
+  .footer-social a {
+    display: inline-block;
+    font-size: 24px;
+    margin: 0 12px;
+    color: #333;
+    transition: color 0.3s ease;
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
+  
+  .footer-social a:hover {
+    color: #007bff;
+  }
+  
+  .footer-bottom {
+    background-color: #d9b4be;
+    text-align: center;
+    padding: 15px 10px;
+    font-size: 14px;
+  }
+  
+  .footer-bottom p {
+    margin: 0;
+  }
+  
+  .footer-bottom a {
+    color: #333;
+    text-decoration: none;
+    border-bottom: 1px solid #999;
+    transition: border 0.3s ease;
+  }
+  
+  .footer-bottom a:hover {
+    border-bottom: 1px solid #007bff;
+  }
+  
 .tag-nav a {
 	border: 1px solid #e2e6e7;
 	color: #555;
@@ -459,76 +486,6 @@ footer{
 	text-decoration: none;
 	outline: none;
 }
-.contact-info > p {
-  line-height: 20px;
-}
-.contact-info > p span {
-  font-size: 18px;
-  margin-right: 10px;
-}
-.footer-middle {
-  background-color: #d9b4be;
-  display: inline;
-  float: left;
-  padding: 25px 0;
-  width: 100%;
-}
-.footer-copyright{
-	float: left;
-	display: inline;
-	width: 100%;
-}
-.footer-copyright>p{
-	margin-bottom: 0px;
-	font-size: 16px;
-}
-.footer-copyright>p>a{
-	text-decoration: none;
-    outline: none;
-    border-bottom: 1px transparent;
-    -moz-transition: all 0.5s;
-    -o-transition: all 0.5s;
-    -webkit-transition: all 0.5s;
-    transition: all 0.5s
-}
-.footer-social a {  
-    display: inline-block;
-    font-size: 24px; /* Tamaño de los iconos */
-    height: 40px;
-    line-height: 40px;
-    margin: 0 10px;
-    text-align: center;
-    color: #333; /* Color de los iconos */
-    transition: all 0.3s ease;
-}
-
-.footer-social a:hover {
-    color: #007bff; /* Cambia el color al pasar el mouse */
-}
-
-.footer-bottom {
-  background-color: #d9b4be;
-  display: inline;
-  float: left;
-  width: 100%;
-  padding: 20px 0 ;
-  text-align: center;
-}
-.footer-bottom p{
-	margin-bottom: 0px;
-	font-size: 15px;
-}
-.footer-bottom p a {
-	border-bottom: 1px solid #ccc;
-	outline: medium none;
-	padding-bottom: 2px;
-	text-decoration: none;
-	-moz-transition: all 0.5s;
-	-o-transition: all 0.5s;
-	-webkit-transition: all 0.5s;
-	transition: all 0.5s;
-}
-
 .menu ul li:hover {
     background-color: #45a049;
 }
