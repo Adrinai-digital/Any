@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión / Registrarse</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"/>
+    <link rel="stylesheet" href="/css/formulario.css">
+</head>
+<body>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-link active" onclick="mostrarFormulario('login')">Iniciar Sesión</button>
+            <button class="tab-link" onclick="mostrarFormulario('registro')">Registrarse</button>
+        </div>
+
+        <!-- Formulario de Login -->
+        <div id="login" class="formulario active">
+            <h2>Iniciar Sesión</h2>
+            <form id="form-login">
+                <input type="email" name="email" id="login-email" placeholder="Correo" required>
+                <input type="password" name="password" id="login-password" placeholder="Contraseña" required>
+                <div class="botones">
+                    <button type="submit">Ingresar</button>
+                    <a href="/" class="btn">Volver al inicio</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Formulario de Registro -->
+        <div id="registro" class="formulario">
+            <h2>Registrarse</h2>
+            <form id="form-registro">
+                <input type="text" name="nombre" id="registro-nombre" placeholder="Nombre" required>
+                <input type="email" name="email" id="registro-email" placeholder="Correo" required>
+                <input type="password" name="password" id="registro-password" placeholder="Contraseña" required>
+                <div class="botones">
+                    <button type="submit">Registrarse</button>
+                    <a href="/" class="btn">Volver al inicio</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Cambiar entre formularios
+        function mostrarFormulario(idFormulario) {
+            document.querySelectorAll('.formulario').forEach(form => form.classList.remove('active'));
+            document.getElementById(idFormulario).classList.add('active');
+
+            const tabs = document.querySelectorAll('.tab-link');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            if (idFormulario === 'login') {
+                tabs[0].classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+            }
+        }
+
+        // Autocompletar email desde Stripe y mostrar registro
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+
+            if (email) {
+                document.getElementById('registro-email').value = email;
+                document.getElementById('login-email').value = email;
+                mostrarFormulario('registro');
+            }
+        };
+
+        // Registro con fetch
+        document.getElementById("form-registro").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const nombre = document.getElementById("registro-nombre").value;
+            const email = document.getElementById("registro-email").value;
+            const password = document.getElementById("registro-password").value;
+
+            try {
+                const res = await fetch("/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nombre, email, password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert("Registro exitoso. Ahora inicia sesión.");
+                    mostrarFormulario("login");
+                } else {
+                    alert(data.error || "Error en el registro");
+                }
+            } catch (error) {
+                console.error("Error al registrar:", error);
+                alert("Error de conexión");
+            }
+        });
+
+        // Login con fetch
+        // Login con fetch
+document.getElementById("form-login").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
+
+    try {
+        const res = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            // Guardar el token y los datos del usuario en localStorage
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.usuario));
+
+            // Redirigir a la página del perfil
+            window.location.href = "/perfil";
+        } else {
+            alert(data.error || "Error en el inicio de sesión");
+        }
+    } catch (error) {
+        console.error("Error en login:", error);
+        alert("Error de conexión");
+    }
+});
+
+    </script>
+
+</body>
+</html>
