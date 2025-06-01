@@ -347,6 +347,7 @@ app.post('/marcar-completado', authMiddleware, (req, res) => {
         res.status(200).json({ message: 'Video marcado como completado' });
     });
 });
+
 app.listen(PORT, () => {
     const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
     console.log(`Servidor corriendo en ${baseUrl}`);
