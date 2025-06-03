@@ -359,7 +359,11 @@ iframe{
           .video-portada {
             padding-bottom: 70%; /* Más alto solo en móvil por defecto */
           }
-          
+          .lesson-video iframe {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+          }
         @media (max-width: 600px) {
             .course-header img {
                 width: 200px;
@@ -372,5 +376,10 @@ iframe{
               max-width: 720px;     /* Opcional: limitar ancho para más control visual */
               margin: 0 auto;
             }
+            .lesson-video iframe {
+                width: 100%;
+                padding: 0 10px;
+                aspect-ratio: 16 / 9;
+              }
           }
         
