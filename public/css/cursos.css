@@ -381,9 +381,9 @@ iframe{
               margin: 0 auto;
             }
             .lesson-video iframe {
-                width: 100%;    /* Más grande en móvil */
-                max-width: none;
-                padding: 0 10px;
-              }
+    width: 100%;    /* Más grande en móvil */
+    max-width: none;
+    padding: 0 10px;
+  }
           }
         
