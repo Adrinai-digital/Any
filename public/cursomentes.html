@@ -532,18 +532,31 @@ Esta clase es una oportunidad para recordar que <strong>el conflicto no es oblig
 
     // Al cargar el DOM
     document.addEventListener("DOMContentLoaded", async () => {
-        usuarioId = await obtenerUsuarioId();
-        if (!usuarioId) {
-            console.error('❌ No se pudo obtener el ID del usuario.');
-            return;
-        }
+    usuarioId = await obtenerUsuarioId();
+    if (!usuarioId) {
+        console.error('❌ No se pudo obtener el ID del usuario.');
+        return;
+    }
 
-        showModule(1);
+    // Mostrar el primer módulo
+    showModule(1);
 
-        if (typeof YT !== 'undefined' && YT.loaded) {
-            onYouTubeIframeAPIReady();
-        }
-    });
+    // Obtener cursoId desde el primer video (puedes ajustar si está en otro lado)
+    const firstVideo = document.querySelector('.lesson-video');
+    const cursoId = firstVideo ? firstVideo.dataset.cursoId : null;
+
+    if (cursoId) {
+        await cargarProgresoUsuario(cursoId);  // ✅ Cargar progreso apenas entra al curso
+    } else {
+        console.warn("⚠️ No se encontró cursoId en los datos de los videos.");
+    }
+
+    // Luego inicializar reproductores si ya está lista la API de YouTube
+    if (typeof YT !== 'undefined' && YT.loaded) {
+        onYouTubeIframeAPIReady();
+    }
+});
+
 </script>
 
       
