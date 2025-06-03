@@ -360,14 +360,15 @@ iframe{
             padding-bottom: 70%; /* Más alto solo en móvil por defecto */
           }
           .lesson-video iframe {
-            width: 60%;       /* Más pequeño en escritorio */
-            max-width: 720px; /* Limita tamaño máximo */
+            width: 50%;       /* Más pequeño en escritorio */
+            max-width: 600px; /* Limita tamaño máximo */
             height: auto;
             aspect-ratio: 16 / 9;
             border: none;
             display: block;
-            margin: 0 auto;   /* Centrar el video */
+            margin: 0 auto;   /* Centrar */
           }
+          
         @media (max-width: 600px) {
             .course-header img {
                 width: 200px;
@@ -381,9 +382,9 @@ iframe{
               margin: 0 auto;
             }
             .lesson-video iframe {
-    width: 100%;    /* Más grande en móvil */
-    max-width: none;
-    padding: 0 10px;
-  }
+                width: 95%;     /* Más grande en móvil */
+                max-width: none;
+                padding: 0 10px;
+              }
           }
         
