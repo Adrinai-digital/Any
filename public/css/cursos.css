@@ -313,9 +313,7 @@ iframe{
   height: 50%;
   max-width: 100%;
   aspect-ratio: 16 / 9;  /* Mantiene la proporción 16:9 */
-  border: none; 
-  pointer-events: none; /* 🔴 NO recomendado si quieres interacción */
-
+  border: none;  
   /* ✅ Mejor opción: impedir que redireccione al hacer doble clic */
   -webkit-user-select: none;
   -moz-user-select: none;
