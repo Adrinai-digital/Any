@@ -412,173 +412,177 @@ Esta clase es una oportunidad para recordar que <strong>el conflicto no es oblig
             
     </section>
     <script src="https://www.youtube.com/iframe_api"></script>
-<script>
-    let players = [];
-    let usuarioId = null;
-
-    // Obtener el ID del usuario desde el token
-    async function obtenerUsuarioId() {
-        const token = localStorage.getItem('token');
-        if (!token) return null;
-
-        try {
-            const response = await fetch('/perfil-data', {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!response.ok) return null;
-
-            const data = await response.json();
-            return data.usuario.id;
-        } catch (error) {
-            console.error('❌ Error al obtener usuario:', error);
-            return null;
-        }
-    }
-
-    // Marcar video como completado en el servidor
-    function marcarComoCompletado(videoId, cursoId) {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            console.error('⚠️ No hay token. Usuario no autenticado.');
-            return;
-        }
-
-        fetch('/marcar-completado', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ video_id: videoId, cursoId: cursoId })
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log(`✅ Video ${videoId} marcado como completado`);
-                const estado = document.getElementById(`status-${videoId}`);
-                if (estado) {
-                    estado.textContent = 'Completado';
-                    estado.classList.remove("not-completed");
-                    estado.classList.add("completed");
-                }
-            } else {
-                console.error('❌ Error al marcar video como completado');
+    <script>
+        let players = [];
+        let usuarioId = null;
+    
+        // Obtener el ID del usuario desde el token
+        async function obtenerUsuarioId() {
+            const token = localStorage.getItem('token');
+            if (!token) return null;
+    
+            try {
+                const response = await fetch('/perfil-data', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+    
+                if (!response.ok) return null;
+    
+                const data = await response.json();
+                return data.usuario.id;
+            } catch (error) {
+                console.error('❌ Error al obtener usuario:', error);
+                return null;
             }
-        })
-        .catch(err => {
-            console.error('❌ Error de red:', err);
-        });
-    }
-
-    // Cargar progreso del usuario desde el backend
-    async function cargarProgresoUsuario(cursoId) {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-
-        try {
-            const response = await fetch(`/progreso?cursoId=${cursoId}`, {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!response.ok) throw new Error('No se pudo obtener progreso');
-
-            const data = await response.json();
-            const completados = data.completados || [];
-
-            completados.forEach(videoId => {
-                const estado = document.getElementById(`status-${videoId}`);
-                if (estado) {
-                    estado.textContent = 'Completado';
-                    estado.classList.remove("not-completed");
-                    estado.classList.add("completed");
+        }
+    
+        // Marcar video como completado en el servidor
+        function marcarComoCompletado(videoId, cursoId) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('⚠️ No hay token. Usuario no autenticado.');
+                return;
+            }
+    
+            fetch('/marcar-completado', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ video_id: videoId, cursoId: cursoId })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log(`✅ Video ${videoId} marcado como completado`);
+                    const estado = document.getElementById(`status-${videoId}`);
+                    if (estado) {
+                        estado.textContent = 'Completado';
+                        estado.classList.remove("not-completed");
+                        estado.classList.add("completed");
+                    }
+                } else {
+                    console.error('❌ Error al marcar video como completado');
                 }
+            })
+            .catch(err => {
+                console.error('❌ Error de red:', err);
             });
-
-            console.log('✅ Progreso cargado:', completados);
-        } catch (error) {
-            console.error('❌ Error al cargar progreso:', error);
         }
-    }
-
-    // Inicializar reproductores de YouTube cuando la API esté lista
-    function onYouTubeIframeAPIReady() {
-        const videoContainers = document.querySelectorAll('.lesson-video');
-
-        videoContainers.forEach((container, index) => {
-            const videoId = container.dataset.videoId;
-            const cursoId = container.dataset.cursoId;
-
-            const playerDiv = document.createElement('div');
-            const divId = `youtube-player-${index}`;
-            playerDiv.id = divId;
-            container.appendChild(playerDiv);
-
-            players[index] = new YT.Player(divId, {
-  height: "315",
-  width: "560",
-  videoId: videoId,
-  playerVars: {
-    rel: 0,
-    modestbranding: 1,
-    showinfo: 0,
-    fs: 1,
-    enablejsapi: 1,
-    origin: window.location.origin,
-    playsinline: 1, // 🔒 MUY IMPORTANTE para móviles
-    controls: 1, // Mostrar controles, pero controlados por ti
-    disablekb: 1, //
-  },
-  events: {
-    'onStateChange': function (event) {
-      if (event.data === YT.PlayerState.ENDED && usuarioId) {
-        marcarComoCompletado(videoId, cursoId);
-      }
-    }
-  }
-});
-
-
+    
+        // Cargar progreso del usuario desde el backend
+        async function cargarProgresoUsuario(cursoId) {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+    
+            try {
+                const response = await fetch(`/progreso?cursoId=${cursoId}`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+    
+                if (!response.ok) throw new Error('No se pudo obtener progreso');
+    
+                const data = await response.json();
+                const completados = data.completados || [];
+    
+                completados.forEach(videoId => {
+                    const estado = document.getElementById(`status-${videoId}`);
+                    if (estado) {
+                        estado.textContent = 'Completado';
+                        estado.classList.remove("not-completed");
+                        estado.classList.add("completed");
+                    }
+                });
+    
+                console.log('✅ Progreso cargado:', completados);
+            } catch (error) {
+                console.error('❌ Error al cargar progreso:', error);
+            }
+        }
+    
+        // Inicializar reproductores de YouTube cuando la API esté lista
+        function onYouTubeIframeAPIReady() {
+            const videoContainers = document.querySelectorAll('.lesson-video');
+    
+            videoContainers.forEach((container, index) => {
+                const videoId = container.dataset.videoId;
+                const cursoId = container.dataset.cursoId;
+    
+                // Crear contenedor responsivo para el video
+                const wrapper = document.createElement('div');
+                wrapper.className = 'video-wrapper';
+                container.appendChild(wrapper);
+    
+                const divId = `youtube-player-${index}`;
+                const playerDiv = document.createElement('div');
+                playerDiv.id = divId;
+                wrapper.appendChild(playerDiv);
+    
+                players[index] = new YT.Player(divId, {
+                    height: "100%",
+                    width: "100%",
+                    videoId: videoId,
+                    playerVars: {
+                        rel: 0,
+                        modestbranding: 1,
+                        showinfo: 0,
+                        fs: 1,
+                        enablejsapi: 1,
+                        origin: window.location.origin,
+                        playsinline: 1, // Muy importante para móviles
+                        controls: 1,
+                        disablekb: 1
+                    },
+                    events: {
+                        'onStateChange': function (event) {
+                            if (event.data === YT.PlayerState.ENDED && usuarioId) {
+                                marcarComoCompletado(videoId, cursoId);
+                            }
+                        }
+                    }
+                });
+            });
+        }
+    
+        // Mostrar el módulo activo
+        function showModule(moduleNumber) {
+            const modules = document.querySelectorAll('.content');
+            const tabs = document.querySelectorAll('.tab');
+    
+            modules.forEach((mod, index) => {
+                mod.classList.toggle('active', index === moduleNumber - 1);
+            });
+    
+            tabs.forEach((tab, index) => {
+                tab.classList.toggle('active', index === moduleNumber - 1);
+            });
+        }
+    
+        // Al cargar la página
+        document.addEventListener("DOMContentLoaded", async () => {
+            usuarioId = await obtenerUsuarioId();
+            if (!usuarioId) {
+                console.error('❌ No se pudo obtener el ID del usuario.');
+                return;
+            }
+    
+            showModule(1);
+    
+            const firstVideo = document.querySelector('.lesson-video');
+            const cursoId = firstVideo ? firstVideo.dataset.cursoId : null;
+    
+            if (cursoId) {
+                await cargarProgresoUsuario(cursoId);
+            }
+    
+            if (typeof YT !== 'undefined' && YT.loaded) {
+                onYouTubeIframeAPIReady();
+            }
         });
-    }
-
-    // Mostrar el módulo activo
-    function showModule(moduleNumber) {
-        const modules = document.querySelectorAll('.content');
-        const tabs = document.querySelectorAll('.tab');
-
-        modules.forEach((mod, index) => {
-            mod.classList.toggle('active', index === moduleNumber - 1);
-        });
-
-        tabs.forEach((tab, index) => {
-            tab.classList.toggle('active', index === moduleNumber - 1);
-        });
-    }
-
-    // Al cargar la página
-    document.addEventListener("DOMContentLoaded", async () => {
-        usuarioId = await obtenerUsuarioId();
-        if (!usuarioId) {
-            console.error('❌ No se pudo obtener el ID del usuario.');
-            return;
-        }
-
-        showModule(1);
-
-        const firstVideo = document.querySelector('.lesson-video');
-        const cursoId = firstVideo ? firstVideo.dataset.cursoId : null;
-
-        if (cursoId) {
-            await cargarProgresoUsuario(cursoId);
-        }
-
-        if (typeof YT !== 'undefined' && YT.loaded) {
-            onYouTubeIframeAPIReady();
-        }
-    });
-</script>
+    </script>
+    
 
 
       

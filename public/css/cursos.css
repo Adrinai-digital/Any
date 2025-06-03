@@ -182,20 +182,30 @@ body {
     color: green;
     font-weight: bold;
   }
-
+  .lesson-video {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 ratio */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    margin: 1rem auto;
+  }
+  
+.lesson-video > div {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    border: 0;
+  }
   .lesson {
     margin-bottom: 40px;
     border-bottom: 1px solid #ddd;
     padding-bottom: 20px;
   }
 
-  .lesson-video iframe {
-    max-width: 100%;
-  }
-  .content { display: none; }
-.content.active { display: block; }
-
-
+  
   
 /*.video-container iframe {
     width: 860px;
