@@ -343,6 +343,7 @@ app.post('/marcar-completado', authMiddleware, (req, res) => {
             console.error('❌ Error al verificar duplicado:', err.message);
             return res.status(500).json({ error: 'Error al verificar el progreso' });
         }
+        console.log('Resultados SELECT:', results); // <--- Añade esto para debug
 
         if (results.length > 0) {
             console.log('ℹ️ El video ya estaba marcado como completado');
