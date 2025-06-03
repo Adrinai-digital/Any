@@ -155,30 +155,11 @@ body {
 
 /* Estilos del video */
 .video-container {
+    display: flex;
+    justify-content: center;
     width: 100%;
-    max-width: 720px; /* más estrecho en escritorio */
-    margin: 1rem auto;
-    padding: 0 1rem;
-  }
-  
-  .video-wrapper {
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 */
-    height: 0;
-    overflow: hidden;
-    width: 100%;
-  }
-  
-  .video-wrapper iframe,
-  .video-wrapper > div {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important;
-    border: 0;
-  }
-  
+    margin-top: 20px;
+}
 .not-completed {
     color: red;
     font-weight: bold;
@@ -188,30 +169,20 @@ body {
     color: green;
     font-weight: bold;
   }
-  .lesson-video {
-    position: relative;
-    padding-bottom: 75%; /* 16:9 ratio */
-    height: 0;
-    overflow: hidden;
-    max-width: 100%;
-    margin: 1rem auto;
-  }
-  
-.lesson-video > div {
-    position: absolute !important;
-    top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important;
-    border: 0;
-  }
+
   .lesson {
     margin-bottom: 40px;
     border-bottom: 1px solid #ddd;
     padding-bottom: 20px;
   }
 
-  
+  .lesson-video iframe {
+    max-width: 100%;
+  }
+  .content { display: none; }
+.content.active { display: block; }
+
+
   
 /*.video-container iframe {
     width: 860px;
@@ -342,11 +313,7 @@ iframe{
   height: 50%;
   max-width: 100%;
   aspect-ratio: 16 / 9;  /* Mantiene la proporción 16:9 */
-  border: none;  
-  /* ✅ Mejor opción: impedir que redireccione al hacer doble clic */
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+  border: none; 
 }
 .lesson.completed {
     text-decoration: line-through;
