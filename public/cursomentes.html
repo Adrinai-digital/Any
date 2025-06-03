@@ -510,10 +510,16 @@ Esta clase es una oportunidad para recordar que <strong>el conflicto no es oblig
             const videoId = container.dataset.videoId;
             const cursoId = container.dataset.cursoId;
 
-            const playerDiv = document.createElement('div');
-            const divId = `youtube-player-${index}`;
-            playerDiv.id = divId;
-            container.appendChild(playerDiv);
+            const wrapper = document.createElement('div');
+        wrapper.className = 'video-wrapper'; // le aplicará el estilo CSS responsivo
+
+        const playerDiv = document.createElement('div');
+        const divId = `youtube-player-${index}`;
+        playerDiv.id = divId;
+
+        wrapper.appendChild(playerDiv);
+        container.appendChild(wrapper);
+
 
             players[index] = new YT.Player(divId, {
                 height: "315",

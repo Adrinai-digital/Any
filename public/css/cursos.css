@@ -156,22 +156,23 @@ body {
 /* Estilos del video */
 .video-container {
     width: 100%;
-    max-width: 480px; /* ancho máximo en escritorio */
-    margin: 1rem auto; /* centrado horizontal y margen arriba/abajo */
+    max-width: 480px;
+    margin: 1rem auto;
   }
   
   
   .video-wrapper {
     position: relative;
-    padding-bottom: 56.25%; /* altura para 16:9 */
+    padding-bottom: 56.25%; /* relación 16:9 */
     height: 0;
     overflow: hidden;
     width: 100%;
   }
   
-  .video-wrapper iframe {
+  .video-wrapper iframe,
+  .video-wrapper > div {
     position: absolute;
-    top: 0; 
+    top: 0;
     left: 0;
     width: 100% !important;
     height: 100% !important;
