@@ -332,45 +332,40 @@ app.post('/marcar-completado', authMiddleware, (req, res) => {
         return res.status(400).json({ error: 'Faltan datos en la solicitud' });
     }
 
-    const query = `
-        INSERT INTO lecciones_completadas (usuario_id, curso_id, video_id) 
-        VALUES (?, ?, ?)
+    // Primero verificamos si ya existe el registro
+    const selectQuery = `
+        SELECT 1 FROM lecciones_completadas 
+        WHERE usuario_id = ? AND curso_id = ? AND video_id = ?
     `;
 
-    db.query(query, [req.user.id, cursoId, video_id], (err, result) => {
+    db.query(selectQuery, [req.user.id, cursoId, video_id], (err, results) => {
         if (err) {
-            console.error('❌ Error al insertar en lecciones_completadas:', err.message);
-            return res.status(500).json({ error: 'Error interno al marcar como completado' });
+            console.error('❌ Error al verificar duplicado:', err.message);
+            return res.status(500).json({ error: 'Error al verificar el progreso' });
         }
 
-        console.log('✅ Video marcado como completado');
-        res.status(200).json({ message: 'Video marcado como completado' });
-    });
-});
-app.get('/progreso', authMiddleware, (req, res) => {
-    const usuarioId = req.user.id;
-    const cursoId = req.query.cursoId;
-
-    if (!cursoId) {
-        return res.status(400).json({ error: 'Falta el ID del curso' });
-    }
-
-    const query = `
-        SELECT video_id FROM lecciones_completadas
-        WHERE usuario_id = ? AND curso_id = ?
-    `;
-
-    db.query(query, [usuarioId, cursoId], (err, results) => {
-        if (err) {
-            console.error('❌ Error al consultar progreso:', err.message);
-            return res.status(500).json({ error: 'Error interno del servidor' });
+        if (results.length > 0) {
+            console.log('ℹ️ El video ya estaba marcado como completado');
+            return res.status(200).json({ message: 'Ya estaba completado' });
         }
 
-        const completados = results.map(row => row.video_id);
-        res.json({ completados });
+        // Si no está marcado, lo insertamos
+        const insertQuery = `
+            INSERT INTO lecciones_completadas (usuario_id, curso_id, video_id)
+            VALUES (?, ?, ?)
+        `;
+
+        db.query(insertQuery, [req.user.id, cursoId, video_id], (err, result) => {
+            if (err) {
+                console.error('❌ Error al insertar:', err.message);
+                return res.status(500).json({ error: 'Error al marcar como completado' });
+            }
+
+            console.log('✅ Video marcado como completado');
+            res.status(200).json({ message: 'Video marcado como completado' });
+        });
     });
 });
-
 
 app.listen(PORT, () => {
     const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
