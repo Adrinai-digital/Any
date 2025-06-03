@@ -368,7 +368,9 @@ iframe{
         /* ✅ Solo en móviles: hacer el video más alto (más alto = más grande visualmente) */
         @media (min-width: 769px) {
             .video-portada {
-              padding-bottom: 45%; /* Más estrecho en escritorio */
+              padding-bottom: 30%; /* Mucho más bajo en escritorio */
+              max-width: 720px;     /* Opcional: limitar ancho para más control visual */
+              margin: 0 auto;
             }
           }
         
