@@ -156,14 +156,14 @@ body {
 /* Estilos del video */
 .video-container {
     width: 100%;
-    max-width: 480px;
+    max-width: 720px; /* más estrecho en escritorio */
     margin: 1rem auto;
+    padding: 0 1rem;
   }
-  
   
   .video-wrapper {
     position: relative;
-    padding-bottom: 56.25%; /* relación 16:9 */
+    padding-bottom: 56.25%; /* 16:9 */
     height: 0;
     overflow: hidden;
     width: 100%;
@@ -178,6 +178,7 @@ body {
     height: 100% !important;
     border: 0;
   }
+  
 .not-completed {
     color: red;
     font-weight: bold;
