@@ -360,13 +360,13 @@ iframe{
             padding-bottom: 70%; /* Más alto solo en móvil por defecto */
           }
           .lesson-video iframe {
-            width: 50%;       /* Más pequeño en escritorio */
-            max-width: 600px; /* Limita tamaño máximo */
+            width: 40%;        /* Más pequeño en escritorio */
+            max-width: 480px;  /* Limita tamaño máximo */
             height: auto;
             aspect-ratio: 16 / 9;
             border: none;
             display: block;
-            margin: 0 auto;   /* Centrar */
+            margin: 0 auto;
           }
           
         @media (max-width: 600px) {
@@ -382,7 +382,7 @@ iframe{
               margin: 0 auto;
             }
             .lesson-video iframe {
-                width: 95%;     /* Más grande en móvil */
+                width: 90%;       /* Mucho más grande en móvil */
                 max-width: none;
                 padding: 0 10px;
               }
