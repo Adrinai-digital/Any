@@ -367,6 +367,34 @@ app.post('/marcar-completado', authMiddleware, (req, res) => {
         });
     });
 });
+app.get('/progreso', authMiddleware, (req, res) => {
+    console.log('Usuario en /progreso:', req.user);
+    console.log('Curso ID recibido:', req.query.cursoId);
+
+    const usuarioId = req.user.id;
+    const cursoId = req.query.cursoId;
+
+    if (!cursoId) {
+        return res.status(400).json({ error: 'Falta el ID del curso' });
+    }
+
+    const query = `
+        SELECT video_id FROM lecciones_completadas
+        WHERE usuario_id = ? AND curso_id = ?
+    `;
+
+    db.query(query, [usuarioId, cursoId], (err, results) => {
+        if (err) {
+            console.error('❌ Error al consultar progreso:', err.message);
+            return res.status(500).json({ error: 'Error interno del servidor' });
+        }
+
+        const completados = results.map(row => row.video_id);
+        console.log('Progreso retornado:', completados);
+        res.json({ completados });
+    });
+});
+
 
 app.listen(PORT, () => {
     const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
