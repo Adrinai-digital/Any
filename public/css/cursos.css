@@ -382,9 +382,9 @@ iframe{
               margin: 0 auto;
             }
             .lesson-video iframe {
-                width: 100%;       /* Mucho más grande en móvil */
-                max-width: none;
-                padding: 0 10px;
+                padding-bottom: 30%; /* Mucho más bajo en escritorio */
+              max-width: 720px;     /* Opcional: limitar ancho para más control visual */
+              margin: 0 auto;
               }
           }
         
