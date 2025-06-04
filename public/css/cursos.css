@@ -179,16 +179,13 @@ body {
   }
   .lesson-video{
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin: 0 auto;
     position: relative;
-    padding-bottom: 60%; /* Relación 16:9 */
-    height: 0;
-    overflow: hidden;
-    max-width: 95%;
-    margin: 1rem auto;
+  width: 95%;               /* Muy cómodo en móvil */
+  max-width: 800px;         /* Más ancho en escritorio */
+  margin: 1rem auto;
+  padding-bottom: 62%;      /* Relación entre 16:9 y 4:3 — más alto pero no excesivo */
+  height: 0;
+  overflow: hidden;
 }
 
   .lesson-video iframe {
@@ -383,8 +380,9 @@ iframe{
               margin: 0 auto;
             }
             .lesson-video {
-                max-width: 600px; /* Menos ancho en desktop también */
-                padding-bottom: 65%; /* o 900px si quieres más grande */
+                padding-bottom: 56.25%; /* Volvemos a 16:9 si lo prefieres más proporcionado en desktop */
+                width: 100%;
+                max-width: 900px; /* o 900px si quieres más grande */
               }
           }
         
