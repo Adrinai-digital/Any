@@ -159,6 +159,10 @@ body {
         max-width: 720px;
         margin: 0 auto;
     }
+    .lesson-video {
+        max-width: 720px; /* Antes estaba en 900px */
+        padding-bottom: 56.25%; /* Mantiene el ratio 16:9 */
+    }
 }
 
 /* Estado de las lecciones */
