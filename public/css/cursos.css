@@ -184,10 +184,10 @@ body {
     width: 100%;
     margin: 0 auto;
     position: relative;
-    padding-bottom: 75%; /* Relación 16:9 */
+    padding-bottom: 60%; /* Relación 16:9 */
     height: 0;
     overflow: hidden;
-    max-width: 90%;
+    max-width: 95%;
     margin: 1rem auto;
 }
 
@@ -383,8 +383,8 @@ iframe{
               margin: 0 auto;
             }
             .lesson-video {
-                max-width: 700px; /* Menos ancho en desktop también */
-                padding-bottom: 65%;; /* o 900px si quieres más grande */
+                max-width: 600px; /* Menos ancho en desktop también */
+                padding-bottom: 65%; /* o 900px si quieres más grande */
               }
           }
         
