@@ -183,7 +183,7 @@ body {
   width: 95%;               /* Muy cómodo en móvil */
   max-width: 800px;         /* Más ancho en escritorio */
   margin: 1rem auto;
-  padding-bottom: 50%;      /* Relación entre 16:9 y 4:3 — más alto pero no excesivo */
+  padding-bottom: 80%;      /* Relación entre 16:9 y 4:3 — más alto pero no excesivo */
   height: 0;
   overflow: hidden;
 }
