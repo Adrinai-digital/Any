@@ -154,7 +154,7 @@ body {
 /* Responsive escritorio */
 @media (min-width: 769px) {
     .lesson-video {
-        max-width: 720px;
+        max-width: 640px;
         padding-bottom: 56.25%;
     }
     .video-portada {
