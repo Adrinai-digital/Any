@@ -122,7 +122,7 @@ body {
 }
 /* Estrechar solo el video del curso de tarot */
 .video-portada.tarot-video {
-    max-width: 600px; /* O el valor que prefieras */
+    max-width: 400px; /* O el valor que prefieras */
     margin: 0 auto;
 }
 
