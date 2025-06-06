@@ -120,6 +120,11 @@ body {
     height: 100%;
     border: 0;
 }
+/* Estrechar solo el video del curso de tarot */
+.video-portada.tarot-video {
+    max-width: 600px; /* O el valor que prefieras */
+    margin: 0 auto;
+}
 
 /* ✅ Video de lecciones responsivo */
 .lesson-video {
