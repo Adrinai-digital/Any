@@ -8,7 +8,8 @@ const pool = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'vyksnxff_ecuela_online',
     password: process.env.DB_PASS || ';NcI6.21ck;}',
-    database: process.env.DB_NAME || 'vyksnxff_escuela'
+    database: process.env.DB_NAME || 'vyksnxff_escuela',
+    charset: 'utf8mb4'
 });
 
 // Verificar conexión
