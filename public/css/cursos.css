@@ -146,6 +146,23 @@ body {
     border: 0;
 }
 
+
+.whatsapp {
+    text-align: center;
+    margin: 30px 0;
+  }
+
+  .whatsapp a {
+    display: inline-block;
+    background-color: #25D366;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+
 /* Responsive móvil */
 @media (max-width: 768px) {
     .lesson-video {
