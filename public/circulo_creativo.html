@@ -17,21 +17,29 @@
   --soft: #c1aaa4;
   --text: #2d2d2d;
 }
-.portada-circulo {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.img-portada {
-  width: 100%;
-  max-width: 1200px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
+.header {
+  background-image: url('/images/circulo_creativo.png');
+  background-size: cover;       /* La imagen cubre todo el header */
+  background-position: center;  /* Centrada */
+  background-repeat: no-repeat;
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  color: white;                 /* Texto blanco para que contraste */
+  padding: 80px 20px;
+  position: relative;
+  z-index: 1;
 }
+
+/* Opcional: agregar una capa oscura para que el texto se lea mejor */
+header::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4); /* capa negra semi-transparente */
+  border-radius: 10px;
+  z-index: -1;
+}
+
 
 body {
   margin: 0;
@@ -172,9 +180,7 @@ ul {
     <h1>“Círculo Creativo: Lavar el Oro que Te Hace Abundante”</h1>
     <p>(Laborar es lavar el oro. Saca a la luz la riqueza que ya traés por herencia divina.)</p>
   </header>
-  <section class="portada-circulo">
-    <img src="/images/circulo_creativo.png" alt="Círculo Creativo" class="img-portada">
-  </section>
+  
   
 
   <section>
