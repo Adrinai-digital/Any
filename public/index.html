@@ -119,28 +119,31 @@
             </div>
         </div>
 
-        <div class="box" data-id="prod_SdYMZAZ3cezdrE" data-curso-id="1">
-  <img src="/images/por_circulo_creativo.png" alt="Círculo Creativo">
+<div class="box" data-id="prod_SdYMZAZ3cezdrE" data-curso-id="1">
+  <img src="/images/por_cirulo_creativo.png" alt="">
   <div class="product-txt">
     <h3>Círculo Creativo</h3>
 
-    <label for="plan-select-1">Selecciona tu plan:</label>
-    <select class="plan-selector" id="plan-select-1">
-      <option value="price_1RiHIZHaR43tMVsOmKvH8fYl" data-precio="20">🟡 Plan Beca – 20€</option>
-      <option value="price_1RiHGFHaR43tMVsOnzCquvu7" data-precio="30">🟠 Plan Estándar – 30€</option>
+    <!-- Selector de plan -->
+    <label for="plan">Selecciona un plan:</label>
+    <select class="plan-selector" id="plan">
+      <option value="price_1RiHIZHaR43tMVsOmKvH8fYl" data-precio="20">🟡Plan Beca – 20€</option>
+      <option value="price_1RiHGFHaR43tMVsOnzCquvu7" data-precio="30">🟠Plan Estándar – 30€</option>
     </select>
 
-    <p class="precio">—</p> <!-- 👈 Asegúrate que la clase sea exactamente 'precio' -->
+    <!-- Aquí se actualizará el precio -->
+    <p class="precio">20€</p>
 
-    <a href="#" class="agregar-carrito btn-3"
+    <!-- Botón que usa el ID de precio según el plan seleccionado -->
+    <a href="#"
+       class="agregar-carrito btn-3"
        data-id="prod_SdYMZAZ3cezdrE"
-       data-price-id=""
+       data-price-id="price_1RiHIZHaR43tMVsOmKvH8fYl"
        data-curso-id="1">
       Añadir al carrito
     </a>
   </div>
 </div>
-
 
 
         
@@ -219,32 +222,35 @@
     <script src="/js/script.js"></script>
     <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
     <script src="https://kit.fontawesome.com/342eeb73cc.js" crossorigin="anonymous"></script>
-    <script>
+   <script>
   document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll('.box').forEach(box => {
-      const select = box.querySelector('.plan-selector');
-      const addToCartBtn = box.querySelector('.agregar-carrito');
-      const precioText = box.querySelector('.precio'); // 👈 Asegúrate que coincide con la clase HTML
+    const boxes = document.querySelectorAll(".box");
 
-      select.addEventListener('change', () => {
-        const selectedOption = select.options[select.selectedIndex];
-        const priceId = selectedOption.value;
-        const precio = selectedOption.dataset.precio;
+    boxes.forEach(function (box) {
+      const selector = box.querySelector(".plan-selector");
+      const precioEl = box.querySelector(".precio");
+      const boton = box.querySelector(".agregar-carrito");
 
-        // Cambia el atributo del botón
-        addToCartBtn.setAttribute('data-price-id', priceId);
+      if (!selector || !precioEl || !boton) return;
 
-        // Cambia el precio en el DOM
-        if (precioText) {
-          precioText.textContent = `${precio}€`;
-        }
+      selector.addEventListener("change", function () {
+        const selected = selector.options[selector.selectedIndex];
+        const nuevoPrecio = selected.dataset.precio;
+        const nuevoPriceId = selected.value;
+
+        // Actualiza precio visible
+        precioEl.textContent = `${nuevoPrecio}€`;
+
+        // Actualiza data-price-id del botón
+        boton.setAttribute("data-price-id", nuevoPriceId);
       });
 
-      // Inicializa con la opción seleccionada
-      select.dispatchEvent(new Event('change'));
+      // Disparar el cambio al cargar para sincronizar
+      selector.dispatchEvent(new Event("change"));
     });
   });
-</script>   
+</script>
+
     
 
 
