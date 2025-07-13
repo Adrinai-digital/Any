@@ -129,6 +129,8 @@
       <option value="price_1RiHGFHaR43tMVsOnzCquvu7" data-precio="30">🟠 Plan Estándar – 30€</option>
     </select>
 
+    <p class="precio">20€</p> <!-- esta se puede actualizar con JS si quieres -->
+
     <a href="#" class="agregar-carrito btn-3"
        data-id="prod_SdYMZAZ3cezdrE"
        data-price-id=""
@@ -226,15 +228,19 @@
     const priceId = selectedOption.value;
     const precio = selectedOption.dataset.precio;
 
+    // Actualiza el botón con el nuevo price ID
     addToCartBtn.setAttribute('data-price-id', priceId);
+
+    // Actualiza el texto del precio visualmente
     if (precioText) {
       precioText.textContent = `${precio}€`;
     }
   });
 
-  // Inicializa con el valor por defecto seleccionado
+  // Ejecutar una vez al cargar para establecer el estado inicial
   select.dispatchEvent(new Event('change'));
-});</script>    
+});
+</script>    
     
 
 
