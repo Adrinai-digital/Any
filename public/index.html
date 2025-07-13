@@ -123,13 +123,14 @@
   <img src="/images/por_circulo_creativo.png" alt="Círculo Creativo">
   <div class="product-txt">
     <h3>Círculo Creativo</h3>
+
     <label for="plan-select-1">Selecciona tu plan:</label>
     <select class="plan-selector" id="plan-select-1">
       <option value="price_1RiHIZHaR43tMVsOmKvH8fYl" data-precio="20">🟡 Plan Beca – 20€</option>
       <option value="price_1RiHGFHaR43tMVsOnzCquvu7" data-precio="30">🟠 Plan Estándar – 30€</option>
     </select>
 
-    <p class="precio">20€</p> <!-- esta se puede actualizar con JS si quieres -->
+    <p class="precio">20€</p> <!-- 👈 Asegúrate que la clase sea exactamente 'precio' -->
 
     <a href="#" class="agregar-carrito btn-3"
        data-id="prod_SdYMZAZ3cezdrE"
@@ -139,6 +140,7 @@
     </a>
   </div>
 </div>
+
 
 
         
@@ -218,29 +220,31 @@
     <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
     <script src="https://kit.fontawesome.com/342eeb73cc.js" crossorigin="anonymous"></script>
     <script>
+  document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll('.box').forEach(box => {
-  const select = box.querySelector('.plan-selector');
-  const addToCartBtn = box.querySelector('.agregar-carrito');
-  const precioText = box.querySelector('.precio');
+      const select = box.querySelector('.plan-selector');
+      const addToCartBtn = box.querySelector('.agregar-carrito');
+      const precioText = box.querySelector('.precio'); // 👈 Asegúrate que coincide con la clase HTML
 
-  select.addEventListener('change', () => {
-    const selectedOption = select.options[select.selectedIndex];
-    const priceId = selectedOption.value;
-    const precio = selectedOption.dataset.precio;
+      select.addEventListener('change', () => {
+        const selectedOption = select.options[select.selectedIndex];
+        const priceId = selectedOption.value;
+        const precio = selectedOption.dataset.precio;
 
-    // Actualiza el botón con el nuevo price ID
-    addToCartBtn.setAttribute('data-price-id', priceId);
+        // Cambia el atributo del botón
+        addToCartBtn.setAttribute('data-price-id', priceId);
 
-    // Actualiza el texto del precio visualmente
-    if (precioText) {
-      precioText.textContent = `${precio}€`;
-    }
+        // Cambia el precio en el DOM
+        if (precioText) {
+          precioText.textContent = `${precio}€`;
+        }
+      });
+
+      // Inicializa con la opción seleccionada
+      select.dispatchEvent(new Event('change'));
+    });
   });
-
-  // Ejecutar una vez al cargar para establecer el estado inicial
-  select.dispatchEvent(new Event('change'));
-});
-</script>    
+</script>   
     
 
 
