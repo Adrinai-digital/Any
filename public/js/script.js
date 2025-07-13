@@ -23,11 +23,11 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         if (e.target.classList.contains('agregar-carrito')) {
             const elemento = e.target.closest('.box');
-            leerDatosElemento(elemento);
+            leerDatosElemento(elemento, e.target);
         }
     }
 
-    function leerDatosElemento(elemento) {
+    function leerDatosElemento(elemento, boton) {
         const precioTexto = elemento.querySelector('.Precio')?.textContent.trim();
         if (!precioTexto) {
             console.error("❌ No se pudo obtener el precio del elemento.");
@@ -39,13 +39,13 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("❌ El precio no es un número válido:", precioTexto);
             return;
         }
-
+        const priceId = boton.dataset.priceId || elemento.getAttribute('data-price-id') || '';
         const infoElemento = {
             imagen: elemento.querySelector('img').src,
             titulo: elemento.querySelector('h3').textContent.trim(),
             precio: precio,
             id: elemento.querySelector('a').getAttribute('data-id'),
-            priceId: elemento.getAttribute('data-price-id'),
+            priceId: priceId,
             cantidad: 1
         };
 
@@ -59,7 +59,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function agregarAlCarrito(nuevoElemento) {
-        const existe = carrito.find(item => item.id === nuevoElemento.id);
+        const existe = carrito.find(item =>{
+            if (nuevoElemento.priceId) {
+            return item.id === nuevoElemento.id && item.priceId === nuevoElemento.priceId;
+        }
+        return item.id === nuevoElemento.id;
+    });
+
         if (existe) {
             existe.cantidad++;
         } else {
@@ -93,7 +99,14 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         if (e.target.classList.contains('borrar')) {
             const idProducto = e.target.getAttribute('data-id');
-            carrito = carrito.filter(item => item.id !== idProducto);
+            const priceId    = e.target.getAttribute('data-price'); 
+           carrito = carrito.filter(item => {
+            if (priceId) {
+                // Con plan (priceId) → borra sólo esa variante
+                return !(item.id === idProducto && item.priceId === priceId);
+            }
+            return item.id !== idProducto;
+        });
             actualizarCarritoUI();
         }
     }
