@@ -119,15 +119,28 @@
             </div>
         </div>
 
-        <div class="box" data-id="prod_SdYMZAZ3cezdrE" data-price-id="price_1RiHIZHaR43tMVsOmKvH8fYl" data-curso-id="1">
-            <img src="/images/MENTES.jpg" alt="">
-            <div class="product-txt">
-                <h3>Círculo Creativo</h3>
-                <p>Calidad premium</p>
-                <p class="Precio">20€</p>
-                <a href="#" class="agregar-carrito btn-3" data-id="prod_SdYMZAZ3cezdrE" data-price-id="price_1RiHIZHaR43tMVsOmKvH8fYl" data-curso-id="1">Añadir al carrito</a>
-            </div>
-        </div>
+        <div class="box" data-id="prod_SdYMZAZ3cezdrE" data-curso-id="1">
+  <img src="/images/por_circulo_creativo.png" alt="Círculo Creativo">
+  <div class="product-txt">
+    <h3>Círculo Creativo</h3>
+    <label for="plan-select-1">Selecciona tu plan:</label>
+    <select class="plan-selector" id="plan-select-1">
+      <option value="price_1RiHIZHaR43tMVsOmKvH8fYl" data-precio="20">🟡 Plan Beca – 20€</option>
+      <option value="price_1RiHGFHaR43tMVsOnzCquvu7" data-precio="30">🟠 Plan Estándar – 30€</option>
+    </select>
+
+    <p class="precio">20€</p> <!-- esta se puede actualizar con JS si quieres -->
+
+    <a href="#" class="agregar-carrito btn-3"
+       data-id="prod_SdYMZAZ3cezdrE"
+       data-price-id=""
+       data-curso-id="1">
+      Añadir al carrito
+    </a>
+  </div>
+</div>
+
+
         
     </div>
     <div class="btn-1" id="load-more">Cargar más</div>
@@ -203,7 +216,29 @@
     <script src="https://js.stripe.com/v3/"></script>
     <script src="/js/script.js"></script>
     <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
-    <script src="https://kit.fontawesome.com/342eeb73cc.js" crossorigin="anonymous"></script>    
-      
+    <script src="https://kit.fontawesome.com/342eeb73cc.js" crossorigin="anonymous"></script>
+    <script>
+    document.querySelectorAll('.box').forEach(box => {
+  const select = box.querySelector('.plan-selector');
+  const addToCartBtn = box.querySelector('.agregar-carrito');
+  const precioText = box.querySelector('.precio');
+
+  select.addEventListener('change', () => {
+    const selectedOption = select.options[select.selectedIndex];
+    const priceId = selectedOption.value;
+    const precio = selectedOption.dataset.precio;
+
+    addToCartBtn.setAttribute('data-price-id', priceId);
+    if (precioText) {
+      precioText.textContent = `${precio}€`;
+    }
+  });
+
+  // Inicializa con el valor por defecto seleccionado
+  select.dispatchEvent(new Event('change'));
+});</script>    
+    
+
+
 </body>
 </html>     
