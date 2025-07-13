@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Script cargado correctamente");
-    cargarEventListeners();
+
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     let total = 0;
 
@@ -23,11 +23,11 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         if (e.target.classList.contains('agregar-carrito')) {
             const elemento = e.target.closest('.box');
-            leerDatosElemento(elemento, e.target);
+            leerDatosElemento(elemento);
         }
     }
 
-    function leerDatosElemento(elemento, boton) {
+    function leerDatosElemento(elemento) {
         const precioTexto = elemento.querySelector('.Precio')?.textContent.trim();
         if (!precioTexto) {
             console.error("❌ No se pudo obtener el precio del elemento.");
@@ -39,13 +39,13 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("❌ El precio no es un número válido:", precioTexto);
             return;
         }
-        const priceId = boton.dataset.priceId || elemento.getAttribute('data-price-id') || '';
+
         const infoElemento = {
             imagen: elemento.querySelector('img').src,
             titulo: elemento.querySelector('h3').textContent.trim(),
             precio: precio,
             id: elemento.querySelector('a').getAttribute('data-id'),
-            priceId: priceId,
+            priceId: elemento.getAttribute('data-price-id'),
             cantidad: 1
         };
 
@@ -59,13 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function agregarAlCarrito(nuevoElemento) {
-        const existe = carrito.find(item =>{
-            if (nuevoElemento.priceId) {
-            return item.id === nuevoElemento.id && item.priceId === nuevoElemento.priceId;
-        }
-        return item.id === nuevoElemento.id;
-    });
-
+        const existe = carrito.find(item => item.id === nuevoElemento.id);
         if (existe) {
             existe.cantidad++;
         } else {
@@ -85,8 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${item.titulo}</td>
                 <td>${item.precio.toFixed(2)}€</td>
                 <td>${item.cantidad}</td>
-                <td><a href="#" class="borrar" data-id="${item.id}" data-price="${item.priceId || ''}">X</a></td>
-
+                <td><a href="#" class="borrar" data-id="${item.id}">X</a></td>
             `;
             lista.appendChild(row);
         });
@@ -100,14 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         if (e.target.classList.contains('borrar')) {
             const idProducto = e.target.getAttribute('data-id');
-            const priceId    = e.target.getAttribute('data-price'); 
-           carrito = carrito.filter(item => {
-            if (priceId) {
-                // Con plan (priceId) → borra sólo esa variante
-                return !(item.id === idProducto && item.priceId === priceId);
-            }
-            return item.id !== idProducto;
-        });
+            carrito = carrito.filter(item => item.id !== idProducto);
             actualizarCarritoUI();
         }
     }
