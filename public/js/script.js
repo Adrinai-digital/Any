@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Script cargado correctamente");
-
+    cargarEventListeners();
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     let total = 0;
 
@@ -85,7 +85,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${item.titulo}</td>
                 <td>${item.precio.toFixed(2)}€</td>
                 <td>${item.cantidad}</td>
-                <td><a href="#" class="borrar" data-id="${item.id}">X</a></td>
+                <td><a href="#" class="borrar" data-id="${item.id}" data-price="${item.priceId || ''}">X</a></td>
+
             `;
             lista.appendChild(row);
         });
