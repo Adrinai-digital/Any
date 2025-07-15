@@ -1,5 +1,21 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Script cargado correctamente");
+    document.querySelectorAll('.plan-selector').forEach(select => {
+  select.addEventListener('change', function () {
+    const box     = this.closest('.box');
+    const opt     = this.options[this.selectedIndex];
+    const precio  = opt.getAttribute('data-precio');   // "20" o "30"
+    const priceId = opt.value;                         // price_xxx
+
+    // Refresca el texto del precio (sirve si la clase es .Precio o .precio)
+    const pPrecio = box.querySelector('.Precio') || box.querySelector('.precio');
+    if (pPrecio) pPrecio.textContent = `${precio}€`;
+
+    // Actualiza el botón para que leerDatosElemento obtenga el priceId correcto
+    const btn = box.querySelector('.agregar-carrito');
+    if (btn) btn.setAttribute('data-price-id', priceId);
+  });
+});
 
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     let total = 0;
@@ -28,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function leerDatosElemento(elemento) {
-        const precioTexto = elemento.querySelector('.Precio')?.textContent.trim();
+        const precioTexto = elemento.querySelector('.Precio, .precio')?.textContent.trim();
         if (!precioTexto) {
             console.error("❌ No se pudo obtener el precio del elemento.");
             return;
@@ -39,13 +55,13 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("❌ El precio no es un número válido:", precioTexto);
             return;
         }
-
+        const priceId = elemento.querySelector('.agregar-carrito')?.getAttribute('data-price-id');
         const infoElemento = {
             imagen: elemento.querySelector('img').src,
             titulo: elemento.querySelector('h3').textContent.trim(),
             precio: precio,
             id: elemento.querySelector('a').getAttribute('data-id'),
-            priceId: elemento.getAttribute('data-price-id'),
+            priceId: priceId,
             cantidad: 1
         };
 
@@ -59,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function agregarAlCarrito(nuevoElemento) {
-        const existe = carrito.find(item => item.id === nuevoElemento.id);
+        const existe = carrito.find(item =>item.id === nuevoElemento.id && item.priceId === nuevoElemento.priceId);
         if (existe) {
             existe.cantidad++;
         } else {
@@ -79,8 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${item.titulo}</td>
                 <td>${item.precio.toFixed(2)}€</td>
                 <td>${item.cantidad}</td>
-                <td><a href="#" class="borrar" data-id="${item.id}">X</a></td>
-            `;
+               <td><a href="#" class="borrar"data-id="${item.id}"data-price-id="${item.priceId}">X</a></td>`;
             lista.appendChild(row);
         });
 
@@ -93,7 +108,8 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         if (e.target.classList.contains('borrar')) {
             const idProducto = e.target.getAttribute('data-id');
-            carrito = carrito.filter(item => item.id !== idProducto);
+            const priceId    = e.target.getAttribute('data-price-id');
+           carrito = carrito.filter(item =>!(item.id === idProducto && item.priceId === priceId));
             actualizarCarritoUI();
         }
     }
