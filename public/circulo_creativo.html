@@ -293,89 +293,73 @@ ul {
   <div class="footer">
     “La abundancia no se mendiga. Se recuerda. Y está esperando que la reclames.”
   </div>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const boxes = document.querySelectorAll(".box");
+<script defer>
+/* ──────────────────────────────────────────────────────────────────────────────
+   1.  Función que crea la sesión de Checkout SOLO si el usuario está logueado
+   ────────────────────────────────────────────────────────────────────────────*/
+async function iniciarCheckout({ priceId, precio }) {
+  const token    = localStorage.getItem('token');                    // lo guardas al hacer login
+  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
 
-    boxes.forEach(function (box) {
-      const selector = box.querySelector(".plan-selector");
-      const precioEl = box.querySelector(".Precio");
-      const boton = box.querySelector(".agregar-carrito");
+  // 🔒 Si no hay token o e‑mail → fuerza login/registro
+  if (!token || !userData.email) {
+    localStorage.setItem('redirectAfterLogin', window.location.href); // para volver luego
+    window.location.href = '/login.html';   // ajusta si tu ruta es distinta
+    return;
+  }
 
-      if (!selector || !precioEl || !boton) return;
-
-      selector.addEventListener("change", function () {
-        const selected = selector.options[selector.selectedIndex];
-        const nuevoPrecio = selected.dataset.precio;
-        const nuevoPriceId = selected.value;
-
-        // Actualiza precio visible
-        precioEl.textContent = `${nuevoPrecio}€`;
-
-        // Actualiza data-price-id del botón
-        boton.setAttribute("data-price-id", nuevoPriceId);
-      });
-
-      // Disparar el cambio al cargar para sincronizar
-      selector.dispatchEvent(new Event("change"));
-    });
-  });
-
-  async function iniciarCheckout({ priceId, precio }) {
   try {
-    // 1) Obtén el e‑mail del usuario; ajusta según tu lógica de login
-    const user = JSON.parse(localStorage.getItem('userData')) || {};
-    const userEmail = user.email || prompt('Introduce tu e‑mail:');
-
-    // 2) Prepara payload
-    const body = {
-      productos: [{ priceId, cantidad: 1 }],
-      total: precio,
-      userEmail
-    };
-
-    // 3) Llama a tu endpoint
     const resp = await fetch('/crear-checkout', {
-      method: 'POST',
+      method : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body   : JSON.stringify({
+        productos: [{ priceId, cantidad: 1 }],
+        total    : precio,
+        userEmail: userData.email
+      })
     });
 
     if (!resp.ok) throw new Error(await resp.text());
     const { url } = await resp.json();
-
-    // 4) Redirige a Stripe Checkout
-    window.location.href = url;
+    window.location.href = url;                          // 🔄 redirige a Stripe
   } catch (err) {
     console.error('❌ Error al iniciar checkout:', err);
     alert('No se pudo iniciar el pago. Intenta de nuevo.');
   }
 }
 
+/* ──────────────────────────────────────────────────────────────────────────────
+   2.  Configura todas las tarjetas .box de la página (puede haber una o varias)
+   ────────────────────────────────────────────────────────────────────────────*/
 document.addEventListener('DOMContentLoaded', () => {
-  const box = document.querySelector('.box');               // tu tarjeta
-  const select = box.querySelector('.plan-selector');
-  const priceText = box.querySelector('.Precio, .precio');
-  const btn = box.querySelector('.agregar-carrito');
+  document.querySelectorAll('.box').forEach(box => {
+    const select  = box.querySelector('.plan-selector');
+    const precio  = box.querySelector('.Precio, .precio');
+    const boton   = box.querySelector('.agregar-carrito');
 
-  const sync = () => {
-    const opt = select.options[select.selectedIndex];
-    priceText.textContent = opt.dataset.precio + '€';
-    btn.dataset.priceId   = opt.value;                       // price_xxx
-  };
+    if (!select || !precio || !boton) return;             // por si faltan nodos
 
-  select.addEventListener('change', sync);
-  sync(); // al cargar
+    // Sincroniza precio y priceId
+    const actualizar = () => {
+      const opt = select.options[select.selectedIndex];
+      precio.textContent   = `${opt.dataset.precio}€`;    // muestra 20€ / 30€
+      boton.dataset.priceId = opt.value;                  // price_xxx
+    };
+    actualizar();                                         // al cargar
+    select.addEventListener('change', actualizar);        // al cambiar plan
 
-  btn.addEventListener('click', e => {
-    e.preventDefault();
-    iniciarCheckout({
-      priceId: btn.dataset.priceId,
-      precio : parseFloat(priceText.textContent)
+    // Click en "Comprar" → iniciar checkout
+    boton.addEventListener('click', e => {
+      e.preventDefault();
+      iniciarCheckout({
+        priceId: boton.dataset.priceId,
+        precio : parseFloat(precio.textContent)
+      });
     });
   });
 });
 </script>
+
 
 </body>
 
