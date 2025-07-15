@@ -141,6 +141,19 @@ ul {
   transform: translateY(30px);
   animation: fadeInUp 1.2s ease-out forwards;
 }
+.btn-pago {
+  display: block;
+  margin-top: 10px;
+  background: var(--accent);
+  color: white;
+  padding: 0.9rem 1.5rem;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.btn-pago:hover { background: white; color: var(--accent); }
 
 @keyframes fadeInUp {
   to {
@@ -231,6 +244,33 @@ ul {
   <section class="fade-in cta">
     <h2>“Quiero Lavar el Oro que Me Hace Abundante”</h2>
     <a href="https://wa.me/34627781846" target="_blank" rel="noopener">Escribime por WhatsApp</a>
+
+    
+<div class="box" data-id="prod_SdYMZAZ3cezdrE" data-curso-id="1">
+  <img src="/images/por_circulo_creativo.png" alt="">
+  <div class="product-txt">
+    <h3>Círculo Creativo</h3>
+    <p>Despierta tu creatividad y paz interior con las enseñanzas de UCDM. Elige el plan que mejor se adapte a ti.</p>
+    <!-- Selector de plan -->
+    <label for="plan">Selecciona un plan:</label>
+    <select class="plan-selector" id="plan">
+      <option value="price_1RiHIZHaR43tMVsOmKvH8fYl" data-precio="20">🟡Plan Beca – 20€</option>
+      <option value="price_1RiHGFHaR43tMVsOnzCquvu7" data-precio="30">🟠Plan Estándar – 30€</option>
+    </select>
+
+    <!-- Aquí se actualizará el precio -->
+    <p class="Precio">20€</p>
+
+    <!-- Botón que usa el ID de precio según el plan seleccionado -->
+    <a href="#"
+       class="agregar-carrito btn-3"
+       data-id="prod_SdYMZAZ3cezdrE"
+       data-price-id="price_1RiHIZHaR43tMVsOmKvH8fYl"
+       data-curso-id="1">
+      Comprar Círculo Creativo
+    </a>
+  </div>
+</div>
   </section>
 
   <section class="fade-in precio">
@@ -256,6 +296,34 @@ ul {
   <div class="footer">
     “La abundancia no se mendiga. Se recuerda. Y está esperando que la reclames.”
   </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const boxes = document.querySelectorAll(".box");
 
+    boxes.forEach(function (box) {
+      const selector = box.querySelector(".plan-selector");
+      const precioEl = box.querySelector(".Precio");
+      const boton = box.querySelector(".agregar-carrito");
+
+      if (!selector || !precioEl || !boton) return;
+
+      selector.addEventListener("change", function () {
+        const selected = selector.options[selector.selectedIndex];
+        const nuevoPrecio = selected.dataset.precio;
+        const nuevoPriceId = selected.value;
+
+        // Actualiza precio visible
+        precioEl.textContent = `${nuevoPrecio}€`;
+
+        // Actualiza data-price-id del botón
+        boton.setAttribute("data-price-id", nuevoPriceId);
+      });
+
+      // Disparar el cambio al cargar para sincronizar
+      selector.dispatchEvent(new Event("change"));
+    });
+  });
+</script>
 </body>
+
 </html>
