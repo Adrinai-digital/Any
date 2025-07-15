@@ -203,7 +203,7 @@ app.post('/crear-checkout', async (req, res) => {
         : 'https://autoconocimientoygratitud.com/success.html?session_id={CHECKOUT_SESSION_ID}',
       cancel_url : 'https://autoconocimientoygratitud.com/cancel.html',
       metadata   : { price_ids: JSON.stringify(productos.map(p => p.priceId)) },
-      discounts: [{ coupon: '1kN3oIse' }],
+    
     });
 
     return res.status(200).json({ url: session.url });
