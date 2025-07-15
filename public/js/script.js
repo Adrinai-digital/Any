@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function leerDatosElemento(elemento) {
-        const precioTexto = elemento.querySelector('.precio')?.textContent.trim();
+        const precioTexto = elemento.querySelector('.Precio')?.textContent.trim();
         if (!precioTexto) {
             console.error("❌ No se pudo obtener el precio del elemento.");
             return;
