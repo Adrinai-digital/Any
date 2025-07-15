@@ -257,18 +257,12 @@ ul {
       <option value="price_1RiHIZHaR43tMVsOmKvH8fYl" data-precio="20">🟡Plan Beca – 20€</option>
       <option value="price_1RiHGFHaR43tMVsOnzCquvu7" data-precio="30">🟠Plan Estándar – 30€</option>
     </select>
-
+    <a href="#" class="agregar-carrito btn-3" data-price-id="">Comprar Círculo Creativo</a>
     <!-- Aquí se actualizará el precio -->
     <p class="Precio">20€</p>
 
     <!-- Botón que usa el ID de precio según el plan seleccionado -->
-    <a href="#"
-       class="agregar-carrito btn-3"
-       data-id="prod_SdYMZAZ3cezdrE"
-       data-price-id="price_1RiHIZHaR43tMVsOmKvH8fYl"
-       data-curso-id="1">
-      Comprar Círculo Creativo
-    </a>
+    
   </div>
 </div>
   </section>
@@ -323,7 +317,63 @@ ul {
       selector.dispatchEvent(new Event("change"));
     });
   });
+
+  async function iniciarCheckout({ priceId, precio }) {
+  try {
+    // 1) Obtén el e‑mail del usuario; ajusta según tu lógica de login
+    const user = JSON.parse(localStorage.getItem('userData')) || {};
+    const userEmail = user.email || prompt('Introduce tu e‑mail:');
+
+    // 2) Prepara payload
+    const body = {
+      productos: [{ priceId, cantidad: 1 }],
+      total: precio,
+      userEmail
+    };
+
+    // 3) Llama a tu endpoint
+    const resp = await fetch('/crear-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (!resp.ok) throw new Error(await resp.text());
+    const { url } = await resp.json();
+
+    // 4) Redirige a Stripe Checkout
+    window.location.href = url;
+  } catch (err) {
+    console.error('❌ Error al iniciar checkout:', err);
+    alert('No se pudo iniciar el pago. Intenta de nuevo.');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const box = document.querySelector('.box');               // tu tarjeta
+  const select = box.querySelector('.plan-selector');
+  const priceText = box.querySelector('.Precio, .precio');
+  const btn = box.querySelector('.agregar-carrito');
+
+  const sync = () => {
+    const opt = select.options[select.selectedIndex];
+    priceText.textContent = opt.dataset.precio + '€';
+    btn.dataset.priceId   = opt.value;                       // price_xxx
+  };
+
+  select.addEventListener('change', sync);
+  sync(); // al cargar
+
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    iniciarCheckout({
+      priceId: btn.dataset.priceId,
+      precio : parseFloat(priceText.textContent)
+    });
+  });
+});
 </script>
+
 </body>
 
 </html>
