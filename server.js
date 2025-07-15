@@ -166,58 +166,56 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-app.post("/crear-checkout", async (req, res) => {
-    const { productos, total, userEmail } = req.body;
+// ─── CREAR CHECKOUT CON SOPORTE PARA LANDING ───────────────────────────────
+app.post('/crear-checkout', async (req, res) => {
+  const { productos, total, userEmail, desdeLanding } = req.body;
 
-    if (!productos || !Array.isArray(productos) || productos.length === 0 || !total || !userEmail) {
-        return res.status(400).json({ error: '❌ Faltan datos importantes para procesar el pago' });
+  // Validación básica
+  if (
+    !productos || !Array.isArray(productos) || productos.length === 0 ||
+    !total     || !userEmail
+  ) {
+    return res.status(400).json({ error: '❌ Faltan datos importantes para procesar el pago' });
+  }
+
+  try {
+    // 1) Prepara line_items
+    const line_items = productos.map(p => ({
+      price: p.priceId,
+      quantity: p.cantidad || 1
+    }));
+
+    // 2) Detecta si alguno es recurrente
+    let hasRecurring = false;
+    for (const p of productos) {
+      const price = await stripe.prices.retrieve(p.priceId);
+      if (price.recurring) { hasRecurring = true; break; }
     }
 
-    try {
-        const line_items = productos.map(producto => ({
-            price: producto.priceId,
-            quantity: producto.cantidad || 1
-        }));
+    // 3) Crea la sesión de Stripe
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items,
+      mode: hasRecurring ? 'subscription' : 'payment',
+      customer_email: userEmail,
+      success_url: desdeLanding
+        ? 'https://autoconocimientoygratitud.com/registro-post-pago.html?session_id={CHECKOUT_SESSION_ID}'
+        : 'https://autoconocimientoygratitud.com/success.html?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url : 'https://autoconocimientoygratitud.com/cancel.html',
+      metadata   : { price_ids: JSON.stringify(productos.map(p => p.priceId)) }
+    });
 
-        let hasRecurring = false;
+    return res.status(200).json({ url: session.url });
 
-        for (const producto of productos) {
-            const precio = await stripe.prices.retrieve(producto.priceId);
-            if (precio.recurring) {
-                hasRecurring = true;
-                break;
-            }
-        }
-
-        const sessionMode = hasRecurring ? 'subscription' : 'payment';
-        console.log('Productos antes de crear sesión:', productos);
-        console.log('Metadata enviada:', JSON.stringify(productos.map(p => p.priceId)));
-
-
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
-            line_items,
-            mode: sessionMode,
-            success_url: `https://autoconocimientoygratitud.com/success.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `https://autoconocimientoygratitud.com/cancel.html`,
-
-            customer_email: userEmail,
-            metadata: {
-                price_ids: JSON.stringify(productos.map(p => p.priceId))
-              }
-              
-        });
-
-        return res.status(200).json({ url: session.url });
-
-    } catch (error) {
-        console.error("❌ Error en Stripe:", error);
-        return res.status(500).json({
-            error: "Hubo un problema procesando el pago",
-            detalles: error.message
-        });
-    }
+  } catch (error) {
+    console.error('❌ Error en Stripe:', error);
+    return res.status(500).json({
+      error    : 'Hubo un problema procesando el pago',
+      detalles : error.message
+    });
+  }
 });
+
 
 app.post('/agregar-al-carrito', verificarToken, async (req, res) => {
     const { cursoId } = req.body;
