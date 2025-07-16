@@ -314,6 +314,9 @@ async function iniciarCheckout({ priceId, precio }) {
   catch (e) { console.warn('userData malformado:', e); }
 
   const token = localStorage.getItem('token');
+  console.log('📦 Revisando sesión actual:');
+console.log('Token:', token);
+console.log('UserData:', userData);
 
   /* ‑‑> Redirige a login si no hay sesión */
   if (!token || !userData.email) {
