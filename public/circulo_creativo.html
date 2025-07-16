@@ -299,7 +299,7 @@ ul {
    ─────────────────────────────────────────────────────────────── */
 async function iniciarCheckout({ priceId, precio }) {
   const token    = localStorage.getItem('token');
-  const userData = JSON.parse(localStorage.getItem('user') || '{}');
+  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
 
   /* Si NO hay sesión, guardamos la intención y vamos al login */
   if (!token || !userData.email) {
@@ -308,6 +308,11 @@ async function iniciarCheckout({ priceId, precio }) {
     window.location.href = '/formulario.html';
     return;
   }
+console.log('🔁 Enviando datos al backend:', {
+  productos : [{ priceId, cantidad: 1 }],
+  total     : precio,
+  userEmail : userData.email
+});
 
   /* Llamada al backend para crear la sesión de Stripe */
   try {
@@ -323,11 +328,18 @@ async function iniciarCheckout({ priceId, precio }) {
     });
 
     const texto = await resp.text();
-    console.log('↩️  Respuesta backend:', texto);
+console.log('↩️  Respuesta backend:', texto);
 
-    if (!resp.ok) throw new Error(`Error ${resp.status}: ${texto}`);
+if (!resp.ok) throw new Error(`Error ${resp.status}: ${texto}`);
 
-    const data = texto ? JSON.parse(texto) : null;
+// Asegura que sea JSON válido
+let data;
+try {
+  data = JSON.parse(texto);
+} catch (e) {
+  throw new Error(`Respuesta del servidor no es JSON válido: ${texto}`);
+}
+
     if (!data?.url) throw new Error('No se recibió URL de Stripe');
 
     window.location.href = data.url;           // ▶️  Redirige a Stripe
