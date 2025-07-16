@@ -119,6 +119,7 @@ document.getElementById("form-login").addEventListener("submit", async function(
             // Guardar el token y los datos del usuario en localStorage
             localStorage.setItem("token", data.token);
             localStorage.setItem("user", JSON.stringify(data.usuario));
+            localStorage.setItem("userData", JSON.stringify({ email: data.usuario.email }));
 
             // Redirigir a la página del perfil
             window.location.href = "/perfil";
