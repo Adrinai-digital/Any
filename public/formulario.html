@@ -114,6 +114,7 @@ document.getElementById("form-login").addEventListener("submit", async function(
         });
 
         const data = await res.json();
+        console.log("Respuesta del login:", data);
 
         if (res.ok) {
             // Guardar el token y los datos del usuario en localStorage
