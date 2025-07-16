@@ -100,6 +100,7 @@
         });
 
         // Login con fetch
+        // Login con fetch
 document.getElementById("form-login").addEventListener("submit", async function(e) {
     e.preventDefault();
     const email = document.getElementById("login-email").value;
@@ -117,23 +118,10 @@ document.getElementById("form-login").addEventListener("submit", async function(
         if (res.ok) {
             // Guardar el token y los datos del usuario en localStorage
             localStorage.setItem("token", data.token);
-            localStorage.setItem("userData", JSON.stringify(data.usuario));
-            console.log('✅ Login completo:', {
-            token: data.token,
-            usuario: data.usuario
-});
+            localStorage.setItem("user", JSON.stringify(data.usuario));
 
-            // Si había una intención de compra, la pasamos a sessionStorage
-            const intencion = localStorage.getItem("intencionCompra");
-            if (intencion) {
-                sessionStorage.setItem("intencionPendiente", intencion);
-                localStorage.removeItem("intencionCompra");
-            }
-
-            // Redirigir al destino original o al perfil
-            const redirectUrl = localStorage.getItem("redirectAfterLogin") || "/perfil";
-            localStorage.removeItem("redirectAfterLogin");
-            window.location.href = redirectUrl;
+            // Redirigir a la página del perfil
+            window.location.href = "/perfil";
         } else {
             alert(data.error || "Error en el inicio de sesión");
         }
