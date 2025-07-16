@@ -295,28 +295,42 @@ ul {
   </div>
 <script>
 /* ────────────────────────────────────────────────────────────────
+   0.  Reiniciar checkout automáticamente si quedó pendiente
+   ─────────────────────────────────────────────────────────────── */
+const intencionPendiente = JSON.parse(localStorage.getItem('intencionCompra') || 'null');
+if (intencionPendiente) {
+  console.log('🛒 Intención pendiente detectada, lanzando checkout…');
+  localStorage.removeItem('intencionCompra');      // limpia antes de usar
+  iniciarCheckout(intencionPendiente);             // función declarada más abajo
+}
+
+/* ────────────────────────────────────────────────────────────────
    1.  Iniciar Checkout  (redirección a login si hace falta)
    ─────────────────────────────────────────────────────────────── */
 async function iniciarCheckout({ priceId, precio }) {
-  const token    = localStorage.getItem('token');
-  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+  /* Asegura que userData esté bien parseado incluso si hay basura */
+  let userData = {};
+  try { userData = JSON.parse(localStorage.getItem('userData')) || {}; }
+  catch (e) { console.warn('userData malformado:', e); }
 
-  /* Si NO hay sesión, guardamos la intención y vamos al login */
+  const token = localStorage.getItem('token');
+
+  /* ‑‑> Redirige a login si no hay sesión */
   if (!token || !userData.email) {
     localStorage.setItem('redirectAfterLogin', window.location.href);
     localStorage.setItem('intencionCompra', JSON.stringify({ priceId, precio }));
     window.location.href = '/formulario.html';
     return;
   }
-console.log('🔁 Enviando datos al backend:', {
-  productos : [{ priceId, cantidad: 1 }],
-  total     : precio,
-  userEmail : userData.email
-});
 
-  /* Llamada al backend para crear la sesión de Stripe */
+  console.log('📤 Enviando a /crear-checkout:', {
+    productos : [{ priceId, cantidad: 1 }],
+    total     : precio,
+    userEmail : userData.email
+  });
+
   try {
-    const resp = await fetch('/crear-checkout', {
+    const resp  = await fetch('/crear-checkout', {
       method : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body   : JSON.stringify({
@@ -328,56 +342,52 @@ console.log('🔁 Enviando datos al backend:', {
     });
 
     const texto = await resp.text();
-console.log('↩️  Respuesta backend:', texto);
+    console.log('↩️ Respuesta backend:', texto || '[vacía]');
 
-if (!resp.ok) throw new Error(`Error ${resp.status}: ${texto}`);
+    if (!resp.ok) throw new Error(`Error ${resp.status}: ${texto}`);
 
-// Asegura que sea JSON válido
-let data;
-try {
-  data = JSON.parse(texto);
-} catch (e) {
-  throw new Error(`Respuesta del servidor no es JSON válido: ${texto}`);
-}
+    if (!texto || texto.trim() === 'undefined')
+      throw new Error('Backend devolvió respuesta vacía o "undefined".');
 
-    if (!data?.url) throw new Error('No se recibió URL de Stripe');
+    let data;
+    try { data = JSON.parse(texto); }
+    catch (e) { throw new Error('JSON inválido: ' + e.message); }
 
-    window.location.href = data.url;           // ▶️  Redirige a Stripe
+    if (!data.url) throw new Error('No se recibió URL de Stripe');
+    window.location.href = data.url;               // ▶️ redirige a Stripe
   } catch (err) {
-    console.error('❌ Error iniciarCheckout:', err.message);
+    console.error('❌ Error iniciarCheckout:', err.message);
     alert('No se pudo iniciar el pago. Intenta de nuevo.');
   }
 }
 
 /* ────────────────────────────────────────────────────────────────
-   2.  Configura las tarjetas .box  +  Intención pendiente
+   2.  Configura las tarjetas .box
    ─────────────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('✅ Script cargado & DOM listo');
+  console.log('✅ DOM listo, configurando tarjetas…');
 
-  /* ----- Cada tarjeta de producto ----- */
-  document.querySelectorAll('.box').forEach((box, idx) => {
+  document.querySelectorAll('.box').forEach((box, i) => {
     const select = box.querySelector('.plan-selector');
     const precio = box.querySelector('.Precio, .precio');
     const boton  = box.querySelector('.agregar-carrito.btn-3'); // ambas clases
 
     if (!select || !precio || !boton) {
-      console.warn(`Box #${idx}: faltan elementos`);
+      console.warn(`Box #${i}: faltan elementos requeridos`);
       return;
     }
 
-    /* Sincroniza precio y priceId al cargar y al cambiar plan */
-    const actualizar = () => {
+    /* Sincroniza precio y priceId */
+    const sync = () => {
       const opt = select.options[select.selectedIndex];
       precio.textContent    = `${opt.dataset.precio}€`;
-      boton.dataset.priceId = opt.value;            // price_xxx
-      // Debug
-      console.log(`Box #${idx}: precio ${precio.textContent}, priceId ${boton.dataset.priceId}`);
+      boton.dataset.priceId = opt.value;
+      console.log(`Box #${i}: ${precio.textContent} – ${boton.dataset.priceId}`);
     };
-    actualizar();
-    select.addEventListener('change', actualizar);
+    sync();
+    select.addEventListener('change', sync);
 
-    /* Click en “Comprar” */
+    /* Click en comprar */
     boton.addEventListener('click', e => {
       e.preventDefault();
       iniciarCheckout({
@@ -386,16 +396,9 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
-
-  /* ----- Intención de compra pendiente tras login ----- */
-  const pendiente = JSON.parse(localStorage.getItem('intencionCompra') || 'null');
-  if (pendiente) {
-    console.log('🛒 Intención pendiente detectada, lanzando checkout…');
-    localStorage.removeItem('intencionCompra');
-    iniciarCheckout(pendiente);
-  }
 });
 </script>
+
 
 </body>
 
