@@ -100,7 +100,6 @@
         });
 
         // Login con fetch
-        // Login con fetch
 document.getElementById("form-login").addEventListener("submit", async function(e) {
     e.preventDefault();
     const email = document.getElementById("login-email").value;
@@ -118,32 +117,19 @@ document.getElementById("form-login").addEventListener("submit", async function(
         if (res.ok) {
             // Guardar el token y los datos del usuario en localStorage
             localStorage.setItem("token", data.token);
-            localStorage.setItem("userData", JSON.stringify(data.usuario)); // ✅
+            localStorage.setItem("userData", JSON.stringify(data.usuario));
 
+            // Si había una intención de compra, la pasamos a sessionStorage
+            const intencion = localStorage.getItem("intencionCompra");
+            if (intencion) {
+                sessionStorage.setItem("intencionPendiente", intencion);
+                localStorage.removeItem("intencionCompra");
+            }
 
-            // Redirigir a la página del perfil
-            // Guardar el token y los datos del usuario en localStorage
-localStorage.setItem("token", data.token);
-localStorage.setItem("userData", JSON.stringify(data.usuario)); // importante: debe llamarse 'userData'
-
-// Verificar si hay una intención de compra previa
-const intencion = JSON.parse(localStorage.getItem('intencionCompra'));
-const redirectURL = localStorage.getItem('redirectAfterLogin');
-
-if (intencion && redirectURL) {
-    // Limpiar antes de redirigir
-    localStorage.removeItem('intencionCompra');
-    localStorage.removeItem('redirectAfterLogin');
-
-    // Guardamos temporalmente la intención en sessionStorage para usarla en la otra página
-    sessionStorage.setItem('intencionPendiente', JSON.stringify(intencion));
-
-    // Redirigimos a la landing
-    window.location.href = redirectURL;
-} else {
-    window.location.href = "/perfil";
-}
-
+            // Redirigir al destino original o al perfil
+            const redirectUrl = localStorage.getItem("redirectAfterLogin") || "/perfil";
+            localStorage.removeItem("redirectAfterLogin");
+            window.location.href = redirectUrl;
         } else {
             alert(data.error || "Error en el inicio de sesión");
         }
