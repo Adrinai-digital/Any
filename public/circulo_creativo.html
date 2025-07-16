@@ -342,17 +342,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const boton  = box.querySelector('.agregar-carrito btn-3');
 
     if (!select || !precio || !boton) return;
-
+    console.log('Falta select, precio o boton en box', i);
     // Sincroniza precio y priceId
     const actualizar = () => {
       const opt = select.options[select.selectedIndex];
       precio.textContent    = `${opt.dataset.precio}€`;
       boton.dataset.priceId = opt.value;  
-      console.log('✅ Price ID actualizado:', boton.dataset.priceId);   // price_xxx
+     console.log(`Precio actualizado: ${precio.textContent}, priceId: ${boton.dataset.priceId}`);  // price_xxx
     };
     actualizar();                                   // al cargar
     select.addEventListener('change', actualizar);  // cuando cambie el plan
-
+     console.log('Plan cambiado');
     // Click en "Comprar"
     boton.addEventListener('click', e => {
       e.preventDefault();
