@@ -98,10 +98,11 @@
                 alert("Error de conexión");
             }
         });
+
+        // Login con fetch
         // Login con fetch
 document.getElementById("form-login").addEventListener("submit", async function(e) {
     e.preventDefault();
-
     const email = document.getElementById("login-email").value;
     const password = document.getElementById("login-password").value;
 
@@ -113,22 +114,13 @@ document.getElementById("form-login").addEventListener("submit", async function(
         });
 
         const data = await res.json();
-        console.log("Respuesta del login:", data); // ← Log para depuración
 
         if (res.ok) {
-            // Validación adicional: asegurarse de que la respuesta tiene los datos esperados
-            if (!data.usuario || !data.usuario.email) {
-                console.error("Falta el campo 'usuario' o 'email' en la respuesta:", data);
-                alert("Error inesperado: faltan datos del usuario.");
-                return;
-            }
-
-            // Guardar datos en localStorage
+            // Guardar el token y los datos del usuario en localStorage
             localStorage.setItem("token", data.token);
             localStorage.setItem("user", JSON.stringify(data.usuario));
-            localStorage.setItem("userData", JSON.stringify({ email: data.usuario.email }));
 
-            // Redirigir a la página de perfil
+            // Redirigir a la página del perfil
             window.location.href = "/perfil";
         } else {
             alert(data.error || "Error en el inicio de sesión");

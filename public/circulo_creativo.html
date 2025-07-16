@@ -302,10 +302,11 @@ async function iniciarCheckout({ priceId, precio }) {
   const userData = JSON.parse(localStorage.getItem('userData') || '{}');
 
   // 🔒  Forzar login/registro si no hay token o email
- if (!token || !userData.email) {
-  alert('Debes iniciar sesión o registrarte para continuar con la compra.');
-  return;
-}
+  if (!token || !userData.email) {
+    localStorage.setItem('redirectAfterLogin', window.location.href); // para volver
+    window.location.href = '/login.html';                             // ajusta la ruta si es otra
+    return;
+  }
 
   try {
     const resp = await fetch('/crear-checkout', {
