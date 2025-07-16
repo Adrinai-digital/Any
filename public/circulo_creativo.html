@@ -299,7 +299,7 @@ ul {
    ─────────────────────────────────────────────────────────────── */
 async function iniciarCheckout({ priceId, precio }) {
   const token    = localStorage.getItem('token');
-  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+  const userData = JSON.parse(localStorage.getItem('user') || '{}');
 
   /* Si NO hay sesión, guardamos la intención y vamos al login */
   if (!token || !userData.email) {
