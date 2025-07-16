@@ -118,6 +118,10 @@ document.getElementById("form-login").addEventListener("submit", async function(
             // Guardar el token y los datos del usuario en localStorage
             localStorage.setItem("token", data.token);
             localStorage.setItem("userData", JSON.stringify(data.usuario));
+            console.log('✅ Login completo:', {
+            token: data.token,
+            usuario: data.usuario
+});
 
             // Si había una intención de compra, la pasamos a sessionStorage
             const intencion = localStorage.getItem("intencionCompra");
