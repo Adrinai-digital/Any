@@ -347,7 +347,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const actualizar = () => {
       const opt = select.options[select.selectedIndex];
       precio.textContent    = `${opt.dataset.precio}€`;
-      boton.dataset.priceId = opt.value;           // price_xxx
+      boton.dataset.priceId = opt.value;  
+      console.log('✅ Price ID actualizado:', boton.dataset.priceId);   // price_xxx
     };
     actualizar();                                   // al cargar
     select.addEventListener('change', actualizar);  // cuando cambie el plan
