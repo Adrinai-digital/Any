@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const boton  = box.querySelector('.agregar-carrito.btn-3');
 
     if (!select || !precio || !boton) return;
-    console.log('Falta select, precio o boton en box', i);
+
     // Sincroniza precio y priceId
     const actualizar = () => {
       const opt = select.options[select.selectedIndex];
