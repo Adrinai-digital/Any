@@ -301,12 +301,15 @@ async function iniciarCheckout({ priceId, precio }) {
   const token    = localStorage.getItem('token');                    // guardado tras login
   const userData = JSON.parse(localStorage.getItem('userData') || '{}');
 
-  // 🔒  Forzar login/registro si no hay token o email
   if (!token || !userData.email) {
-    localStorage.setItem('redirectAfterLogin', window.location.href); // para volver
-    window.location.href = '/login.html';                             // ajusta la ruta si es otra
-    return;
-  }
+  // Guarda la intención de compra
+  localStorage.setItem('redirectAfterLogin', window.location.href);
+  localStorage.setItem('intencionCompra', JSON.stringify({ priceId, precio }));
+
+  window.location.href = '/formulario.html'; // O 'login.html' si es tu página de acceso
+  return;
+}
+
 
   try {
     const resp = await fetch('/crear-checkout', {
@@ -358,6 +361,15 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+  const intencionPendiente = JSON.parse(sessionStorage.getItem('intencionPendiente'));
+  if (intencionPendiente) {
+    // Limpia y lanza el checkout de forma automática
+    sessionStorage.removeItem('intencionPendiente');
+    iniciarCheckout({
+      priceId: intencionPendiente.priceId,
+      precio : intencionPendiente.precio
+    });
+  }
 });
 </script>
 
