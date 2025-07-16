@@ -313,19 +313,35 @@ async function iniciarCheckout({ priceId, precio }) {
 
   try {
     const resp = await fetch('/crear-checkout', {
-      method : 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body   : JSON.stringify({
-        productos   : [{ priceId, cantidad: 1 }],
-        total       : precio,
-        userEmail   : userData.email,
-        desdeLanding: true                       // 👈 bandera para el backend
-      })
-    });
+  method : 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body   : JSON.stringify({
+    productos   : [{ priceId, cantidad: 1 }],
+    total       : precio,
+    userEmail   : userData.email,
+    desdeLanding: true
+  })
+});
 
-    if (!resp.ok) throw new Error(await resp.text());
-    const { url } = await resp.json();
-    window.location.href = url;                  // ▶️  redirige a Stripe
+if (!resp.ok) {
+  const textoError = await resp.text();
+  throw new Error(`Error del servidor: ${textoError}`);
+}
+
+let data;
+try {
+  data = await resp.json();
+} catch (parseError) {
+  console.error('No se pudo parsear JSON:', parseError);
+  throw new Error('Respuesta inválida del servidor');
+}
+
+if (!data.url) {
+  throw new Error('No se recibió URL para redirigir.');
+}
+
+window.location.href = data.url;
+                  // ▶️  redirige a Stripe
   } catch (err) {
     console.error('❌ Error al iniciar checkout:', err);
     alert('No se pudo iniciar el pago. Intenta de nuevo.');
