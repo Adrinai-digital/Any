@@ -211,7 +211,7 @@ app.post('/crear-checkout', async (req, res) => {
   } catch (error) {
     console.error('❌ Error en Stripe:', error);
     return res.status(500).json({
-      error    : 'Hubo un problema procesando el pago',
+      error    : 'tienes que estar registrado para comprar cursos',
       detalles : error.message
     });
   }
