@@ -158,10 +158,20 @@ document.addEventListener("DOMContentLoaded", function () {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         })
-        .then(response => {
-            if (!response.ok) throw new Error("No se pudo obtener el perfil del usuario");
-            return response.json();
-        })
+        .then(async response => {
+    // 🔒 Detecta sesión caducada o inexistente
+    if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem('token');
+        alert('Debes iniciar sesión para completar la compra.');
+        window.location.href = '/formulario.html';
+        throw new Error('No autenticado');      // detiene la cadena
+    }
+            if (!response.ok) {
+        const txt = await response.text();
+        throw new Error(`No se pudo obtener el perfil del usuario: ${txt}`);
+    }
+    return response.json();
+})
         .then(async data => {
             if (!data || data.error || !data.usuario) throw new Error("Error al obtener el perfil del usuario");
     
@@ -175,42 +185,42 @@ document.addEventListener("DOMContentLoaded", function () {
     
             const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
     
-            if (total === 0) {
+            //if (total === 0) {
                 // ✅ Agregar cursos gratuitos directamente con función autoejecutable
-                (async () => {
-                    for (const item of productos) {
-                        try {
-                            const response = await fetch('/agregar-al-carrito', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${token}`
-                                },
-                                body: JSON.stringify({
-                                    cursoId: item.id
-                                })
-                            });
+               // (async () => {
+                   // for (const item of productos) {
+                       // try {
+                            //const response = await fetch('/agregar-al-carrito', {
+                               // method: 'POST',
+                               // headers: {
+                                  //  'Content-Type': 'application/json',
+                                 //   'Authorization': `Bearer ${token}`
+                               // },
+                               // body: JSON.stringify({
+                                 //   cursoId: item.id
+                              //  })
+                          //  });
     
-                            if (!response.ok) {
-                                const errorText = await response.text();
-                                throw new Error(`Error al agregar curso: ${errorText}`);
-                            }
+                            //if (!response.ok) {
+                               // const errorText = await response.text();
+                                //throw new Error(`Error al agregar curso: ${errorText}`);
+                         //   }
     
-                            const responseData = await response.json();
-                            console.log('✅ Curso agregado:', responseData);
+                           // const responseData = await response.json();
+                            //console.log('✅ Curso agregado:', responseData);
     
-                            window.location.href = responseData.redirectUrl;
-                            return; // Redirige después del primer curso agregado
-                        } catch (error) {
-                            console.error('Error al agregar curso gratuito:', error);
-                            alert('Error al agregar el curso gratuito al perfil');
-                            return;
-                        }
-                    }
-                })();
+                           // window.location.href = responseData.redirectUrl;
+                           // return; // Redirige después del primer curso agregado
+                      //  } catch (error) {
+                          //  console.error('Error al agregar curso gratuito:', error);
+                          //  alert('Error al agregar el curso gratuito al perfil');
+                           // return;
+                       // }
+                  //  }
+              //  })();
     
-                return; // ✅ Evita continuar al flujo de Stripe
-            }
+                //return; // ✅ Evita continuar al flujo de Stripe
+            //}
     
             // 💳 Si hay total > 0, procede al pago con Stripe
             const payload = {

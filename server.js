@@ -18,7 +18,8 @@ const stripeWebhook = require('./routes/stripe-webhook');
 app.use('/webhook', stripeWebhook);
 // Middleware para verificar token desde cookies
 const verificarToken = (req, res, next) => {
-    const token = req.cookies.token;
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : req.cookies.token;
 
     if (!token) {
         return res.status(401).json({ error: 'Acceso denegado, token requerido' });
@@ -32,6 +33,7 @@ const verificarToken = (req, res, next) => {
         return res.status(401).json({ error: 'Token inválido o expirado' });
     }
 };
+
 
 // Middlewares globales
 app.use(express.static(path.join(__dirname, 'public')));
