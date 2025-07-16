@@ -293,7 +293,7 @@ ul {
   <div class="footer">
     “La abundancia no se mendiga. Se recuerda. Y está esperando que la reclames.”
   </div>
-<script defer>
+<script>
 /* ──────────────────────────────────────────────────────────────────────────────
    1.  Iniciar Checkout  (solo si el usuario está logueado)
    ────────────────────────────────────────────────────────────────────────────*/
@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.box').forEach(box => {
     const select = box.querySelector('.plan-selector');
     const precio = box.querySelector('.Precio, .precio');
-    const boton  = box.querySelector('.agregar-carrito');
+    const boton  = box.querySelector('.agregar-carrito btn-3');
 
     if (!select || !precio || !boton) return;
 
