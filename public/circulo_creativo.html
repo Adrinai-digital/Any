@@ -372,10 +372,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+console.log('Script cargado');
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM cargado');
+    document.querySelectorAll('.box').forEach(box => {
+      console.log('Box encontrado:', box);
+      const boton = box.querySelector('.agregar-carrito');
+      if (boton) {
+        boton.addEventListener('click', e => {
+          e.preventDefault();
+          console.log('Botón clickeado');
+        });
+      }
+    });
+  });
 </script>
-
-
-
 </body>
 
 </html>
