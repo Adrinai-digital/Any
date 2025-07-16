@@ -298,55 +298,55 @@ ul {
    1.  Iniciar Checkout  (solo si el usuario está logueado)
    ────────────────────────────────────────────────────────────────────────────*/
 async function iniciarCheckout({ priceId, precio }) {
-  const token    = localStorage.getItem('token');                    // guardado tras login
+  const token    = localStorage.getItem('token');                    
   const userData = JSON.parse(localStorage.getItem('userData') || '{}');
 
   if (!token || !userData.email) {
-  // Guarda la intención de compra
-  localStorage.setItem('redirectAfterLogin', window.location.href);
-  localStorage.setItem('intencionCompra', JSON.stringify({ priceId, precio }));
-
-  window.location.href = '/formulario.html'; // O 'login.html' si es tu página de acceso
-  return;
-}
-
+    localStorage.setItem('redirectAfterLogin', window.location.href);
+    localStorage.setItem('intencionCompra', JSON.stringify({ priceId, precio }));
+    window.location.href = '/formulario.html';
+    return;
+  }
 
   try {
     const resp = await fetch('/crear-checkout', {
-  method : 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body   : JSON.stringify({
-    productos   : [{ priceId, cantidad: 1 }],
-    total       : precio,
-    userEmail   : userData.email,
-    desdeLanding: true
-  })
-});
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({
+        productos   : [{ priceId, cantidad: 1 }],
+        total       : precio,
+        userEmail   : userData.email,
+        desdeLanding: true
+      })
+    });
 
-if (!resp.ok) {
-  const textoError = await resp.text();
-  throw new Error(`Error del servidor: ${textoError}`);
-}
+    const textoRespuesta = await resp.text();
+    console.log('Respuesta del servidor:', textoRespuesta);
 
-let data;
-try {
-  data = await resp.json();
-} catch (parseError) {
-  console.error('No se pudo parsear JSON:', parseError);
-  throw new Error('Respuesta inválida del servidor');
-}
+    if (!resp.ok) {
+      throw new Error(`Error del servidor: ${textoRespuesta}`);
+    }
 
-if (!data.url) {
-  throw new Error('No se recibió URL para redirigir.');
-}
+    // Intenta parsear JSON sólo si la respuesta no está vacía
+    let data;
+    try {
+      data = textoRespuesta ? JSON.parse(textoRespuesta) : null;
+    } catch (e) {
+      throw new Error('Respuesta inválida JSON: ' + e.message);
+    }
 
-window.location.href = data.url;
-                  // ▶️  redirige a Stripe
+    if (!data || !data.url) {
+      throw new Error('No se recibió URL para redirigir.');
+    }
+
+    window.location.href = data.url;
+
   } catch (err) {
     console.error('❌ Error al iniciar checkout:', err);
     alert('No se pudo iniciar el pago. Intenta de nuevo.');
   }
 }
+
 
 /* ──────────────────────────────────────────────────────────────────────────────
    2.  Configura todas las tarjetas .box
@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.box').forEach(box => {
     const select = box.querySelector('.plan-selector');
     const precio = box.querySelector('.Precio, .precio');
-    const boton  = box.querySelector('.agregar-carrito.btn-3');
+    const boton  = box.querySelector('.agregar-carrito');
 
     if (!select || !precio || !boton) return;
 
