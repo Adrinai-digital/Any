@@ -193,5 +193,19 @@ router.post('/marcar-completado', authMiddleware, (req, res) => {
         res.json({ message: '✅ Video marcado como completado' });
     });
 });
+router.get('/api/auth/check', (req, res) => {
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.json({ loggedIn: false });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        res.json({ loggedIn: true, user: { id: decoded.id, nombre: decoded.nombre } });
+    } catch (error) {
+        res.json({ loggedIn: false });
+    }
+});
 
 module.exports = router;
