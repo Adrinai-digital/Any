@@ -302,75 +302,70 @@ ul {
     “La abundancia no se mendiga. Se recuerda. Y está esperando que la reclames.”
   </div>
 <script defer>
-async function iniciarCheckout({ priceId, precio, cursoId }) {
-  try {
-    // Verifica si el usuario está autenticado en el servidor
-    const authResp = await fetch('/api/auth/check', {
-      credentials: 'include' // necesario para enviar cookies
-    });
-    const authData = await authResp.json();
+  async function iniciarCheckout({ priceId, precio, cursoId }) {
+    try {
+      // Verifica si el usuario está logueado
+      const authResp = await fetch('/api/auth/check', {
+        credentials: 'include'
+      });
+      const authData = await authResp.json();
 
-    if (!authData.loggedIn) {
-      alert('Debes estar registrado para comprar.');
-      // Guarda redirección para después del login si lo necesitas
-      localStorage.setItem('redirectAfterLogin', window.location.href);
-      window.location.href = '/formulario.html';
-      return;
+      if (!authData.loggedIn) {
+        alert('Debes estar registrado para comprar este curso.');
+        window.location.href = '/formulario.html';
+        return;
+      }
+
+      const userEmail = authData.user?.email;
+
+      const resp = await fetch('/crear-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productos   : [{ priceId, cantidad: 1 }],
+          total       : precio,
+          userEmail   : userEmail,
+          cursoId     : cursoId ? parseInt(cursoId) : null,
+          desdeLanding: true
+        })
+      });
+
+      if (!resp.ok) throw new Error(await resp.text());
+      const { url } = await resp.json();
+      window.location.href = url;
+    } catch (err) {
+      console.error('❌ Error al iniciar el checkout:', err);
+      alert('No se pudo procesar el pago. Intenta más tarde.');
     }
-
-    // Continuar al checkout de Stripe
-    const userEmail = authData.user?.email || prompt("Introduce tu email para continuar:");
-
-    const resp = await fetch('/crear-checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        productos: [{ priceId, cantidad: 1 }],
-        total: precio,
-        userEmail,
-        cursoId: cursoId ? parseInt(cursoId) : null,
-        desdeLanding: true
-      })
-    });
-
-    if (!resp.ok) throw new Error(await resp.text());
-    const { url } = await resp.json();
-    window.location.href = url;
-  } catch (err) {
-    console.error('❌ Error al iniciar checkout:', err);
-    alert('No se pudo iniciar el pago. Intenta de nuevo.');
   }
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.box').forEach(box => {
-    const select = box.querySelector('.plan-selector');
-    const precio = box.querySelector('.Precio, .precio');
-    const boton  = box.querySelector('.agregar-carrito');
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.box').forEach(box => {
+      const select = box.querySelector('.plan-selector');
+      const precio = box.querySelector('.Precio, .precio');
+      const boton  = box.querySelector('.agregar-carrito');
 
-    if (!select || !precio || !boton) return;
+      if (!select || !precio || !boton) return;
 
-    const actualizar = () => {
-      const opt = select.options[select.selectedIndex];
-      precio.textContent    = `${opt.dataset.precio}€`;
-      boton.dataset.priceId = opt.value;
-    };
-    actualizar();
-    select.addEventListener('change', actualizar);
+      const actualizar = () => {
+        const opt = select.options[select.selectedIndex];
+        precio.textContent    = `${opt.dataset.precio}€`;
+        boton.dataset.priceId = opt.value;
+      };
+      actualizar();
+      select.addEventListener('change', actualizar);
 
-    boton.addEventListener('click', e => {
-      e.preventDefault();
-      iniciarCheckout({
-        priceId: boton.dataset.priceId,
-        precio : parseFloat(precio.textContent),
-        cursoId: boton.dataset.cursoId || null
+      boton.addEventListener('click', e => {
+        e.preventDefault();
+        iniciarCheckout({
+          priceId: boton.dataset.priceId,
+          precio : parseFloat(precio.textContent),
+          cursoId: boton.dataset.cursoId || null
+        });
       });
     });
   });
-});
 </script>
-
-
 
 
 </body>
