@@ -396,6 +396,27 @@ app.get('/progreso', authMiddleware, (req, res) => {
         res.json({ completados });
     });
 });
+app.get('/api/auth/check', (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) return res.json({ loggedIn: false });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return res.json({
+      loggedIn: true,
+      user: {
+        id: decoded.id,
+        nombre: decoded.nombre,
+        email: decoded.email // ✅ aquí obtenemos el email
+      }
+    });
+  } catch (error) {
+    return res.json({ loggedIn: false });
+  }
+});
+
+
 
 
 app.listen(PORT, () => {

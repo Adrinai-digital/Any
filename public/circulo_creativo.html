@@ -302,45 +302,46 @@ ul {
     “La abundancia no se mendiga. Se recuerda. Y está esperando que la reclames.”
   </div>
 <script defer>
-/* ──────────────────────────────────────────────────────────────────────────────
-   1.  Iniciar Checkout  (solo si el usuario está logueado)
-   ────────────────────────────────────────────────────────────────────────────*/
 async function iniciarCheckout({ priceId, precio, cursoId }) {
-  const token    = localStorage.getItem('token');                    // guardado tras login
-  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-
-  // 🔒  Forzar login/registro si no hay token o email
-  if (!token || !userData.email) {
-    localStorage.setItem('redirectAfterLogin', window.location.href); // para volver
-    window.location.href = '/login.html';                             // ajusta la ruta si es otra
-    return;
-  }
-
   try {
+    // Verifica si el usuario está autenticado en el servidor
+    const authResp = await fetch('/api/auth/check', {
+      credentials: 'include' // necesario para enviar cookies
+    });
+    const authData = await authResp.json();
+
+    if (!authData.loggedIn) {
+      alert('Debes estar registrado para comprar.');
+      // Guarda redirección para después del login si lo necesitas
+      localStorage.setItem('redirectAfterLogin', window.location.href);
+      window.location.href = '/formulario.html';
+      return;
+    }
+
+    // Continuar al checkout de Stripe
+    const userEmail = authData.user?.email || prompt("Introduce tu email para continuar:");
+
     const resp = await fetch('/crear-checkout', {
-      method : 'POST',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body   : JSON.stringify({
-        productos   : [{ priceId, cantidad: 1 }],
-        total       : precio,
-        userEmail   : userData.email,
-        cursoId     : cursoId ? parseInt(cursoId) : null, // ✅ añade cursoId si está
+      body: JSON.stringify({
+        productos: [{ priceId, cantidad: 1 }],
+        total: precio,
+        userEmail,
+        cursoId: cursoId ? parseInt(cursoId) : null,
         desdeLanding: true
       })
     });
 
     if (!resp.ok) throw new Error(await resp.text());
     const { url } = await resp.json();
-    window.location.href = url;                  // ▶️  redirige a Stripe
+    window.location.href = url;
   } catch (err) {
     console.error('❌ Error al iniciar checkout:', err);
     alert('No se pudo iniciar el pago. Intenta de nuevo.');
   }
 }
 
-/* ──────────────────────────────────────────────────────────────────────────────
-   2.  Configura todas las tarjetas .box
-   ────────────────────────────────────────────────────────────────────────────*/
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.box').forEach(box => {
     const select = box.querySelector('.plan-selector');
@@ -349,22 +350,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!select || !precio || !boton) return;
 
-    // Sincroniza precio y priceId
     const actualizar = () => {
       const opt = select.options[select.selectedIndex];
       precio.textContent    = `${opt.dataset.precio}€`;
       boton.dataset.priceId = opt.value;
     };
-    actualizar(); // al cargar
-    select.addEventListener('change', actualizar); // cuando cambie el plan
+    actualizar();
+    select.addEventListener('change', actualizar);
 
-    // Click en "Comprar"
     boton.addEventListener('click', e => {
       e.preventDefault();
       iniciarCheckout({
         priceId: boton.dataset.priceId,
         precio : parseFloat(precio.textContent),
-        cursoId: boton.dataset.cursoId || null // ✅ pasa cursoId desde el botón
+        cursoId: boton.dataset.cursoId || null
       });
     });
   });
