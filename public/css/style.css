@@ -288,10 +288,8 @@ h2{
 .box-container{
     margin-top: 55px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    justify-content: space-between;
-    flex-wrap: wrap;
 }
 .box{
     border-top: 2px solid #9BCE21;
@@ -299,7 +297,6 @@ h2{
     border-radius: 15px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     background-color: #f6fafb;
-    display: none;
 }
 .box:nth-child(1),
 .box:nth-child(2),
