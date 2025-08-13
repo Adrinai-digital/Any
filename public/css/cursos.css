@@ -103,9 +103,18 @@ body {
     background-image: url("/images/fondo.jpg");
 }
 .circulo-header {
+    position: relative; /* Necesario para el ::before */
     background-image: url("/images/pormenbresiacir.jpg");
+    background-size: cover; /* Escala la imagen para que cubra todo el área */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que se repita */
+    min-height: 100vh; /* O el alto que quieras, por ejemplo 600px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
-circulo-header::before {
+.circulo-header::before {
     content: "";
     position: absolute;
     top: 0; left: 0;
