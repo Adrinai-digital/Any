@@ -107,6 +107,9 @@ body {
     background-image: url("/images/pormenbresiacir.jpg");
     
 }
+.almas-header {
+    background-image: url("/images/poralmas2.jpg");
+}
 .circulo-header::before {
     content: "";
     position: absolute;
