@@ -53,7 +53,7 @@ body {
 }
 
 /* Otros encabezados */
-.tarot-header, .mentes-header, .gratitud-header {
+.tarot-header, .mentes-header, .gratitud-header, .circulo-header {
     position: relative;
     width: 100vw;
     height: 60vh;
@@ -103,16 +103,9 @@ body {
     background-image: url("/images/fondo.jpg");
 }
 .circulo-header {
-    position: relative; /* Necesario para el ::before */
+
     background-image: url("/images/pormenbresiacir.jpg");
-    background-size: cover; /* Escala la imagen para que cubra todo el área */
-    background-position: center; /* Centra la imagen */
-    background-repeat: no-repeat; /* Evita que se repita */
-    min-height: 70vh; /* O el alto que quieras, por ejemplo 600px */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    
 }
 .circulo-header::before {
     content: "";
