@@ -102,7 +102,9 @@ body {
 .gratitud-header {
     background-image: url("/images/fondo.jpg");
 }
-
+.circulo-header {
+    background-image: url("/images/pormenbresiacir.jpg");
+}
 /* ✅ Video de portada (NO CAMBIAR) */
 .video-portada {
     position: relative;
