@@ -108,7 +108,7 @@ body {
     background-size: cover; /* Escala la imagen para que cubra todo el área */
     background-position: center; /* Centra la imagen */
     background-repeat: no-repeat; /* Evita que se repita */
-    min-height: 100vh; /* O el alto que quieras, por ejemplo 600px */
+    min-height: 70vh; /* O el alto que quieras, por ejemplo 600px */
     display: flex;
     align-items: center;
     justify-content: center;
