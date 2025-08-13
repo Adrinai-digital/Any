@@ -142,14 +142,17 @@ body {
     color: white;
 }
 /* ✅ Video de portada (NO CAMBIAR) */
+/* Video responsive base */
 .video-portada {
     position: relative;
     width: 100%;
-    padding-bottom: 70%;
+    padding-bottom: 56.25%; /* Mantener proporción 16:9 */
     height: 0;
     overflow: hidden;
     border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
+
 .video-portada iframe {
     position: absolute;
     top: 0;
@@ -158,10 +161,11 @@ body {
     height: 100%;
     border: 0;
 }
-/* Estrechar solo el video del curso de tarot */
-.video-portada.tarot-video {
-    max-width: 400px; /* O el valor que prefieras */
-    margin: 0 auto;
+
+/* Versión más estrecha para el header */
+.circulo-header .video-portada {
+    max-width: 400px; /* ancho máximo */
+    margin: 0 auto; /* centrar */
 }
 
 /* ✅ Video de lecciones responsivo */
