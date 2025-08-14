@@ -2,295 +2,290 @@
 <html lang="es">
     
 <head>
+  <!-- Metadatos básicos -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- Título de la página -->
+<title>Círculo Creativo</title>
+
+<!-- Meta para SEO -->
+<meta name="description" content="Descubre el Círculo Creativo de Almas Terapéuticas. Activa tu abundancia, eleva tu vibración y transforma tu vida con las enseñanzas de Un Curso de Milagros." />
+
+<!-- Meta para redes sociales (Open Graph) -->
+<meta property="og:title" content="Círculo Creativo | Abundancia y Sanación Espiritual con Un Curso de Milagros" />
+<meta property="og:description" content="Descubre el Círculo Creativo de Almas Terapéuticas. Activa tu abundancia, eleva tu vibración y transforma tu vida con las enseñanzas de Un Curso de Milagros." />
+
+  <!-- Favicon -->
   <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"/>
+
+  <!-- Fuentes externas -->
   <link href="https://fonts.googleapis.com/css2?family=Lora&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  
+  <!-- Iconos -->
   <script src="https://kit.fontawesome.com/a2e0e6ebf3.js" crossorigin="anonymous"></script>
 
-  <title>Círculo Creativo</title>
+  <!-- Estilos internos -->
   <style>
+    /* Variables de color */
     :root {
-  --bg: #cdc2bc;
-  --accent: #83514a;
-  --primary: #ae8981;
-  --secondary: #b7b4b1;
-  --soft: #c1aaa4;
-  --text: #2d2d2d;
-}
-.header {
-  background-image: url('/images/circulo_creativo.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  color: white;
-  text-align: center;
-  padding: 80px 20px;
-  position: relative;
-  z-index: 1;
-}
-.header h1, .header p {
-  position: relative;
-  z-index: 1;
-}
-/* Opcional: agregar una capa oscura para que el texto se lea mejor */
-.header::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.4); /* capa negra semi-transparente */
-  border-radius: 10px;
-  z-index: -1;
-}
+      --bg: #cdc2bc;
+      --accent: #83514a;
+      --primary: #ae8981;
+      --secondary: #b7b4b1;
+      --soft: #c1aaa4;
+      --text: #2d2d2d;
+    }
 
+    /* Estilos de header */
+    .header {
+      background-image: url('/images/circulo_creativo.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      color: white;
+      text-align: center;
+      padding: 80px 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .header h1, .header p { position: relative; z-index: 1; }
+    .header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      z-index: -1;
+    }
 
-body {
-  margin: 0;
-  font-family: 'Lora', serif;
-  background-color: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-}
+    /* Estilos de body y secciones */
+    body {
+      margin: 0;
+      font-family: 'Lora', serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    section {
+      padding: 3rem 1rem;
+      max-width: 900px;
+      margin: auto;
+    }
+    section h2 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    section p, li {
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+    ul { padding-left: 1.2rem; }
 
+    /* Imágenes y módulos */
+    .box img {
+      width: 150px;
+      height: auto;
+      object-fit: contain;
+    }
+    .module {
+      background-color: var(--soft);
+      padding: 2rem;
+      margin: 2rem 0;
+      border-left: 6px solid var(--accent);
+      border-radius: 6px;
+    }
 
-section {
-  padding: 3rem 1rem;
-  max-width: 900px;
-  margin: auto;
-}
+    /* Testimonios */
+    .testimonio {
+      background-color: #f2e9e7;
+      border-left: 4px solid var(--primary);
+      padding: 2rem;
+      font-style: italic;
+      color: var(--text);
+      border-radius: 5px;
+    }
 
-section h2 {
-  font-size: 2rem;
-  color: var(--primary);
-  margin-bottom: 1rem;
-}
+    /* Llamadas a la acción */
+    .cta {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      background-color: var(--primary);
+      color: white;
+    }
+    .cta a {
+      background-color: white;
+      color: var(--accent);
+      padding: 0.8rem 1.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 5px;
+      margin-top: 1rem;
+      display: inline-block;
+      border: 2px solid var(--accent);
+      transition: all 0.3s ease;
+    }
+    .cta a:hover {
+      background-color: var(--accent);
+      color: white;
+    }
 
-section p, li {
-  font-size: 1.1rem;
-  color: var(--text);
-}
+    /* Precios */
+    .precio {
+      background-color: var(--soft);
+      padding: 2rem;
+      margin-top: 2rem;
+      border-radius: 6px;
+    }
+    .precio h3 { color: var(--primary); }
 
-ul {
-  padding-left: 1.2rem;
-}
-.box img {
-  width: 150px; /* o el tamaño que quieras */
-  height: auto; /* para mantener proporción */
-  object-fit: contain; /* opcional, para que no se deforme */
-}
-.module {
-  background-color: var(--soft);
-  padding: 2rem;
-  margin: 2rem 0;
-  border-left: 6px solid var(--accent);
-  border-radius: 6px;
-}
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      font-weight: bold;
+      background-color: var(--secondary);
+      color: var(--accent);
+    }
 
-.testimonio {
-  background-color: #f2e9e7;
-  border-left: 4px solid var(--primary);
-  padding: 2rem;
-  font-style: italic;
-  color: var(--text);
-  border-radius: 5px;
-}
+    /* Animaciones */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1.2s ease-out forwards;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-.cta {
-  text-align: center;
-  padding: 2.5rem 1rem;
-  background-color: var(--primary);
-  color: white;
-}
+    /* Botones de pago */
+    .btn-pago {
+      display: block;
+      margin-top: 10px;
+      background: var(--accent);
+      color: white;
+      padding: 0.9rem 1.5rem;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .btn-pago:hover { background: white; color: var(--accent); }
 
-.cta a {
-  background-color: white;
-  color: var(--accent);
-  padding: 0.8rem 1.5rem;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 5px;
-  margin-top: 1rem;
-  display: inline-block;
-  border: 2px solid var(--accent);
-  transition: all 0.3s ease;
-}
-
-.cta a:hover {
-  background-color: var(--accent);
-  color: white;
-}
-
-.precio {
-  background-color: var(--soft);
-  padding: 2rem;
-  margin-top: 2rem;
-  border-radius: 6px;
-}
-
-.precio h3 {
-  color: var(--primary);
-}
-
-.footer {
-  text-align: center;
-  padding: 2rem;
-  font-weight: bold;
-  background-color: var(--secondary);
-  color: var(--accent);
-}
-.fade-in {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeInUp 1.2s ease-out forwards;
-}
-.btn-pago {
-  display: block;
-  margin-top: 10px;
-  background: var(--accent);
-  color: white;
-  padding: 0.9rem 1.5rem;
-  border-radius: 6px;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-.btn-pago:hover { background: white; color: var(--accent); }
-
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 600px) {
-  header h1 {
-    font-size: 1.8rem;
-  }
-  section h2 {
-    font-size: 1.5rem;
-  }
-}
-
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.8rem; }
+      section h2 { font-size: 1.5rem; }
+    }
   </style>
 </head>
+
 <body>
 
   <header class="header">
-    <h1>“Círculo Creativo: Lavar el Oro que Te Hace Abundante”</h1>
-    <p>(Laborar es lavar el oro. Saca a la luz la riqueza que ya traés por herencia divina.)</p>
-  </header>
+  <h1>Círculo Creativo: Lavar el Oro que Te Hace Abundante</h1>
+  <p>(Laborar es revelar tu riqueza interna y tu herencia divina, no sacrificio. Es sacar a la luz el brillo que ya eres.)</p>
+</header>
 
-  <section>
-    <p><strong>¿Por qué “lavar el oro”?</strong><br>
-    Porque laborar no es trabajar duro ni sacrificarte. Es remover las capas que tapan tu brillo. Es revelar la abundancia, la certeza y el poder que ya eres.<br><br>
-    En el Círculo Creativo, venis a recordar que <strong>Un Curso de Milagros</strong> también es un curso de abundancia, y a manifestarlo en tu vida real.</p>
+<section>
+  <p><strong>¿Por qué “lavar el oro”?</strong><br>
+  Porque laborar no es trabajar duro, sino remover las capas que ocultan tu luz. Es despertar la abundancia, la certeza y el poder que ya están en ti. 
+  En el Círculo Creativo, recordamos que <a href="https://es.wikipedia.org/wiki/Un_curso_de_milagros" target="_blank" rel="noopener">Un Curso de Milagros</a> también es un curso de abundancia, y lo aplicamos para que lo vivas en tu día a día.</p>
  
-    <h2>Lo que vas a lograr</h2>
-    <p>El Círculo Creativo no es otro curso de espiritualidad lleno de teoría que se queda en palabras lindas. Es labor espiritual aplicada para que:</p>
+  <h2>Lo que vas a lograr</h2>
+  <p>Este programa no es otro curso teórico. Es labor espiritual práctica para que:</p>
+  <ul>
+    <li>✦ Redescubras tu poder creador.</li>
+    <li>✦ Derrumbes bloqueos que frenan tu prosperidad.</li>
+    <li>✦ Eleves tu vibración y mejores tu relación con el dinero.</li>
+    <li>✦ Vivas con certeza y paz interior para recibir todo lo bueno.</li>
+  </ul>
+  <p>Porque sí, <strong>Un Curso de Milagros</strong> es también un camino hacia la abundancia verdadera. Y ahora es tu momento de demostrarlo con resultados.</p>
+
+  <h2>Lo que incluye el programa</h2>
+  <p>El Círculo Creativo de <a href="https://autoconocimientoygratitud.com" class="enlace-azul">Almas Terapéuticas</a> está diseñado en tres niveles para transformar tu relación con la riqueza, el dinero y tu esencia creadora.</p>
+
+  <div class="module">
+    <h3>✨ MÓDULO 1 — Arquitectura Divina</h3>
     <ul>
-      <li>✦ Redescubras tu poder creador.</li>
-      <li>✦ Derrumbes bloqueos que frenan tu abundancia.</li>
-      <li>✦ Eleves tu vibración y tu realidad financiera.</li>
-      <li>✦ Tengas certeza y paz interna para recibir TODO lo bueno.</li>
+      <li>El Arte Sagrado de Poner Todo en su Lugar</li>
+      <li>Verbo Creador: El Poder de lo que Nombras</li>
+      <li>Alquimia de Resultados: Crea Desde tu Centro</li>
+      <li>Tu Identidad Original: La Versión sin Límites</li>
+      <li>Desenmascarando la Matrix: Libera tu Energía</li>
     </ul>
-    <p>Porque sí, Un Curso de Milagros también es un curso de abundancia.<br>Y llegó el momento de demostrarlo con resultados en tu vida.</p>
-  
-    <h2>Lo que incluye el programa</h2>
-    <p>En el Círculo Creativo, trabajamos en tres niveles para que la abundancia deje de ser teoría y se convierta en experiencia real.</p>
-
-    <div class="module">
-      <h3>✨ MÓDULO 1 — Arquitectura Divina</h3>
-      <ul>
-        <li>El Arte Sagrado de Poner Todo en su Lugar</li>
-        <li>Verbo Creador: El Poder de lo que Nombras</li>
-        <li>Alquimia de Resultados: Crea Desde tu Centro</li>
-        <li>Tu Identidad Original: La Versión sin Límites</li>
-        <li>Desenmascarando la Matrix: Libera tu Energía</li>
-      </ul>
-    </div>
-
-    <div class="module">
-      <h3>✨ MÓDULO 2 — Código Dorado</h3>
-      <ul>
-        <li>Yo Soy Fuente Inagotable</li>
-        <li>Reescribí el Guion de Tu Riqueza Interna</li>
-        <li>Libera las Llaves que Cuidan tu Tesoro</li>
-      </ul>
-    </div>
-
-    <div class="module">
-      <h3>✨ MÓDULO 3 — Templo Interior</h3>
-      <ul>
-        <li>La Voz Silenciosa que Todo lo Guía</li>
-        <li>La Herencia Celestial que Te Pertenece</li>
-        <li>Rendición Consciente: El Arte de Dejarte Sostener</li>
-        <li>Ancla el Cielo en tu Cuerpo</li>
-        <li>Dinero Sagrado: Canal de Amor y Servicio</li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="fade-in testimonio">
-    <p>“Pensé que la abundancia era algo que tenía que conseguir. Hoy sé que es lo que soy. El Círculo Creativo me ayudó a verlo y, sobre todo, a vivirlo. Mi mente, mi energía y mi billetera lo agradecen.”<br>— Clara G., participante de la primera edición.</p>
-  </section>
-
-  <section class="fade-in cta">
-    <h2>“Quiero Lavar el Oro que Me Hace Abundante”</h2>
-    <a href="https://wa.me/34627781846" target="_blank" rel="noopener">Escribime por WhatsApp</a>
-
-    
-<div class="box" data-id="prod_SdYMZAZ3cezdrE" data-curso-id="1">
-  <img src="/images/por_circulo_creativo.png" alt="">
-  <div class="product-txt">
-    <h3>Círculo Creativo</h3>
-    <p>Despierta tu creatividad y paz interior con las enseñanzas de UCDM. Elige el plan que mejor se adapte a ti.</p>
-
-    <!-- Selector de plan 
-    <label for="plan">Selecciona un plan:</label>
-    <select class="plan-selector" id="plan">
-      <option value="price_1RiHIZHaR43tMVsOmKvH8fYl" data-precio="20">🟡Plan Beca – 20€</option>
-      <option value="price_1RiHGFHaR43tMVsOnzCquvu7" data-precio="30">🟠Plan Estándar – 30€</option>
-    </select>
-
-    Aquí se actualizará el precio 
-    <p class="Precio">20€</p>-->
-
-    <!-- Botón de compra (actualizable dinámicamente) -->
-    <a href="https://autoconocimientoygratitud.com/#cursos"
-       class="agregar-carrito btn-3"
-       data-id="prod_SdYMZAZ3cezdrE"
-       data-curso-id="5"
-       data-price-id="price_1RiHIZHaR43tMVsOmKvH8fYl">
-      Comprar Círculo Creativo
-    </a>
   </div>
-</div>
 
-  </section>
+  <div class="module">
+    <h3>✨ MÓDULO 2 — Código Dorado</h3>
+    <ul>
+      <li>Yo Soy Fuente Inagotable</li>
+      <li>Reescribe el Guion de Tu Riqueza Interna</li>
+      <li>Libera las Llaves que Cuidan tu Tesoro</li>
+    </ul>
+  </div>
 
-  <section class="fade-in precio">
-    <h2>💸 Inversión Mensual</h2>
-    <p>El Círculo Creativo es una membresía mensual para lavar el oro que ya eres.<br>
-    Cada mes accedés a:</p>
+  <div class="module">
+    <h3>✨ MÓDULO 3 — Templo Interior</h3>
     <ul>
-      <li>✦ 2 encuentros en vivo por Zoom</li>
-      <li>✦ Grabaciones disponibles</li>
-      <li>✦ Cuadernillos de trabajo en PDF</li>
-      <li>✦ Y un espacio energético seguro para reprogramar tu realidad</li>
+      <li>La Voz Silenciosa que Todo lo Guía</li>
+      <li>La Herencia Celestial que Te Pertenece</li>
+      <li>Rendición Consciente: El Arte de Dejarte Sostener</li>
+      <li>Ancla el Cielo en tu Cuerpo</li>
+      <li>Dinero Sagrado: Canal de Amor y Servicio</li>
     </ul>
-    <h3>Inversión mensual:</h3>
-    <ul>
-      <li>🔹 Plan Estándar: <strong>30 USD/mes</strong></li>
-      <li>🔹 Plan Beca: <strong>20 USD/mes</strong></li>
-    </ul>
-    <p><em>(Destinado a personas que atraviesan realidades económicas desafiantes. Confiamos en tu integridad para elegir desde la abundancia y la honestidad.)</em></p>
-    <p><strong>Porque la abundancia verdadera no es exclusión, es elección.</strong><br>
-    Y tu eliges cómo quieres ingresar: desde la responsabilidad o desde la necesidad.</p>
-  </section>
+  </div>
+</section>
+
+<section class="fade-in testimonio">
+  <p>“Pensé que la abundancia era algo que tenía que conseguir. Hoy sé que es lo que soy. El Círculo Creativo me ayudó a verlo y, sobre todo, a vivirlo. Mi mente, mi energía y mi billetera lo agradecen.”<br>— Clara G., participante de la primera edición.</p>
+</section>
+
+<section class="fade-in cta">
+  <h2>Quiero Lavar el Oro que Me Hace Abundante</h2>
+  <a href="https://wa.me/34627781846" target="_blank" rel="noopener">Escríbeme por WhatsApp</a>
+
+  <div class="box" data-id="prod_SdYMZAZ3cezdrE" data-curso-id="1">
+    <img src="/images/por_circulo_creativo.png" alt="Círculo Creativo – Abundancia y Sanación Espiritual">
+    <div class="product-txt">
+      <h3>Círculo Creativo</h3>
+      <p>Despierta tu creatividad, paz interior y abundancia con las enseñanzas de <a href="https://es.wikipedia.org/wiki/Un_curso_de_milagros" target="_blank" rel="noopener">Un Curso de Milagros</a>. Elige el plan que mejor se adapte a ti.</p>
+      <a href="https://autoconocimientoygratitud.com/#cursos"
+         class="agregar-carrito btn-3"
+         data-id="prod_SdYMZAZ3cezdrE"
+         data-curso-id="5"
+         data-price-id="price_1RiHIZHaR43tMVsOmKvH8fYl">
+        Comprar Círculo Creativo
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="fade-in precio">
+  <h2>💸 Inversión Mensual</h2>
+  <p>Esta membresía mensual te acompaña a lavar el oro que ya eres. Cada mes incluye:</p>
+  <ul>
+    <li>✦ 2 encuentros en vivo por Zoom</li>
+    <li>✦ Grabaciones disponibles</li>
+    <li>✦ Cuadernillos de trabajo en PDF</li>
+    <li>✦ Espacio seguro para reprogramar tu realidad</li>
+  </ul>
+  <h3>Planes disponibles:</h3>
+  <ul>
+    <li>🔹 Plan Estándar: <strong>30 USD/mes</strong></li>
+    <li>🔹 Plan Beca: <strong>20 USD/mes</strong></li>
+  </ul>
+  <p><em>(Destinado a quienes atraviesan situaciones económicas desafiantes. Confiamos en tu integridad para elegir desde la abundancia y la honestidad.)</em></p>
+  <p><strong>La abundancia verdadera no excluye, elige.</strong> Tú decides cómo entrar: desde la responsabilidad o desde la necesidad.</p>
+</section>
+
 
   <div class="footer">
     “La abundancia no se mendiga. Se recuerda. Y está esperando que la reclames.”
