@@ -778,6 +778,7 @@ Esta clase es una oportunidad para recordar que <strong>el conflicto no es oblig
         }
     }
 
+
     // Marcar video como completado en el servidor
     function marcarComoCompletado(videoId, cursoId) {
         const token = localStorage.getItem('token');
@@ -852,11 +853,11 @@ Esta clase es una oportunidad para recordar que <strong>el conflicto no es oblig
             const cursoId = container.dataset.cursoId;
 
             const playerDiv = document.createElement('div');
-            const divId = `youtube-player-${index}`;
+            const divId = `youtube-player-${videoId}`;
             playerDiv.id = divId;
             container.appendChild(playerDiv);
 
-            players[index] = new YT.Player(divId, {
+            players[videoId] = new YT.Player(divId, {
   height: "315",
   width: "560",
   videoId: videoId,
