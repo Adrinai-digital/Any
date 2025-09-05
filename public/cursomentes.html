@@ -754,7 +754,7 @@ Esta clase es una oportunidad para recordar que <strong>el conflicto no es oblig
     </section>
     <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-    let players = {}; // 👈 cambiado de [] a {}
+    let players = [];
     let usuarioId = null;
 
     // Obtener el ID del usuario desde el token
@@ -777,6 +777,7 @@ Esta clase es una oportunidad para recordar que <strong>el conflicto no es oblig
             return null;
         }
     }
+
 
     // Marcar video como completado en el servidor
     function marcarComoCompletado(videoId, cursoId) {
@@ -847,35 +848,36 @@ Esta clase es una oportunidad para recordar que <strong>el conflicto no es oblig
     function onYouTubeIframeAPIReady() {
         const videoContainers = document.querySelectorAll('.lesson-video');
 
-        videoContainers.forEach((container) => {
+        videoContainers.forEach((container, index) => {
             const videoId = container.dataset.videoId;
             const cursoId = container.dataset.cursoId;
 
             const playerDiv = document.createElement('div');
-            const divId = `youtube-player-${videoId}`; // 👈 id único por videoId
+            const divId = `youtube-player-${index}`;
             playerDiv.id = divId;
             container.appendChild(playerDiv);
 
-            players[videoId] = new YT.Player(divId, {
-                height: "315",
-                width: "560",
-                videoId: videoId,
-                playerVars: {
-                    rel: 0,
-                    modestbranding: 1,
-                    showinfo: 0,
-                    fs: 1,
-                    enablejsapi: 1,
-                    origin: window.location.origin
-                },
-                events: {
-                    'onStateChange': function (event) {
-                        if (event.data === YT.PlayerState.ENDED && usuarioId) {
-                            marcarComoCompletado(videoId, cursoId);
-                        }
-                    }
-                }
-            });
+            players[index] = new YT.Player(divId, {
+  height: "315",
+  width: "560",
+  videoId: videoId,
+  playerVars: {
+    rel: 0,
+    modestbranding: 1,
+    showinfo: 0,
+    fs: 1,
+    enablejsapi: 1,
+    origin: window.location.origin
+  },
+  events: {
+    'onStateChange': function (event) {
+      if (event.data === YT.PlayerState.ENDED && usuarioId) {
+        marcarComoCompletado(videoId, cursoId);
+      }
+    }
+  }
+});
+
         });
     }
 
@@ -915,7 +917,6 @@ Esta clase es una oportunidad para recordar que <strong>el conflicto no es oblig
         }
     });
 </script>
-
 
     <script src="/js/cursos.js"></script>
     
