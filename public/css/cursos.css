@@ -110,6 +110,12 @@ body {
 .almas-header {
     background-image: url("/images/poralmas2.jpg");
 }
+.course-header-libertad {
+    background-image: url("/images/ENFOQUE.jpg");
+}
+.course-header-tiempos {
+    background-image: url("/images/pormanualtiempostormenta.png");
+}
 .circulo-header::before {
     content: "";
     position: absolute;
