@@ -806,22 +806,6 @@ y aplicar los conceptos más importantes desde el inicio.</p>
 
     // Marcar video como completado en el servidor
     function marcarComoCompletado(videoId, cursoId) {
-        const token = localStorage.getItem('token');
-        console.log("marcarComoCompletado llamado para:", videoId, "cursoId:", cursoId);
-        if (!token) {
-            console.error('⚠️ No hay token. Usuario no autenticado.');
-            return;
-        }
-
-        function marcarComoCompletado(videoId, cursoId) {
-    const token = localStorage.getItem('token');
-    console.log("marcarComoCompletado llamado para:", videoId, "cursoId:", cursoId);
-    if (!token) {
-        console.error('⚠️ No hay token. Usuario no autenticado.');
-        return;
-    }
-
-    function marcarComoCompletado(videoId, cursoId) {
     const token = localStorage.getItem('token');
     console.log("marcarComoCompletado llamado para:", videoId, "cursoId:", cursoId);
     console.log("Token actual:", token);
@@ -860,10 +844,9 @@ y aplicar los conceptos más importantes desde el inicio.</p>
     .catch(err => {
         console.error('❌ Error de red:', err);
     });
+        
 }
 
-} 
-    }
     // Cargar progreso del usuario desde el backend
     async function cargarProgresoUsuario(cursoId) {
         const token = localStorage.getItem('token');
