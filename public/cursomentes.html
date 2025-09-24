@@ -717,7 +717,9 @@ y aplicar los conceptos más importantes desde el inicio.</p>
                 <a href="/archivos/CIRCULO_DE_PERDON.pdf" class="module-link">Descargar material del curso</a>
               
                 <!-- Estado de la lección -->
-                <p id="module4-lesson1-status">Estado: <span class="not-completed" id="status-RgXBjwrSIE4" data-curso-id="1">No completado</span></p>
+                <p id="module4-lesson1-status">
+    Estado: <span class="not-completed" id="status-RgXBjwrSIE4" data-curso-id="1">No completado</span>
+</p>
               </div>
               
         
@@ -938,7 +940,7 @@ y aplicar los conceptos más importantes desde el inicio.</p>
         const firstVideo = document.querySelector('.lesson-video');
         const cursoId = firstVideo ? firstVideo.dataset.cursoId : null;
         console.log("Primer cursoId detectado:", cursoId);
-        
+
         if (cursoId) {
             await cargarProgresoUsuario(cursoId);
         }
