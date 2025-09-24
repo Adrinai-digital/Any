@@ -821,6 +821,16 @@ y aplicar los conceptos más importantes desde el inicio.</p>
         return;
     }
 
+    function marcarComoCompletado(videoId, cursoId) {
+    const token = localStorage.getItem('token');
+    console.log("marcarComoCompletado llamado para:", videoId, "cursoId:", cursoId);
+    console.log("Token actual:", token);
+
+    if (!token) {
+        console.error('⚠️ No hay token. Usuario no autenticado.');
+        return;
+    }
+
     fetch('/marcar-completado', {
         method: 'POST',
         headers: {
@@ -830,23 +840,28 @@ y aplicar los conceptos más importantes desde el inicio.</p>
         body: JSON.stringify({ video_id: videoId, cursoId: cursoId })
     })
     .then(async response => {
+        console.log("✅ Respuesta recibida del servidor:", response);
+        const text = await response.text(); // leer cuerpo de la respuesta
+        console.log("Contenido de la respuesta:", text);
+
         if (response.ok) {
-            console.log(`✅ Video ${videoId} marcado como completado`);
+            console.log(`🎉 Video ${videoId} marcado como completado`);
             const estado = document.getElementById(`status-${videoId}`);
-            console.log("Elemento estado encontrado:", estado, "videoId:", videoId);
+            console.log("Elemento estado encontrado:", estado);
             if (estado) {
                 estado.textContent = 'Completado';
                 estado.classList.remove("not-completed");
                 estado.classList.add("completed");
             }
         } else {
-            const text = await response.text();
             console.error('❌ Error al marcar video como completado', response.status, text);
         }
     })
     .catch(err => {
         console.error('❌ Error de red:', err);
     });
+}
+
 } 
     }
     // Cargar progreso del usuario desde el backend
