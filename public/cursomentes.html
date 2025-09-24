@@ -807,6 +807,7 @@ y aplicar los conceptos más importantes desde el inicio.</p>
     // Marcar video como completado en el servidor
     function marcarComoCompletado(videoId, cursoId) {
         const token = localStorage.getItem('token');
+        console.log("marcarComoCompletado llamado para:", videoId, "cursoId:", cursoId);
         if (!token) {
             console.error('⚠️ No hay token. Usuario no autenticado.');
             return;
@@ -824,6 +825,7 @@ y aplicar los conceptos más importantes desde el inicio.</p>
             if (response.ok) {
                 console.log(`✅ Video ${videoId} marcado como completado`);
                 const estado = document.getElementById(`status-${videoId}`);
+                console.log("Elemento estado encontrado:", estado);
                 if (estado) {
                     estado.textContent = 'Completado';
                     estado.classList.remove("not-completed");
