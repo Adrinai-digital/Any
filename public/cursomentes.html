@@ -825,7 +825,7 @@ y aplicar los conceptos más importantes desde el inicio.</p>
             if (response.ok) {
                 console.log(`✅ Video ${videoId} marcado como completado`);
                 const estado = document.getElementById(`status-${videoId}`);
-                console.log("Elemento estado encontrado:", estado);
+                console.log("Elemento estado encontrado:", estado, "videoId:", videoId);
                 if (estado) {
                     estado.textContent = 'Completado';
                     estado.classList.remove("not-completed");
