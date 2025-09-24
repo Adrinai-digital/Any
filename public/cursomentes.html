@@ -853,7 +853,9 @@ y aplicar los conceptos más importantes desde el inicio.</p>
             const completados = data.completados || [];
 
             completados.forEach(videoId => {
+                
                 const estado = document.getElementById(`status-${videoId}`);
+                console.log("Cargando progreso:", videoId, "estado encontrado:", estado);
                 if (estado) {
                     estado.textContent = 'Completado';
                     estado.classList.remove("not-completed");
@@ -876,6 +878,8 @@ y aplicar los conceptos más importantes desde el inicio.</p>
             const videoId = container.dataset.videoId;
             const cursoId = container.dataset.cursoId;
 
+            console.log("Creando player:", index, "videoId:", videoId, "cursoId:", cursoId, "container:", container);
+
             const playerDiv = document.createElement('div');
             const divId = `youtube-player-${index}`;
             playerDiv.id = divId;
@@ -895,6 +899,7 @@ y aplicar los conceptos más importantes desde el inicio.</p>
   },
   events: {
     'onStateChange': function (event) {
+        console.log("Evento YouTube:", "videoId:", videoId, "estado evento:", event.data);
       if (event.data === YT.PlayerState.ENDED && usuarioId) {
         marcarComoCompletado(videoId, cursoId);
       }
@@ -922,6 +927,7 @@ y aplicar los conceptos más importantes desde el inicio.</p>
     // Al cargar la página
     document.addEventListener("DOMContentLoaded", async () => {
         usuarioId = await obtenerUsuarioId();
+        console.log("Usuario ID:", usuarioId);
         if (!usuarioId) {
             console.error('❌ No se pudo obtener el ID del usuario.');
             return;
@@ -931,7 +937,8 @@ y aplicar los conceptos más importantes desde el inicio.</p>
 
         const firstVideo = document.querySelector('.lesson-video');
         const cursoId = firstVideo ? firstVideo.dataset.cursoId : null;
-
+        console.log("Primer cursoId detectado:", cursoId);
+        
         if (cursoId) {
             await cargarProgresoUsuario(cursoId);
         }
