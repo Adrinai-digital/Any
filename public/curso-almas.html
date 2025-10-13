@@ -121,6 +121,15 @@
     
     <script src="https://www.youtube.com/iframe_api"></script>
 <script>
+    if (window.trustedTypes) {
+  if (!window.trustedTypes.getPolicy || !window.trustedTypes.getPolicy('default')) {
+    window.trustedTypes.createPolicy('default', {
+      createHTML: input => input,
+      createScript: input => input,
+      createScriptURL: input => input
+    });
+  }
+}
     let players = [];
     let usuarioId = null;
 
