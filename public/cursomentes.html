@@ -794,16 +794,15 @@ y aplicar los conceptos más importantes desde el inicio.</p>
     </div>
 
     </section>
-    <script src="https://www.youtube.com/iframe_api"></script>
+    
 <script>
     if (window.trustedTypes) {
-  if (!window.trustedTypes.getPolicy || !window.trustedTypes.getPolicy('default')) {
-    window.trustedTypes.createPolicy('default', {
-      createHTML: input => input,
-      createScript: input => input,
-      createScriptURL: input => input
-    });
-  }
+  // 🔐 Crear política default ANTES de cargar YouTube o tu propio código
+  window.trustedTypes.createPolicy('default', {
+    createHTML: (input) => input,
+    createScript: (input) => input,
+    createScriptURL: (input) => input
+  });
 }
     let players = [];
     let usuarioId = null;
@@ -985,7 +984,7 @@ y aplicar los conceptos más importantes desde el inicio.</p>
         }
     });
 </script>
-
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="/js/cursos.js"></script>
     
 </body>
