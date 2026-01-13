@@ -1,7 +1,7 @@
 <section id="coaching">
   <h2>Agenda tu sesión de coaching</h2>
 
-  <form id="formCita">
+  <form id="formAgenda">
   <label for="nombre">Nombre</label>
   <input id="nombre" name="nombre" placeholder="Tu nombre" required>
 
@@ -20,15 +20,20 @@
 </section>
 
 <script>
-document.getElementById("formAgenda").addEventListener("submit", async e => {
-  e.preventDefault();
-  const data = Object.fromEntries(new FormData(e.target));
-  const res = await fetch("/api/citas/agenda", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
-  const result = await res.json();
-  alert(result.mensaje || result.error);
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("formAgenda");
+  if(form){
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+      const res = await fetch("/api/citas/agenda", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      alert(result.mensaje || result.error);
+    });
+  }
 });
 </script>
