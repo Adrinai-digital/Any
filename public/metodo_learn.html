@@ -22,21 +22,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formAgenda");
   const mensajeDiv = document.getElementById("mensaje");
 
-  if (!form) return; // si no existe el formulario, no hacer nada
+  if (!form) return;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const data = Object.fromEntries(new FormData(form));
+    const token = localStorage.getItem("token"); // obtener JWT
+
+    if (!token) {
+      mensajeDiv.textContent = "Debes iniciar sesión para agendar la cita.";
+      mensajeDiv.style.color = "red";
+      return;
+    }
 
     try {
       const res = await fetch("/api/citas/agenda", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(data),
       });
 
-      // Si la respuesta no es JSON, mostrar mensaje de error
       const contentType = res.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         throw new Error("El servidor no respondió JSON");
