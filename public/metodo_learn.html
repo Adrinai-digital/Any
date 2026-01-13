@@ -69,41 +69,23 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function cargarCitas() {
-  const res = await fetch("/api/citas/mis-citas", {
-    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
-  });
-  const citas = await res.json();
+  const token = localStorage.getItem("token");
+  if (!token) return;
 
+  const res = await fetch("/api/citas/mis-citas", {
+    headers: { "Authorization": "Bearer " + token }
+  });
+
+  const citas = await res.json();
   const div = document.getElementById("misCitas");
-  div.innerHTML = citas.map(c => `
-    <div>
-      Curso: ${c.curso_id} | Fecha: ${c.fecha || "Pendiente"} | Hora: ${c.hora || "Pendiente"}
-    </div>
-  `).join("");
+
+  div.innerHTML = citas.length ? 
+    citas.map(c => `
+      <div>
+        Curso: ${c.curso_id} | Fecha: ${c.fecha || "Pendiente"} | Hora: ${c.hora || "Pendiente"}
+      </div>
+    `).join("") : "<p>No tienes citas agendadas</p>";
 }
 
-cargarCitas();
-
-db.query(
-  `UPDATE citas SET fecha=?, hora=? WHERE user_id=? AND curso_id=? AND fecha IS NULL LIMIT 1`,
-  [fecha, hora, userId, curso_id],
-  (err, result) => {
-    if (err) return res.status(500).json({ error: "Error al agendar la cita" });
-
-    if (result.affectedRows === 0) return res.status(400).json({ error: "No hay sesiones pagadas pendientes" });
-
-    // ✅ Obtener la cita actualizada para enviar email
-    db.query(
-      `SELECT * FROM citas WHERE user_id=? AND curso_id=? AND fecha=? AND hora=? LIMIT 1`,
-      [userId, curso_id, fecha, hora],
-      (err2, rows) => {
-        if (!err2 && rows.length) enviarAviso(rows[0]);
-      }
-    );
-
-    res.json({ mensaje: "Cita agendada correctamente" });
-  }
-);
 
 </script>
-<script src="/js/cursos.js"></script>
