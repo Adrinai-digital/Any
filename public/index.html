@@ -331,96 +331,97 @@ document.addEventListener("DOMContentLoaded", function () {
         const fechaInput = box.querySelector(".fecha");
         const horaInput = box.querySelector(".hora");
 
-        // Botón añadir al carrito / pagar
-        if (boton) {
-            boton.addEventListener("click", async function(e){
-                e.preventDefault();
+        if (!boton) return;
 
-                const cursoId = boton.dataset.cursoId;
-                const priceId = boton.dataset.priceId;
-                const precio = parseFloat(precioEl.textContent);
+        boton.addEventListener("click", async function(e){
+            e.preventDefault(); // 🔹 importante: evitar comportamiento por defecto del carrito
 
-                // Solo validar fecha y hora si los inputs existen
-                let fecha = null;
-                let hora = null;
-                if (fechaInput && horaInput) {
-                    fecha = fechaInput.value;
-                    hora = horaInput.value;
+            const cursoId = boton.dataset.cursoId;
+            const priceId = boton.dataset.priceId;
+            const precio = parseFloat(precioEl.textContent.replace("€","").trim());
 
-                    if (!fecha || !hora) {
-                        alert("Por favor selecciona fecha y hora.");
+            let fecha = null;
+            let hora = null;
+
+            // Si es Método Learn (inputs de fecha y hora presentes)
+            if (fechaInput && horaInput) {
+                fecha = fechaInput.value;
+                hora = horaInput.value;
+
+                if (!fecha || !hora) {
+                    alert("Por favor selecciona fecha y hora.");
+                    return;
+                }
+            }
+
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    alert("Debes iniciar sesión para continuar.");
+                    return;
+                }
+
+                let stripeSessionUrl = null;
+
+                // 🔹 Si hay fecha y hora: Método Learn
+                if (fecha && hora) {
+                    const resCita = await fetch("/api/citas/crear-pago", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            curso_id: cursoId,
+                            priceId: priceId, // ✅ ID del producto en Stripe
+                            fecha,
+                            hora
+                        })
+                    });
+
+                    const dataCita = await resCita.json();
+
+                    if (dataCita.error) {
+                        alert("Error: " + dataCita.error);
                         return;
                     }
+
+                    stripeSessionUrl = dataCita.url;
+                } else {
+                    // 🔹 Otros cursos: carrito normal
+                    const resPago = await fetch("/api/pago/crear-session", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            price_id: priceId,
+                            curso_id: cursoId
+                        })
+                    });
+
+                    const dataPago = await resPago.json();
+                    if (dataPago.error) {
+                        alert("Error: " + dataPago.error);
+                        return;
+                    }
+
+                    stripeSessionUrl = dataPago.url;
                 }
 
-                try {
-                    const token = localStorage.getItem("token");
-
-                    // Crear la cita pendiente si hay fecha/hora
-                    let citaResponse = null;
-                    if (fecha && hora) {
-                        const resCita = await fetch("/api/citas/crear-pago", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                curso_id: cursoId,
-                                precio: precio * 100, // convertir a céntimos si tu backend lo espera
-                                fecha,
-                                hora
-                            })
-                        });
-
-                        citaResponse = await resCita.json();
-
-                        if (citaResponse.error) {
-                            alert("Error: " + citaResponse.error);
-                            return;
-                        }
-                    }
-
-                    // Redirigir al checkout de Stripe usando price_id real
-                    let stripeSessionUrl = null;
-
-                    if (citaResponse && citaResponse.url) {
-                        stripeSessionUrl = citaResponse.url;
-                    } else {
-                        // Si no hay fecha/hora, solo pagar el curso normal
-                        const resPago = await fetch("/api/pago/crear-session", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                price_id: priceId,
-                                curso_id: cursoId
-                            })
-                        });
-
-                        const dataPago = await resPago.json();
-                        if (dataPago.error) {
-                            alert("Error: " + dataPago.error);
-                            return;
-                        }
-
-                        stripeSessionUrl = dataPago.url;
-                    }
-
-                    if (stripeSessionUrl) {
-                        window.location.href = stripeSessionUrl;
-                    }
-
-                } catch (err) {
-                    console.error("Error al procesar el pago:", err);
-                    alert("Hubo un error al procesar el pago. Intenta nuevamente.");
+                // Redirigir al checkout de Stripe
+                if (stripeSessionUrl) {
+                    window.location.href = stripeSessionUrl;
                 }
-            });
-        }
 
-        // Selector de plan (opcional)
+            } catch (err) {
+                console.error("Error al procesar el pago:", err);
+                alert("Hubo un error al procesar el pago. Intenta nuevamente.");
+            }
+        });
+
+        // 🔹 Opcional: selector de plan
         const selector = box.querySelector(".plan-selector");
         if (selector && precioEl && boton) {
             selector.addEventListener("change", function () {
@@ -432,12 +433,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 boton.setAttribute("data-price-id", nuevoPriceId);
             });
 
-            // Sincronizar al cargar
-            selector.dispatchEvent(new Event("change"));
+            selector.dispatchEvent(new Event("change")); // sincronizar al cargar
         }
     });
 });
 </script>
+
 
     
 

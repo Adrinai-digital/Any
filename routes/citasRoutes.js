@@ -5,6 +5,7 @@ const db = require("../db"); // tu conexión MySQL
 const authMiddleware = require("../middlewares/authMiddleware");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 /* -------------------- CONFIGURACIÓN EMAIL -------------------- */
 const transporter = nodemailer.createTransport({
@@ -52,12 +53,61 @@ async function agregarAGoogleCalendar(cita) {
   });
 }
 
-/* -------------------- AGENDA CITA -------------------- */
+/* -------------------- CREAR PAGO + CITA MÉTODO LEARN -------------------- */
+router.post("/crear-pago", authMiddleware, async (req, res) => {
+  const { curso_id, priceId, fecha, hora } = req.body;
+  const userId = req.user.id;
+
+  if (!curso_id || !priceId || !fecha || !hora) {
+    return res.status(400).json({ error: "Faltan datos obligatorios (curso, priceId, fecha u hora)" });
+  }
+
+  try {
+    // 1️⃣ Crear cita pendiente en la base de datos
+    const citaInsert = await new Promise((resolve, reject) => {
+      db.query(
+        `INSERT INTO citas (user_id, curso_id, estado, fecha, hora) VALUES (?, ?, 'pagado', ?, ?)`,
+        [userId, curso_id, fecha, hora],
+        (err, result) => {
+          if (err) reject(err);
+          else resolve(result);
+        }
+      );
+    });
+
+    // 2️⃣ Crear sesión de Stripe con el priceId del producto
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price: priceId, // ✅ usar el producto que creaste en Stripe
+          quantity: 1
+        }
+      ],
+      mode: "payment",
+      customer_email: req.user.email,
+      metadata: {
+        user_id: userId,
+        curso_id
+      },
+      success_url: `${process.env.BASE_URL}/perfil`,
+      cancel_url: `${process.env.BASE_URL}/cancel`
+    });
+
+    // 3️⃣ Retornar URL del checkout a frontend
+    res.json({ url: session.url });
+
+  } catch (error) {
+    console.error("Error al crear pago Método Learn:", error);
+    res.status(500).json({ error: "Error al crear pago en Stripe" });
+  }
+});
+
+/* -------------------- AGENDA CITA EXISTENTE -------------------- */
 router.post("/agenda", authMiddleware, (req, res) => {
   const { fecha, hora, curso_id } = req.body;
   const userId = req.user.id;
 
-  // Actualizar cita pendiente pagada
   db.query(
     `UPDATE citas SET fecha=?, hora=? 
      WHERE user_id=? AND curso_id=? AND fecha IS NULL AND estado='pagado'`,
