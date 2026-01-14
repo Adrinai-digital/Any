@@ -4,18 +4,23 @@ const SECRET = process.env.JWT_SECRET;
 function authMiddleware(req, res, next) {
   let token = null;
 
-  // 1️⃣ Authorization header (como ahora)
+  // 1️⃣ API (fetch / axios)
   if (req.headers.authorization) {
     token = req.headers.authorization.split(" ")[1];
   }
 
-  // 2️⃣ Cookie (login actual)
-  if (!token && req.cookies && req.cookies.token) {
+  // 2️⃣ Navegación normal (cookies)
+  if (!token && req.cookies?.token) {
     token = req.cookies.token;
   }
 
   if (!token) {
-    return res.status(401).json({ error: "No autenticado" });
+    // 🔥 diferencia API vs VISTA
+    if (req.originalUrl.startsWith("/api")) {
+      return res.status(401).json({ error: "No autenticado" });
+    } else {
+      return res.redirect("/login");
+    }
   }
 
   try {
@@ -23,7 +28,11 @@ function authMiddleware(req, res, next) {
     req.user = user;
     next();
   } catch (err) {
-    return res.status(403).json({ error: "Token inválido" });
+    if (req.originalUrl.startsWith("/api")) {
+      return res.status(403).json({ error: "Token inválido" });
+    } else {
+      return res.redirect("/login");
+    }
   }
 }
 
