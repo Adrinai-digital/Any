@@ -1,0 +1,35 @@
+<!-- views/metodo_learn.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Método Learn - Mis Citas</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Método Learn</h1>
+    <p>Hola, <strong><%= usuario.nombre %></strong>. Estas son tus citas agendadas para este curso:</p>
+
+    <div class="citas-list">
+      <% if (citas.length === 0) { %>
+        <p>No tienes citas agendadas para este curso.</p>
+      <% } else { %>
+        <% citas.forEach(cita => { %>
+          <div class="cita-item">
+            <p><strong>Fecha:</strong> <%= cita.fecha %></p>
+            <p><strong>Hora:</strong> <%= cita.hora %></p>
+            <p><strong>Estado:</strong> <%= cita.estado %></p>
+            <% if (cita.observaciones) { %>
+              <p><strong>Observaciones:</strong> <%= cita.observaciones %></p>
+            <% } %>
+          </div>
+        <% }); %>
+      <% } %>
+    </div>
+
+    <a href="/" class="btn">Volver a la tienda</a>
+  </div>
+</body>
+</html>
