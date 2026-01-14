@@ -110,15 +110,15 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/api/citas', citasRoutes);
 app.use('/curso', citasRoutes); // para la ruta /curso/metodo-learn
 
-app._router.stack.forEach((r) => {
-  if (r.route && r.route.path) {
-    console.log(r.route.path);
-  } else if (r.name === 'router') {
-    r.handle.stack.forEach((route) => {
-      if (route.route) console.log(route.route.path);
-    });
-  }
-});
+// app._router.stack.forEach((r) => {
+// if (r.route && r.route.path) {
+// console.log(r.route.path);
+// } else if (r.name === 'router') {
+// r.handle.stack.forEach((route) => {
+// if (route.route) console.log(route.route.path);
+// });
+// }
+// });
 
 
 //app.use(express.json());
