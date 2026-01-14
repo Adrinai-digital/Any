@@ -3,33 +3,51 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Método Learn - Mis Citas</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Método Learn</h1>
-    <p>Hola, <strong><%= usuario.nombre %></strong>. Estas son tus citas agendadas para este curso:</p>
 
-    <div class="citas-list">
-      <% if (citas.length === 0) { %>
-        <p>No tienes citas agendadas para este curso.</p>
-      <% } else { %>
-        <% citas.forEach(cita => { %>
-          <div class="cita-item">
-            <p><strong>Fecha:</strong> <%= cita.fecha %></p>
-            <p><strong>Hora:</strong> <%= cita.hora %></p>
-            <p><strong>Estado:</strong> <%= cita.estado %></p>
-            <% if (cita.observaciones) { %>
-              <p><strong>Observaciones:</strong> <%= cita.observaciones %></p>
+<div class="container">
+  <h1>Método Learn</h1>
+
+  <p>
+    Hola, <strong><%= usuario.nombre %></strong>.  
+    Estas son tus citas para este curso:
+  </p>
+
+  <div class="citas-list">
+    <% if (!citas || citas.length === 0) { %>
+      <p>No tienes citas agendadas aún.</p>
+    <% } else { %>
+      <% citas.forEach(cita => { %>
+        <div class="cita-item">
+          <p><strong>Fecha:</strong>
+            <%= new Date(cita.fecha).toLocaleDateString('es-ES') %>
+          </p>
+
+          <p><strong>Hora:</strong> <%= cita.hora %></p>
+
+          <p><strong>Estado:</strong>
+            <% if (cita.estado === 'pagado') { %>
+              🟢 Confirmada
+            <% } else if (cita.estado === 'pendiente') { %>
+              🟡 Pendiente
+            <% } else { %>
+              🔴 Cancelada
             <% } %>
-          </div>
-        <% }); %>
-      <% } %>
-    </div>
+          </p>
 
-    <a href="/" class="btn">Volver a la tienda</a>
+          <% if (cita.observaciones) { %>
+            <p><strong>Observaciones:</strong> <%= cita.observaciones %></p>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
   </div>
+
+  <a href="/perfil" class="btn">← Volver a mi perfil</a>
+</div>
+
 </body>
 </html>

@@ -162,18 +162,44 @@ router.get("/metodo-learn", authMiddleware, (req, res) => {
   const userId = req.user.id;
 
   db.query(
-    `SELECT citas.*, cursos.titulo
-     FROM citas
-     JOIN cursos ON citas.curso_id = cursos.id
-     WHERE citas.user_id = ? AND cursos.id = 10
+    `SELECT * FROM citas
+     WHERE user_id = ? AND curso_id = 10
      ORDER BY fecha ASC, hora ASC`,
     [userId],
     (err, citas) => {
-      if (err) return res.status(500).send("Error al cargar las citas");
+      if (err) return res.status(500).send("Error");
 
-      res.render("metodo_learn", { usuario: req.user, citas });
+      res.render("metodo_learn", {
+        usuario: req.user,
+        citas
+      });
     }
   );
 });
+
+
+router.post("/confirmar", authMiddleware, (req, res) => {
+  const { curso_id, fecha, hora } = req.body;
+  const userId = req.user.id;
+
+  if (!curso_id || !fecha || !hora) {
+    return res.status(400).json({ error: "Datos incompletos" });
+  }
+
+  db.query(
+    `INSERT INTO citas (user_id, curso_id, fecha, hora, estado)
+     VALUES (?, ?, ?, ?, 'pagado')`,
+    [userId, curso_id, fecha, hora],
+    (err) => {
+      if (err) {
+        console.error("❌ Error guardando cita:", err);
+        return res.status(500).json({ error: "Error guardando la cita" });
+      }
+
+      res.json({ ok: true });
+    }
+  );
+});
+
 
 module.exports = router;
