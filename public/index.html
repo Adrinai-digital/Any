@@ -173,29 +173,43 @@
                 </a>
             </div>
         </div>
-        <!-- CURSO GRATITUD -->
-        <div class="box" data-id="prod_Tmhv6a6N5wXn0e" data-price-id="price_1Sp8VYHaR43tMVsOPSqpE5ma" data-curso-id="10">
-            <img src="/images/metodo_learn.jpg" alt="PORTADA Curso Gratitud">
-            <div class="product-txt">
-                <h3>Metodo Learn</h3>
-                <p>Un proceso de 12 semanas de acompañamiento personalizado, donde atravesamos las 4 fases del método:</p>
+        <!-- Metodo Learn -->
+        <div class="box" 
+     data-id="prod_Tmhv6a6N5wXn0e" 
+     data-price-id="price_1Sp8VYHaR43tMVsOPSqpE5ma" 
+     data-curso-id="10">
+    
+    <img src="/images/metodo_learn.jpg" alt="PORTADA Curso Metodo Learn">
+    
+    <div class="product-txt">
+        <h3>Metodo Learn</h3>
+        <p>Un proceso de 12 semanas de acompañamiento personalizado, donde atravesamos las 4 fases del método:</p>
 
-<ul>
-  <li><strong>L – Leer:</strong> Observar con honestidad cómo estás funcionando hoy.</li>
-  <li><strong>E – Limpiar:</strong> Soltar patrones mentales y emocionales que ya no sirven.</li>
-  <li><strong>A – Activar:</strong> Activar nuevas decisiones, coherencia y dirección.</li>
-  <li><strong>R – Restaurar:</strong> Sostener el cambio y vivir desde una nueva base interna.</li>
-</ul>
+        <ul>
+            <li><strong>L – Leer:</strong> Observar con honestidad cómo estás funcionando hoy.</li>
+            <li><strong>E – Limpiar:</strong> Soltar patrones mentales y emocionales que ya no sirven.</li>
+            <li><strong>A – Activar:</strong> Activar nuevas decisiones, coherencia y dirección.</li>
+            <li><strong>R – Restaurar:</strong> Sostener el cambio y vivir desde una nueva base interna.</li>
+        </ul>
 
-                <p class="Precio">100€</p>
-                <a href="#" class="agregar-carrito btn-3"
-                   data-id="prod_Tmhv6a6N5wXn0e"
-                   data-price-id="price_1Sp8VYHaR43tMVsOPSqpE5ma"
-                   data-curso-id="10">
-                   Añadir al carrito
-                </a>
-            </div>
-        </div>
+        <p class="Precio">100€ / hora</p>
+
+        <!-- Selección de fecha y hora -->
+        <label for="fecha_10">Fecha:</label>
+        <input type="date" id="fecha_10" name="fecha" required>
+
+        <label for="hora_10">Hora:</label>
+        <input type="time" id="hora_10" name="hora" required>
+
+        <!-- Botón de pago / añadir al carrito -->
+        <a href="#" class="agregar-carrito btn-3"
+           data-id="prod_Tmhv6a6N5wXn0e"
+           data-price-id="price_1Sp8VYHaR43tMVsOPSqpE5ma"
+           data-curso-id="10">
+           Reservar y pagar sesión
+        </a>
+    </div>
+</div>
 
         <!-- CURSO TAROT -->
         <div class="box" data-id="prod_S3UyfRnWVuOdGU" data-price-id="price_1R9Ny5HaR43tMVsOCyN4AkAZ" data-curso-id="3">
@@ -329,8 +343,50 @@
 
       // Disparar el cambio al cargar para sincronizar
       selector.dispatchEvent(new Event("change"));
+      boton.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      const fecha = box.querySelector(".fecha-sesion").value;
+      const hora = box.querySelector(".hora-sesion").value;
+      const cursoId = box.dataset.cursoId;
+      const priceId = boton.dataset.priceId;
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Debes iniciar sesión para reservar la sesión");
+        return;
+      }
+
+      if (!fecha || !hora) {
+        alert("Selecciona fecha y hora");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/citas/crear-pago-cita", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ curso_id: cursoId, price_id: priceId, fecha, hora })
+        });
+
+        const data = await res.json();
+
+        if (data.url) {
+          window.location.href = data.url; // ir a Stripe
+        } else if (data.error) {
+          alert(data.error);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Hubo un error al crear la sesión de pago");
+      }
     });
   });
+});
+    
 </script>
 
     
