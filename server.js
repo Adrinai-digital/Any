@@ -87,7 +87,7 @@ function handleStripeEvent(event) {
 
 
 // Middlewares globales
-app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -100,7 +100,7 @@ app.use('/curso', citasRoutes); // para la ruta /curso/metodo-learn
 //app.use(express.json());
 //app.use(bodyParser.json());
  // importante para leer body en POST
-
+app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
