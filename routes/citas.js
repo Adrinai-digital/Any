@@ -4,9 +4,11 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const db = require("../db");
 const authMiddleware = require("../middlewares/authMiddleware");
 const nodemailer = require("nodemailer");
-const { google } = require("googleapis");
+// const { google } = require("googleapis"); // ⛔ activar más adelante
 
-/* -------------------- CONFIGURACIÓN EMAIL -------------------- */
+/* =========================================================
+   CONFIGURACIÓN EMAIL
+========================================================= */
 const transporter = nodemailer.createTransport({
   host: "smtp.tuservidor.com",
   port: 587,
@@ -20,41 +22,23 @@ const transporter = nodemailer.createTransport({
 async function enviarAviso(cita) {
   await transporter.sendMail({
     from: `"Tu Web" <${process.env.EMAIL_USER}>`,
-    to: "tucorreo@gmail.com", // tu email
-    subject: "Nueva cita agendada",
+    to: "tucorreo@gmail.com", // TU email
+    subject: "📅 Nueva cita agendada",
     html: `
-      <p>Se ha agendado una cita:</p>
-      <p>Usuario: ${cita.nombre} (${cita.email})</p>
-      <p>Curso: ${cita.curso_id}</p>
-      <p>Fecha: ${cita.fecha}</p>
-      <p>Hora: ${cita.hora}</p>
+      <h3>Nueva cita agendada</h3>
+      <p><strong>Usuario:</strong> ${cita.nombre} (${cita.email})</p>
+      <p><strong>Curso:</strong> ${cita.titulo}</p>
+      <p><strong>Fecha:</strong> ${cita.fecha}</p>
+      <p><strong>Hora:</strong> ${cita.hora}</p>
     `
   });
 }
 
-/* -------------------- GOOGLE CALENDAR -------------------- */
-async function agregarAGoogleCalendar(cita) {
-  const auth = new google.auth.GoogleAuth({
-    keyFile: "credentials.json", // tu archivo JSON del servicio
-    scopes: ["https://www.googleapis.com/auth/calendar"]
-  });
-
-  const calendar = google.calendar({ version: "v3", auth });
-
-  await calendar.events.insert({
-    calendarId: "primary",
-    requestBody: {
-      summary: `Cita Método Learn - ${cita.nombre}`,
-      description: `Usuario: ${cita.nombre} (${cita.email})`,
-      start: { dateTime: new Date(`${cita.fecha}T${cita.hora}`), timeZone: "Europe/Madrid" },
-      end: { dateTime: new Date(new Date(`${cita.fecha}T${cita.hora}`).getTime() + 60*60*1000), timeZone: "Europe/Madrid" }
-    }
-  });
-}
-
-/* -------------------- CREAR PAGO -------------------- */
+/* =========================================================
+   CREAR PAGO STRIPE (1 sesión = 1 pago)
+========================================================= */
 router.post("/crear-pago", authMiddleware, async (req, res) => {
-  const { curso_id, precio } = req.body; // precio por hora en céntimos
+  const { curso_id, precio } = req.body;
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -65,7 +49,7 @@ router.post("/crear-pago", authMiddleware, async (req, res) => {
         price_data: {
           currency: "eur",
           product_data: { name: "Sesión de Coaching (1h)" },
-          unit_amount: precio
+          unit_amount: precio // en céntimos
         },
         quantity: 1
       }],
@@ -73,8 +57,8 @@ router.post("/crear-pago", authMiddleware, async (req, res) => {
         user_id: req.user.id,
         curso_id
       },
-      success_url: "https://tusitio.com/perfil",
-      cancel_url: "https://tusitio.com/cancelado"
+      success_url: "https://autoconocimientoygratitud.com/perfil",
+      cancel_url: "https://autoconocimientoygratitud.com/cancelado"
     });
 
     res.json({ url: session.url });
@@ -84,33 +68,51 @@ router.post("/crear-pago", authMiddleware, async (req, res) => {
   }
 });
 
-/* -------------------- AGENDA CITA -------------------- */
+/* =========================================================
+   AGENDAR CITA (usa SOLO una sesión pagada)
+========================================================= */
 router.post("/agenda", authMiddleware, (req, res) => {
   const { fecha, hora, curso_id } = req.body;
   const userId = req.user.id;
 
-  // Actualizar cita pendiente
   db.query(
-    `UPDATE citas SET fecha=?, hora=? 
-     WHERE user_id=? AND curso_id=? AND fecha IS NULL LIMIT 1`,
+    `UPDATE citas 
+     SET fecha=?, hora=? 
+     WHERE user_id=? 
+       AND curso_id=? 
+       AND fecha IS NULL 
+       AND estado='pagado'
+     ORDER BY created_at ASC
+     LIMIT 1`,
     [fecha, hora, userId, curso_id],
     (err, result) => {
-      if (err) return res.status(500).json({ error: "Error al agendar la cita" });
-      if (result.affectedRows === 0) return res.status(400).json({ error: "No hay sesiones pagadas pendientes" });
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Error al agendar la cita" });
+      }
 
-      // Obtener cita actualizada
+      if (result.affectedRows === 0) {
+        return res.status(400).json({ error: "No hay sesiones pagadas pendientes" });
+      }
+
+      // Obtener la cita ya agendada (con nombre del curso)
       db.query(
-        `SELECT * FROM citas WHERE user_id=? AND curso_id=? AND fecha=? AND hora=? LIMIT 1`,
+        `SELECT citas.*, cursos.titulo
+         FROM citas
+         JOIN cursos ON citas.curso_id = cursos.id
+         WHERE citas.user_id=? 
+           AND citas.curso_id=? 
+           AND citas.fecha=? 
+           AND citas.hora=?
+         LIMIT 1`,
         [userId, curso_id, fecha, hora],
         async (err2, rows) => {
           if (!err2 && rows.length) {
-            const cita = rows[0];
             try {
-              await enviarAviso(cita);
-              await agregarAGoogleCalendar(cita);
-              console.log("✅ Email y Google Calendar enviados");
-            } catch (error) {
-              console.error("❌ Error enviando aviso o calendario:", error);
+              await enviarAviso(rows[0]);
+              console.log("✅ Email de aviso enviado");
+            } catch (e) {
+              console.error("❌ Error enviando email:", e);
             }
           }
         }
@@ -121,16 +123,25 @@ router.post("/agenda", authMiddleware, (req, res) => {
   );
 });
 
-/* -------------------- VER CITAS DEL USUARIO -------------------- */
+/* =========================================================
+   VER CITAS DEL USUARIO (perfil)
+========================================================= */
 router.get("/mis-citas", authMiddleware, (req, res) => {
   const userId = req.user.id;
 
   db.query(
-    "SELECT * FROM citas WHERE user_id = ? ORDER BY fecha ASC, hora ASC",
+    `SELECT citas.*, cursos.titulo
+     FROM citas
+     JOIN cursos ON citas.curso_id = cursos.id
+     WHERE citas.user_id = ?
+     ORDER BY fecha ASC, hora ASC`,
     [userId],
-    (err, results) => {
-      if (err) return res.status(500).json({ error: "Error al obtener citas" });
-      res.json(results);
+    (err, rows) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Error al obtener citas" });
+      }
+      res.json(rows);
     }
   );
 });
