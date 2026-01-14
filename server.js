@@ -522,9 +522,6 @@ app.post("/webhook/stripe",
 );
 
 
-
-
-
 app.listen(PORT, () => {
     const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
     console.log(`Servidor corriendo en ${baseUrl}`);
