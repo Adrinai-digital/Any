@@ -1,5 +1,9 @@
 const path = require('path');
+
 require('dotenv').config();
+
+
+console.log("✅ Existe metodo_learn.ejs:", fs.existsSync(path.join(__dirname, 'views/metodo_learn.ejs')));
 const cors = require('cors');
 const db = require('./db');
 const authMiddleware = require('./middlewares/authMiddleware');
