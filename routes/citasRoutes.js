@@ -200,6 +200,9 @@ router.post("/confirmar", authMiddleware, (req, res) => {
     }
   );
 });
+router.get("/metodo-learn", (req, res) => {
+  res.render("metodo_learn", { usuario: { nombre: "Test" }, citas: [] });
+});
 
 
 module.exports = router;
