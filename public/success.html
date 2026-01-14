@@ -53,31 +53,71 @@
     </div>
 
     <script>
-        window.onload = async function () {
-            const params = new URLSearchParams(window.location.search);
-            const sessionId = params.get('session_id');
-    
-            if (sessionId) {
-                try {
-                    const response = await fetch(`/success?session_id=${sessionId}`);
-                    if (!response.ok) throw new Error("Error en la llamada a /success");
-    
-                    // 👇 Recuperamos el email del usuario desde el backend
-                    const data = await response.json();
-                    if (data.email) {
-                        localStorage.setItem('userEmail', data.email);
-                    }
-                } catch (error) {
-                    console.error("Fallo en el fetch a /success:", error);
-                }
+window.onload = async function () {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+
+    /* ------------------------------------
+       1️⃣ Confirmar pago con backend
+    ------------------------------------ */
+    if (sessionId) {
+        try {
+            const response = await fetch(`/success?session_id=${sessionId}`);
+            if (!response.ok) throw new Error("Error en la llamada a /success");
+
+            const data = await response.json();
+
+            // Guardamos email para redirecciones
+            if (data.email) {
+                localStorage.setItem("userEmail", data.email);
             }
-    
-            // Asignamos la ruta del botón según si está logueado o no
-            const userEmail = localStorage.getItem('userEmail');
-            const boton = document.getElementById('go-to-courses');
-            boton.href = userEmail ? '/perfil' : '/formulario.html';
-        };
-    </script>
+        } catch (error) {
+            console.error("❌ Fallo en /success:", error);
+        }
+    }
+
+    /* ------------------------------------
+       2️⃣ Guardar cita SOLO tras pago
+    ------------------------------------ */
+    const citaGuardada = localStorage.getItem("cita_metodo_learn");
+    const token = localStorage.getItem("token");
+
+    if (citaGuardada && token) {
+        try {
+            const res = await fetch("/api/citas/confirmar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: citaGuardada
+            });
+
+            const result = await res.json();
+
+            if (result.ok) {
+                console.log("✅ Cita guardada correctamente");
+                localStorage.removeItem("cita_metodo_learn");
+            } else {
+                console.warn("⚠️ No se pudo guardar la cita:", result.error);
+            }
+        } catch (err) {
+            console.error("❌ Error guardando la cita:", err);
+        }
+    }
+
+    /* ------------------------------------
+       3️⃣ Configurar botón final
+    ------------------------------------ */
+    const userEmail = localStorage.getItem("userEmail");
+    const boton = document.getElementById("go-to-courses");
+
+    if (boton) {
+        boton.href = userEmail ? "/perfil" : "/formulario.html";
+    }
+};
+</script>
+
     
     
     

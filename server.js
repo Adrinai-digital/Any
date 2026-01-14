@@ -1,5 +1,9 @@
 const path = require('path');
+
 require('dotenv').config();
+
+
+console.log("✅ Existe metodo_learn.ejs:", fs.existsSync(path.join(__dirname, 'views/metodo_learn.ejs')));
 const cors = require('cors');
 const db = require('./db');
 const authMiddleware = require('./middlewares/authMiddleware');
@@ -8,11 +12,16 @@ const bodyParser = require('body-parser');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-
+const citasRoutes = require('./routes/citasRoutes');
 const PORT = process.env.PORT || 3000;
-
 const express = require('express');
 const app = express();
+
+app.use((req, res, next) => {
+  console.log("📍 REQUEST:", req.method, req.originalUrl);
+  next();
+});
+
 
 const stripeWebhook = require('./routes/stripe-webhook');
 app.use('/webhook', stripeWebhook);
@@ -35,8 +44,60 @@ const verificarToken = (req, res, next) => {
 };
 
 
+app.post(
+  "/webhook/stripe",
+  bodyParser.raw({ type: "application/json" }),
+  (req, res) => {
+    const sig = req.headers["stripe-signature"];
+
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } catch (err) {
+      console.error("Webhook signature error:", err.message);
+      return res.status(400).send(`Webhook Error`);
+    }
+
+    handleStripeEvent(event);
+    res.json({ received: true });
+  }
+);
+
+function handleStripeEvent(event) {
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object;
+
+    const userId = session.metadata?.user_id;
+    const cursoId = session.metadata?.curso_id;
+    const paymentId = session.payment_intent;
+
+    // 🔒 Si no es una sesión de coaching, no hacemos nada
+    if (!userId || !cursoId) return;
+
+    // 👉 Creamos UNA cita pendiente
+    db.query(
+      `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado)
+       VALUES (?, ?, ?, 'pagado')`,
+      [userId, cursoId, paymentId],
+      (err) => {
+        if (err) {
+          console.error("Error creando cita:", err);
+        } else {
+          console.log("✅ Cita creada para usuario", userId);
+        }
+      }
+    );
+  }
+}
+
+
 // Middlewares globales
-app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -44,13 +105,27 @@ app.use(cors({
     origin: 'https://autoconocimientoygratitud.com',
     credentials: true
 }));
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use('/api/citas', citasRoutes);
+app.use('/curso', citasRoutes); // para la ruta /curso/metodo-learn
+
+// app._router.stack.forEach((r) => {
+// if (r.route && r.route.path) {
+// console.log(r.route.path);
+// } else if (r.name === 'router') {
+// r.handle.stack.forEach((route) => {
+// if (route.route) console.log(route.route.path);
+// });
+// }
+// });
+
 
 //app.use(express.json());
 //app.use(bodyParser.json());
  // importante para leer body en POST
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -100,7 +175,7 @@ app.post('/login', async (req, res) => {
             }
 
             const token = jwt.sign({ id: user.id, nombre: user.nombre, email: user.email }, process.env.JWT_SECRET, {
-                expiresIn: '1h'
+                expiresIn: '7d'
             });
 
             res.cookie('token', token, {
@@ -417,6 +492,34 @@ app.get('/api/auth/check', (req, res) => {
 });
 
 
+app.post("/webhook/stripe",
+  bodyParser.raw({ type: "application/json" }),
+  (req, res) => {
+    const sig = req.headers["stripe-signature"];
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    if (event.type === "checkout.session.completed") {
+      const s = event.data.object;
+      const userId = s.metadata.user_id;
+      const cursoId = s.metadata.curso_id;
+
+      // Insertamos la sesión de coaching como pendiente de agendar
+      db.query(
+        `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado)
+         VALUES (?, ?, ?, 'pagado')`,
+        [userId, cursoId, s.payment_intent]
+      );
+    }
+
+    res.json({ received: true });
+  }
+);
 
 
 app.listen(PORT, () => {

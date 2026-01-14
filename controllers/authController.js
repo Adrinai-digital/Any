@@ -76,7 +76,7 @@ const login = (req, res) => {
             const token = jwt.sign(
                 { id: user.id, email: user.email },
                 process.env.JWT_SECRET,
-                { expiresIn: '2h' }
+                { expiresIn: '7d' }
             );
 
             // Enviar token + datos del usuario
