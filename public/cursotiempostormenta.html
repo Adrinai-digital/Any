@@ -47,9 +47,14 @@
       consejos y ejercicios de introspección, encontrarás herramientas para fortalecer tu espíritu, 
       recuperar la calma y mantener la esperanza incluso en medio de las pruebas más duras.</p>
 
-      <p><strong>Descarga tu ebook gratuito:</strong>  
-        <a href="/archivos/GUIA_TIEMPOS_TORMENTAS.pdf" class="module-link">Descargar material del curso</a>
-      </p>
+  <p><strong>Descarga tu ebook gratuito:</strong>  
+        <a href="https://raw.githubusercontent.com/Adrinai-digital/materiales-curso/main/GUIA_TIEMPOS_TORMENTAS.pdf" 
+   class="module-link" 
+   target="_blank" 
+   rel="noopener noreferrer">
+   📄 Descargar material del curso
+</a>
+      </p>  
 
       <p id="lesson1-status">Estado: <span>No completado</span></p>
     </div>
@@ -57,6 +62,15 @@
 </section>
 
     <script>
+      if (window.trustedTypes) {
+  if (!window.trustedTypes.getPolicy || !window.trustedTypes.getPolicy('default')) {
+    window.trustedTypes.createPolicy('default', {
+      createHTML: input => input,
+      createScript: input => input,
+      createScriptURL: input => input
+    });
+  }
+}
         function showModule(moduleNumber) {
             document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
             document.querySelectorAll(".content").forEach(content => content.classList.remove("active"));
