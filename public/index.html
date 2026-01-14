@@ -335,51 +335,88 @@ document.addEventListener("DOMContentLoaded", function () {
                 const cursoId = boton.dataset.cursoId;
                 const priceId = boton.dataset.priceId;
                 const precio = parseFloat(precioEl.textContent);
-                const fecha = fechaInput.value;
-                const hora = horaInput.value;
 
-                if (!fecha || !hora) {
-                    alert("Por favor selecciona fecha y hora.");
-                    return;
+                // Solo validar fecha y hora si los inputs existen
+                let fecha = null;
+                let hora = null;
+                if (fechaInput && horaInput) {
+                    fecha = fechaInput.value;
+                    hora = horaInput.value;
+
+                    if (!fecha || !hora) {
+                        alert("Por favor selecciona fecha y hora.");
+                        return;
+                    }
                 }
 
                 try {
-                    // 1️⃣ Crear la cita pendiente en tu backend (pagada después)
                     const token = localStorage.getItem("token");
-                    const resCita = await fetch("/api/citas/crear-pago", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            curso_id: cursoId,
-                            precio: precio * 100, // convertir a céntimos si tu backend lo espera
-                            fecha,
-                            hora
-                        })
-                    });
 
-                    const dataCita = await resCita.json();
+                    // Crear la cita pendiente si hay fecha/hora
+                    let citaResponse = null;
+                    if (fecha && hora) {
+                        const resCita = await fetch("/api/citas/crear-pago", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                curso_id: cursoId,
+                                precio: precio * 100, // convertir a céntimos si tu backend lo espera
+                                fecha,
+                                hora
+                            })
+                        });
 
-                    if (dataCita.error) {
-                        alert("Error: " + dataCita.error);
-                        return;
+                        citaResponse = await resCita.json();
+
+                        if (citaResponse.error) {
+                            alert("Error: " + citaResponse.error);
+                            return;
+                        }
                     }
 
-                    // 2️⃣ Redirigir al checkout de Stripe
-                    if (dataCita.url) {
-                        window.location.href = dataCita.url;
+                    // Redirigir al checkout de Stripe usando price_id real
+                    let stripeSessionUrl = null;
+
+                    if (citaResponse && citaResponse.url) {
+                        stripeSessionUrl = citaResponse.url;
+                    } else {
+                        // Si no hay fecha/hora, solo pagar el curso normal
+                        const resPago = await fetch("/api/pago/crear-session", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                price_id: priceId,
+                                curso_id: cursoId
+                            })
+                        });
+
+                        const dataPago = await resPago.json();
+                        if (dataPago.error) {
+                            alert("Error: " + dataPago.error);
+                            return;
+                        }
+
+                        stripeSessionUrl = dataPago.url;
+                    }
+
+                    if (stripeSessionUrl) {
+                        window.location.href = stripeSessionUrl;
                     }
 
                 } catch (err) {
-                    console.error("Error al crear pago:", err);
-                    alert("Hubo un error al procesar el pago.");
+                    console.error("Error al procesar el pago:", err);
+                    alert("Hubo un error al procesar el pago. Intenta nuevamente.");
                 }
             });
         }
 
-        // Selector de plan (opcional, solo si agregas planes)
+        // Selector de plan (opcional)
         const selector = box.querySelector(".plan-selector");
         if (selector && precioEl && boton) {
             selector.addEventListener("change", function () {
@@ -391,11 +428,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 boton.setAttribute("data-price-id", nuevoPriceId);
             });
 
+            // Sincronizar al cargar
             selector.dispatchEvent(new Event("change"));
         }
     });
 });
 </script>
+
     
 
 
