@@ -213,6 +213,9 @@ p{
     display: block;
     border-radius: 5px; /* Opcional: Bordes redondeados */
 }
+#cursos {
+  text-align: center;
+}
 
 #lista-carrito tr {
     border-bottom: 1px solid #ddd; /* Línea separadora opcional */

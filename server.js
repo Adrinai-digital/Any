@@ -35,6 +35,58 @@ const verificarToken = (req, res, next) => {
 };
 
 
+app.post(
+  "/webhook/stripe",
+  bodyParser.raw({ type: "application/json" }),
+  (req, res) => {
+    const sig = req.headers["stripe-signature"];
+
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } catch (err) {
+      console.error("Webhook signature error:", err.message);
+      return res.status(400).send(`Webhook Error`);
+    }
+
+    handleStripeEvent(event);
+    res.json({ received: true });
+  }
+);
+
+function handleStripeEvent(event) {
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object;
+
+    const userId = session.metadata?.user_id;
+    const cursoId = session.metadata?.curso_id;
+    const paymentId = session.payment_intent;
+
+    // 🔒 Si no es una sesión de coaching, no hacemos nada
+    if (!userId || !cursoId) return;
+
+    // 👉 Creamos UNA cita pendiente
+    db.query(
+      `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado)
+       VALUES (?, ?, ?, 'pagado')`,
+      [userId, cursoId, paymentId],
+      (err) => {
+        if (err) {
+          console.error("Error creando cita:", err);
+        } else {
+          console.log("✅ Cita creada para usuario", userId);
+        }
+      }
+    );
+  }
+}
+
+
 // Middlewares globales
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
@@ -54,6 +106,8 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use("/api/citas", require("./routes/citas"));
 
 // Ruta de registro
 app.post('/register', async (req, res) => {
@@ -100,7 +154,7 @@ app.post('/login', async (req, res) => {
             }
 
             const token = jwt.sign({ id: user.id, nombre: user.nombre, email: user.email }, process.env.JWT_SECRET, {
-                expiresIn: '1h'
+                expiresIn: '7d'
             });
 
             res.cookie('token', token, {
@@ -415,6 +469,37 @@ app.get('/api/auth/check', (req, res) => {
     return res.json({ loggedIn: false });
   }
 });
+
+
+app.post("/webhook/stripe",
+  bodyParser.raw({ type: "application/json" }),
+  (req, res) => {
+    const sig = req.headers["stripe-signature"];
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    if (event.type === "checkout.session.completed") {
+      const s = event.data.object;
+      const userId = s.metadata.user_id;
+      const cursoId = s.metadata.curso_id;
+
+      // Insertamos la sesión de coaching como pendiente de agendar
+      db.query(
+        `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado)
+         VALUES (?, ?, ?, 'pagado')`,
+        [userId, cursoId, s.payment_intent]
+      );
+    }
+
+    res.json({ received: true });
+  }
+);
+
 
 
 
