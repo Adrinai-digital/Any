@@ -323,121 +323,50 @@
 
    <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const boxes = document.querySelectorAll(".box");
+    const botones = document.querySelectorAll(".agregar-carrito");
 
-    boxes.forEach(function (box) {
-        const precioEl = box.querySelector(".Precio");
-        const boton = box.querySelector(".agregar-carrito");
-        const fechaInput = box.querySelector(".fecha");
-        const horaInput = box.querySelector(".hora");
-
-        if (!boton) return;
-
-        boton.addEventListener("click", async function(e){
-            e.preventDefault(); // 🔹 importante: evitar comportamiento por defecto del carrito
+    botones.forEach(boton => {
+        boton.addEventListener("click", function (e) {
 
             const cursoId = boton.dataset.cursoId;
-            const priceId = boton.dataset.priceId;
-            const precio = parseFloat(precioEl.textContent.replace("€","").trim());
 
-            let fecha = null;
-            let hora = null;
+            // 🔹 SOLO para Método Learn
+            if (cursoId === "10") {
+                const box = boton.closest(".box");
+                const fechaInput = box.querySelector(".fecha");
+                const horaInput = box.querySelector(".hora");
 
-            // Si es Método Learn (inputs de fecha y hora presentes)
-            if (fechaInput && horaInput) {
-                fecha = fechaInput.value;
-                hora = horaInput.value;
+                if (!fechaInput || !horaInput) return;
 
+                const fecha = fechaInput.value;
+                const hora = horaInput.value;
+
+                // ⛔ No permitir añadir al carrito sin fecha/hora
                 if (!fecha || !hora) {
-                    alert("Por favor selecciona fecha y hora.");
-                    return;
-                }
-            }
-
-            try {
-                const token = localStorage.getItem("token");
-                if (!token) {
-                    alert("Debes iniciar sesión para continuar.");
+                    e.preventDefault();
+                    alert("Debes seleccionar fecha y hora para añadir esta sesión al carrito.");
                     return;
                 }
 
-                let stripeSessionUrl = null;
-
-                // 🔹 Si hay fecha y hora: Método Learn
-                if (fecha && hora) {
-                    const resCita = await fetch("/api/citas/crear-pago", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            curso_id: cursoId,
-                            priceId: priceId, // ✅ ID del producto en Stripe
-                            fecha,
-                            hora
-                        })
-                    });
-
-                    const dataCita = await resCita.json();
-
-                    if (dataCita.error) {
-                        alert("Error: " + dataCita.error);
-                        return;
-                    }
-
-                    stripeSessionUrl = dataCita.url;
-                } else {
-                    // 🔹 Otros cursos: carrito normal
-                    const resPago = await fetch("/api/pago/crear-session", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            price_id: priceId,
-                            curso_id: cursoId
-                        })
-                    });
-
-                    const dataPago = await resPago.json();
-                    if (dataPago.error) {
-                        alert("Error: " + dataPago.error);
-                        return;
-                    }
-
-                    stripeSessionUrl = dataPago.url;
-                }
-
-                // Redirigir al checkout de Stripe
-                if (stripeSessionUrl) {
-                    window.location.href = stripeSessionUrl;
-                }
-
-            } catch (err) {
-                console.error("Error al procesar el pago:", err);
-                alert("Hubo un error al procesar el pago. Intenta nuevamente.");
+                // ✅ Guardamos la cita seleccionada (se usará tras el pago)
+                localStorage.setItem(
+                    "cita_metodo_learn",
+                    JSON.stringify({
+                        curso_id: 10,
+                        fecha,
+                        hora
+                    })
+                );
             }
+
+            // ⚠️ IMPORTANTE
+            // No usamos preventDefault aquí para otros cursos
+            // El carrito sigue funcionando exactamente igual
         });
-
-        // 🔹 Opcional: selector de plan
-        const selector = box.querySelector(".plan-selector");
-        if (selector && precioEl && boton) {
-            selector.addEventListener("change", function () {
-                const selected = selector.options[selector.selectedIndex];
-                const nuevoPrecio = selected.dataset.precio;
-                const nuevoPriceId = selected.value;
-
-                precioEl.textContent = `${nuevoPrecio}€`;
-                boton.setAttribute("data-price-id", nuevoPriceId);
-            });
-
-            selector.dispatchEvent(new Event("change")); // sincronizar al cargar
-        }
     });
 });
 </script>
+
 
 
     
