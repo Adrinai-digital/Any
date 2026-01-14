@@ -13,6 +13,12 @@ const PORT = process.env.PORT || 3000;
 const express = require('express');
 const app = express();
 
+app.use((req, res, next) => {
+  console.log("📍 REQUEST:", req.method, req.originalUrl);
+  next();
+});
+
+
 const stripeWebhook = require('./routes/stripe-webhook');
 app.use('/webhook', stripeWebhook);
 // Middleware para verificar token desde cookies
