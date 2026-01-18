@@ -38,6 +38,7 @@
     <!-- Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_green.css">
     <!-- Estilos principales -->
     <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -204,7 +205,10 @@
 <input type="text" class="fecha" placeholder="Selecciona fecha" required>
 
 <label>Selecciona hora:</label>
-<input type="text" class="hora" placeholder="Selecciona hora" required>
+<input type="text" class="hora" placeholder="Selecciona hora" required readonly>
+
+<!-- Aquí saldrán las horas debajo -->
+<div id="time-slots" style="margin-top: 1rem; display:flex; flex-wrap:wrap; gap:8px;"></div>
 
         <a href="#" class="agregar-carrito btn-3"
            data-id="prod_MethodLearn"
@@ -415,7 +419,79 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+<script>
+ // Franja horaria que quieres mostrar (como en administración)
+ const WORK_START = "09:00";
+ const WORK_END = "17:00";
+ const STEP_MIN = 60; // cada 60 minutos
 
+ // EJEMPLO: horas ocupadas por fecha (luego será desde tu BD)
+ const busySlotsByDate = {
+ "2026-01-20": ["09:00", "09:30"],
+ "2026-01-21": ["10:00", "12:00"],
+ };
+
+ function generateSlots(start, end, stepMinutes) {
+ const slots = [];
+ let [h, m] = start.split(":").map(Number);
+ const [endH, endM] = end.split(":").map(Number);
+
+ while (h < endH || (h === endH && m < endM)) {
+ const hh = String(h).padStart(2, "0");
+ const mm = String(m).padStart(2, "0");
+ slots.push(`${hh}:${mm}`);
+ m += stepMinutes;
+ if (m >= 60) {
+ m -= 60;
+ h++;
+ }
+ }
+ return slots;
+ }
+
+ const allSlots = generateSlots(WORK_START, WORK_END, STEP_MIN);
+
+ function renderSlots(dateStr) {
+ const container = document.getElementById("time-slots");
+ container.innerHTML = "";
+ const horaInput = document.querySelector(".hora");
+ horaInput.value = ""; // limpiar hora al cambiar de día
+
+ if (!dateStr) return;
+
+ const busyForDay = busySlotsByDate[dateStr] || [];
+
+ allSlots.forEach(time => {
+ const div = document.createElement("div");
+ div.textContent = time;
+ div.classList.add("slot");
+
+ if (busyForDay.includes(time)) {
+ div.classList.add("busy"); // rojo = no disponible
+ } else {
+ div.classList.add("free"); // verde = disponible
+ div.addEventListener("click", () => {
+ document
+ .querySelectorAll("#time-slots .slot.free.selected")
+ .forEach(el => el.classList.remove("selected"));
+ div.classList.add("selected");
+ horaInput.value = time; // se rellena el input de hora
+ });
+ }
+
+ container.appendChild(div);
+ });
+ }
+
+ // Flatpickr en tu input .fecha
+ flatpickr(".fecha", {
+ dateFormat: "Y-m-d", // formato interno
+ minDate: "today",
+ onChange: function(selectedDates, dateStr) {
+ renderSlots(dateStr); // al elegir fecha, se muestran las horas debajo
+ }
+ });
+</script>
 
 
 </body>

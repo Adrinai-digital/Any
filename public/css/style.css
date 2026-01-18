@@ -490,6 +490,26 @@ h2{
     background-color: #45a049;
 }
 
+ .slot {
+ padding: 6px 10px;
+ border-radius: 4px;
+ cursor: pointer;
+ font-size: 13px;
+ }
+ .slot.free {
+ background-color: #d4edda; /* verde claro = disponible */
+ color: #155724;
+ }
+ .slot.busy {
+ background-color: #f8d7da; /* rojo claro = ocupada */
+ color: #721c24;
+ cursor: not-allowed;
+ text-decoration: line-through;
+ }
+ .slot.selected {
+ outline: 2px solid #155724;
+ }
+
 
 @media (max-width: 768px) {
     .menu {
