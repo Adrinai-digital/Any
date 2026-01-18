@@ -323,6 +323,7 @@
     <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
     <script src="https://kit.fontawesome.com/342eeb73cc.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
    <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -392,31 +393,50 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ================= CALENDARIO ================= */
   flatpickr(".fecha", {
-    dateFormat: "Y-m-d",
-    minDate: "today",
-    locale: "es",
-    disableMobile: true,
+  dateFormat: "Y-m-d",
+  minDate: "today",
+  locale: "es",
+  disableMobile: true,
 
-    onDayCreate: function(dObj, dStr, fp, dayElem) {
-  const dateStr = dayElem.dateObj.toISOString().split("T")[0];
-  const busy = busySlotsByDate[dateStr] || [];
+  onDayCreate: function (dObj, dStr, fp, dayElem) {
+    const dateObj = dayElem.dateObj;
+    const dateStr = dateObj.toISOString().split("T")[0];
+    const day = dateObj.getDay(); // 0 dom, 6 sáb
 
-  // 🔴 SOLO rojo si TODAS las horas están ocupadas
-  if (busy.length === allSlots.length && allSlots.length > 0) {
-    dayElem.style.background = "#f2b6b6";
-    dayElem.style.color = "#7f1d1d";
-  } else {
-    // 🟢 cualquier otro caso (aunque no haya reservas)
+    // 🟤 FIN DE SEMANA → gris
+    if (day === 0 || day === 6) {
+      dayElem.style.background = "#e5e7eb";
+      dayElem.style.color = "#6b7280";
+      dayElem.style.cursor = "not-allowed";
+      return;
+    }
+
+    const busy = busySlotsByDate[dateStr] || [];
+
+    // 🔴 Día completo
+    if (busy.length === allSlots.length && allSlots.length > 0) {
+      dayElem.style.background = "#f2b6b6";
+      dayElem.style.color = "#7f1d1d";
+      return;
+    }
+
+    // 🟢 Día laborable con huecos
     dayElem.style.background = "#b6f2c2";
     dayElem.style.color = "#14532d";
-  }
-},
+  },
 
-    onChange: function(selectedDates, dateStr, instance) {
-      const box = instance.element.closest(".box");
-      renderSlots(box, dateStr);
+  // 🚫 impedir seleccionar sábado y domingo
+  disable: [
+    function (date) {
+      const day = date.getDay();
+      return day === 0 || day === 6;
     }
-  });
+  ],
+
+  onChange: function (selectedDates, dateStr) {
+    renderSlots(dateStr);
+  }
+});
 
   /* ================= BOTÓN CARRITO ================= */
   document.querySelectorAll(".agregar-carrito").forEach(boton => {
