@@ -332,7 +332,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const WORK_END = "18:00";
   const STEP_MIN = 60;
 
-  // 🔴 EJEMPLO → luego esto vendrá del backend
+  // 🔴 EJEMPLO → luego vendrá del backend
   const busySlotsByDate = {
     "2026-01-20": ["09:00", "10:00", "11:00", "12:00"],
     "2026-01-21": ["10:00", "11:00"]
@@ -392,51 +392,55 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* ================= CALENDARIO ================= */
-  flatpickr(".fecha", {
-  dateFormat: "Y-m-d",
-  minDate: "today",
-  locale: "es",
-  disableMobile: true,
+  document.querySelectorAll(".box").forEach(box => {
+    const fechaInput = box.querySelector(".fecha");
+    if (!fechaInput) return;
 
-  onDayCreate: function (dObj, dStr, fp, dayElem) {
-    const dateObj = dayElem.dateObj;
-    const dateStr = dateObj.toISOString().split("T")[0];
-    const day = dateObj.getDay(); // 0 dom, 6 sáb
+    flatpickr(fechaInput, {
+      dateFormat: "Y-m-d",
+      minDate: "today",
+      locale: "es",
+      disableMobile: true,
 
-    // 🟤 FIN DE SEMANA → gris
-    if (day === 0 || day === 6) {
-      dayElem.style.background = "#e5e7eb";
-      dayElem.style.color = "#6b7280";
-      dayElem.style.cursor = "not-allowed";
-      return;
-    }
+      // 🚫 Sábados y domingos deshabilitados
+      disable: [
+        function (date) {
+          const day = date.getDay();
+          return day === 0 || day === 6;
+        }
+      ],
 
-    const busy = busySlotsByDate[dateStr] || [];
+      onDayCreate: function (dObj, dStr, fp, dayElem) {
+        const dateObj = dayElem.dateObj;
+        const dateStr = dateObj.toISOString().split("T")[0];
+        const day = dateObj.getDay();
 
-    // 🔴 Día completo
-    if (busy.length === allSlots.length && allSlots.length > 0) {
-      dayElem.style.background = "#f2b6b6";
-      dayElem.style.color = "#7f1d1d";
-      return;
-    }
+        // 🟤 Fin de semana
+        if (day === 0 || day === 6) {
+          dayElem.style.background = "#e5e7eb";
+          dayElem.style.color = "#6b7280";
+          return;
+        }
 
-    // 🟢 Día laborable con huecos
-    dayElem.style.background = "#b6f2c2";
-    dayElem.style.color = "#14532d";
-  },
+        const busy = busySlotsByDate[dateStr] || [];
 
-  // 🚫 impedir seleccionar sábado y domingo
-  disable: [
-    function (date) {
-      const day = date.getDay();
-      return day === 0 || day === 6;
-    }
-  ],
+        // 🔴 Día completo
+        if (busy.length === allSlots.length && allSlots.length > 0) {
+          dayElem.style.background = "#f2b6b6";
+          dayElem.style.color = "#7f1d1d";
+          return;
+        }
 
-  onChange: function (selectedDates, dateStr) {
-    renderSlots(dateStr);
-  }
-});
+        // 🟢 Día con horas libres
+        dayElem.style.background = "#b6f2c2";
+        dayElem.style.color = "#14532d";
+      },
+
+      onChange: function (selectedDates, dateStr) {
+        renderSlots(box, dateStr); // ✅ AHORA SÍ
+      }
+    });
+  });
 
   /* ================= BOTÓN CARRITO ================= */
   document.querySelectorAll(".agregar-carrito").forEach(boton => {
@@ -465,6 +469,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+
 
 
 
