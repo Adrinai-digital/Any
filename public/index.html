@@ -398,15 +398,19 @@ document.addEventListener("DOMContentLoaded", function () {
     disableMobile: true,
 
     onDayCreate: function(dObj, dStr, fp, dayElem) {
-      const dateStr = dayElem.dateObj.toISOString().split("T")[0];
-      const busy = busySlotsByDate[dateStr] || [];
+  const dateStr = dayElem.dateObj.toISOString().split("T")[0];
+  const busy = busySlotsByDate[dateStr] || [];
 
-      if (busy.length === allSlots.length) {
-        dayElem.style.background = "#f2b6b6"; // 🔴 todo ocupado
-      } else if (busy.length > 0) {
-        dayElem.style.background = "#b6f2c2"; // 🟢 hay huecos
-      }
-    },
+  // 🔴 SOLO rojo si TODAS las horas están ocupadas
+  if (busy.length === allSlots.length && allSlots.length > 0) {
+    dayElem.style.background = "#f2b6b6";
+    dayElem.style.color = "#7f1d1d";
+  } else {
+    // 🟢 cualquier otro caso (aunque no haya reservas)
+    dayElem.style.background = "#b6f2c2";
+    dayElem.style.color = "#14532d";
+  }
+},
 
     onChange: function(selectedDates, dateStr, instance) {
       const box = instance.element.closest(".box");
