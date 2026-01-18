@@ -326,23 +326,49 @@
    <script>
 document.addEventListener("DOMContentLoaded", function () {
 
+    let horaPicker = null;
+
     // 🔹 Inicializar calendario de FECHA
     flatpickr(".fecha", {
         dateFormat: "Y-m-d",
         minDate: "today",
         locale: "es",
-        disableMobile: true
+        disableMobile: true,
+
+        onChange: function (selectedDates) {
+            if (!horaPicker) return;
+
+            const dia = selectedDates[0].getDay(); // 0 = Domingo
+
+            // ❌ Domingo → no disponible
+            if (dia === 0) {
+                horaPicker.clear();
+                horaPicker.set("minTime", null);
+                horaPicker.set("maxTime", null);
+                alert("Los domingos no hay sesiones disponibles.");
+                return;
+            }
+
+            // 🟡 Sábado → horario reducido
+            if (dia === 6) {
+                horaPicker.set("minTime", "10:00");
+                horaPicker.set("maxTime", "14:00");
+                return;
+            }
+
+            // 🟢 Lunes a viernes
+            horaPicker.set("minTime", "09:00");
+            horaPicker.set("maxTime", "18:00");
+        }
     });
 
-    // 🔹 Inicializar selector de HORA
-    flatpickr(".hora", {
+    // 🔹 Inicializar selector de HORA (CADA 1 HORA)
+    horaPicker = flatpickr(".hora", {
         enableTime: true,
         noCalendar: true,
         dateFormat: "H:i",
         time_24hr: true,
-        minTime: "09:00",
-        maxTime: "18:00",
-        minuteIncrement: 30,
+        minuteIncrement: 60, // ⬅️ CAMBIO AQUÍ
         disableMobile: true
     });
 
@@ -389,6 +415,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+
+
 
 </body>
 </html>     
