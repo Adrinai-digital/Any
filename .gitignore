@@ -1,6 +1,11 @@
+# Variables de entorno
 .env
-.node_modules
-.log
+
+# Dependencias (carpeta grande que NO se sube al repo)
+node_modules/
+
+# Logs
+*.log
 
 # Directorios de herramientas de desarrollo
 .vscode/
