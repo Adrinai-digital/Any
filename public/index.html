@@ -37,7 +37,7 @@
 
     <!-- Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">  
     <!-- Estilos principales -->
     <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -174,8 +174,9 @@
             </div>
         </div>
         <!-- Metodo Learn -->
+        <!--✅ ID único para el carrito -->
         <div class="box" data-curso-id="10"
-     data-id="prod_MethodLearn"   <!-- ✅ ID único para el carrito -->
+     data-id="prod_MethodLearn"   
      data-curso-id="10"
      data-price-id="price_1Sp8VYHaR43tMVsOPSqpE5ma">
     <img src="/images/metodo_learn.jpg" alt="Método Learn">
@@ -199,11 +200,12 @@
 
         <p class="Precio">100€</p>
 
-<label for="fecha">Selecciona fecha:</label>
-<input type="date" id="fecha" class="fecha" required title="Selecciona la fecha de tu cita">
+<label>Selecciona fecha:</label>
+<input type="text" class="fecha" placeholder="Selecciona fecha" required>
 
-<label for="hora">Selecciona hora:</label>
-<input type="time" id="hora" class="hora" required title="Selecciona la hora de tu cita">
+<label>Selecciona hora:</label>
+<input type="text" class="hora" placeholder="Selecciona hora" required>
+
         <a href="#" class="agregar-carrito btn-3"
            data-id="prod_MethodLearn"
            data-price-id="price_1Sp8VYHaR43tMVsOPSqpE5ma"
@@ -314,15 +316,37 @@
       <p>Diseñado por <a href="https://wa.me/34640871885?text=Estoy%20interesado/a%20en%20información%20sobre%20diseño%20paginas%20web">Concepción Casado</a></p>
     </div>
   </footer>
-  
+
     <script src="https://js.stripe.com/v3/"></script>
     <script src="/js/script.js"></script>
     <script src="/js/load-more.js"></script>
     <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
     <script src="https://kit.fontawesome.com/342eeb73cc.js" crossorigin="anonymous"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
    <script>
 document.addEventListener("DOMContentLoaded", function () {
+
+    // 🔹 Inicializar calendario de FECHA
+    flatpickr(".fecha", {
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        locale: "es",
+        disableMobile: true
+    });
+
+    // 🔹 Inicializar selector de HORA
+    flatpickr(".hora", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minTime: "09:00",
+        maxTime: "18:00",
+        minuteIncrement: 30,
+        disableMobile: true
+    });
+
+    // 🔹 TU LÓGICA ORIGINAL (NO TOCADA)
     const botones = document.querySelectorAll(".agregar-carrito");
 
     botones.forEach(boton => {
@@ -341,14 +365,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 const fecha = fechaInput.value;
                 const hora = horaInput.value;
 
-                // ⛔ No permitir añadir al carrito sin fecha/hora
+                // ⛔ No permitir continuar sin fecha/hora
                 if (!fecha || !hora) {
                     e.preventDefault();
                     alert("Debes seleccionar fecha y hora para añadir esta sesión al carrito.");
                     return;
                 }
 
-                // ✅ Guardamos la cita seleccionada (se usará tras el pago)
+                // ✅ Guardamos la cita seleccionada
                 localStorage.setItem(
                     "cita_metodo_learn",
                     JSON.stringify({
@@ -359,18 +383,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 );
             }
 
-            // ⚠️ IMPORTANTE
-            // No usamos preventDefault aquí para otros cursos
-            // El carrito sigue funcionando exactamente igual
+            // ⚠️ NO preventDefault → el carrito sigue funcionando
         });
     });
+
 });
 </script>
-
-
-
-    
-
 
 </body>
 </html>     
