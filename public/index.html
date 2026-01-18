@@ -201,14 +201,10 @@
 
         <p class="Precio">100€</p>
 
-<label>Selecciona fecha:</label>
-<input type="text" class="fecha" placeholder="Selecciona fecha" required>
+<input type="text" class="fecha" placeholder="Selecciona día" readonly>
+<input type="hidden" class="hora">
 
-<label>Selecciona hora:</label>
-<input type="text" class="hora" placeholder="Selecciona hora" required readonly>
-
-<!-- Aquí saldrán las horas debajo -->
-<div id="time-slots" style="margin-top: 1rem; display:flex; flex-wrap:wrap; gap:8px;"></div>
+<div id="time-slots" class="time-slots"></div>
 
         <a href="#" class="agregar-carrito btn-3"
            data-id="prod_MethodLearn"
@@ -330,168 +326,122 @@
    <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    let horaPicker = null;
+  /* ================= CONFIGURACIÓN ================= */
+  const WORK_START = "09:00";
+  const WORK_END = "18:00";
+  const STEP_MIN = 60;
 
-    // 🔹 Inicializar calendario de FECHA
-    flatpickr(".fecha", {
-        dateFormat: "Y-m-d",
-        minDate: "today",
-        locale: "es",
-        disableMobile: true,
+  // 🔴 EJEMPLO → luego esto vendrá del backend
+  const busySlotsByDate = {
+    "2026-01-20": ["09:00", "10:00", "11:00", "12:00"],
+    "2026-01-21": ["10:00", "11:00"]
+  };
 
-        onChange: function (selectedDates) {
-            if (!horaPicker) return;
+  /* ================= UTILIDADES ================= */
+  function generateSlots(start, end, stepMinutes) {
+    const slots = [];
+    let [h, m] = start.split(":").map(Number);
+    const [endH, endM] = end.split(":").map(Number);
 
-            const dia = selectedDates[0].getDay(); // 0 = Domingo
+    while (h < endH || (h === endH && m < endM)) {
+      slots.push(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`);
+      m += stepMinutes;
+      if (m >= 60) {
+        m -= 60;
+        h++;
+      }
+    }
+    return slots;
+  }
 
-            // ❌ Domingo → no disponible
-            if (dia === 0) {
-                horaPicker.clear();
-                horaPicker.set("minTime", null);
-                horaPicker.set("maxTime", null);
-                alert("Los domingos no hay sesiones disponibles.");
-                return;
-            }
+  const allSlots = generateSlots(WORK_START, WORK_END, STEP_MIN);
 
-            // 🟡 Sábado → horario reducido
-            if (dia === 6) {
-                horaPicker.set("minTime", "10:00");
-                horaPicker.set("maxTime", "14:00");
-                return;
-            }
+  /* ================= RENDER HORAS ================= */
+  function renderSlots(box, dateStr) {
+    const container = box.querySelector(".time-slots");
+    const horaInput = box.querySelector(".hora");
 
-            // 🟢 Lunes a viernes
-            horaPicker.set("minTime", "09:00");
-            horaPicker.set("maxTime", "18:00");
-        }
-    });
+    container.innerHTML = "";
+    horaInput.value = "";
 
-    // 🔹 Inicializar selector de HORA (CADA 1 HORA)
-    horaPicker = flatpickr(".hora", {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        time_24hr: true,
-        minuteIncrement: 60, // ⬅️ CAMBIO AQUÍ
-        disableMobile: true
-    });
+    if (!dateStr) return;
 
-    // 🔹 TU LÓGICA ORIGINAL (NO TOCADA)
-    const botones = document.querySelectorAll(".agregar-carrito");
+    const busy = busySlotsByDate[dateStr] || [];
 
-    botones.forEach(boton => {
-        boton.addEventListener("click", function (e) {
+    allSlots.forEach(time => {
+      const div = document.createElement("div");
+      div.textContent = time;
+      div.classList.add("slot");
 
-            const cursoId = boton.dataset.cursoId;
+      if (busy.includes(time)) {
+        div.classList.add("busy");
+      } else {
+        div.classList.add("free");
+        div.addEventListener("click", () => {
+          container.querySelectorAll(".slot.selected")
+            .forEach(el => el.classList.remove("selected"));
 
-            // 🔹 SOLO para Método Learn
-            if (cursoId === "10") {
-                const box = boton.closest(".box");
-                const fechaInput = box.querySelector(".fecha");
-                const horaInput = box.querySelector(".hora");
-
-                if (!fechaInput || !horaInput) return;
-
-                const fecha = fechaInput.value;
-                const hora = horaInput.value;
-
-                // ⛔ No permitir continuar sin fecha/hora
-                if (!fecha || !hora) {
-                    e.preventDefault();
-                    alert("Debes seleccionar fecha y hora para añadir esta sesión al carrito.");
-                    return;
-                }
-
-                // ✅ Guardamos la cita seleccionada
-                localStorage.setItem(
-                    "cita_metodo_learn",
-                    JSON.stringify({
-                        curso_id: 10,
-                        fecha,
-                        hora
-                    })
-                );
-            }
-
-            // ⚠️ NO preventDefault → el carrito sigue funcionando
+          div.classList.add("selected");
+          horaInput.value = time;
         });
+      }
+
+      container.appendChild(div);
     });
+  }
+
+  /* ================= CALENDARIO ================= */
+  flatpickr(".fecha", {
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    locale: "es",
+    disableMobile: true,
+
+    onDayCreate: function(dObj, dStr, fp, dayElem) {
+      const dateStr = dayElem.dateObj.toISOString().split("T")[0];
+      const busy = busySlotsByDate[dateStr] || [];
+
+      if (busy.length === allSlots.length) {
+        dayElem.style.background = "#f2b6b6"; // 🔴 todo ocupado
+      } else if (busy.length > 0) {
+        dayElem.style.background = "#b6f2c2"; // 🟢 hay huecos
+      }
+    },
+
+    onChange: function(selectedDates, dateStr, instance) {
+      const box = instance.element.closest(".box");
+      renderSlots(box, dateStr);
+    }
+  });
+
+  /* ================= BOTÓN CARRITO ================= */
+  document.querySelectorAll(".agregar-carrito").forEach(boton => {
+    boton.addEventListener("click", function (e) {
+      const cursoId = boton.dataset.cursoId;
+
+      if (cursoId === "10") {
+        const box = boton.closest(".box");
+        const fecha = box.querySelector(".fecha").value;
+        const hora = box.querySelector(".hora").value;
+
+        if (!fecha || !hora) {
+          e.preventDefault();
+          alert("Debes seleccionar día y hora.");
+          return;
+        }
+
+        localStorage.setItem("cita_metodo_learn", JSON.stringify({
+          curso_id: 10,
+          fecha,
+          hora
+        }));
+      }
+    });
+  });
 
 });
 </script>
-<script>
- // Franja horaria que quieres mostrar (como en administración)
- const WORK_START = "09:00";
- const WORK_END = "17:00";
- const STEP_MIN = 60; // cada 60 minutos
 
- // EJEMPLO: horas ocupadas por fecha (luego será desde tu BD)
- const busySlotsByDate = {
- "2026-01-20": ["09:00", "09:30"],
- "2026-01-21": ["10:00", "12:00"],
- };
-
- function generateSlots(start, end, stepMinutes) {
- const slots = [];
- let [h, m] = start.split(":").map(Number);
- const [endH, endM] = end.split(":").map(Number);
-
- while (h < endH || (h === endH && m < endM)) {
- const hh = String(h).padStart(2, "0");
- const mm = String(m).padStart(2, "0");
- slots.push(`${hh}:${mm}`);
- m += stepMinutes;
- if (m >= 60) {
- m -= 60;
- h++;
- }
- }
- return slots;
- }
-
- const allSlots = generateSlots(WORK_START, WORK_END, STEP_MIN);
-
- function renderSlots(dateStr) {
- const container = document.getElementById("time-slots");
- container.innerHTML = "";
- const horaInput = document.querySelector(".hora");
- horaInput.value = ""; // limpiar hora al cambiar de día
-
- if (!dateStr) return;
-
- const busyForDay = busySlotsByDate[dateStr] || [];
-
- allSlots.forEach(time => {
- const div = document.createElement("div");
- div.textContent = time;
- div.classList.add("slot");
-
- if (busyForDay.includes(time)) {
- div.classList.add("busy"); // rojo = no disponible
- } else {
- div.classList.add("free"); // verde = disponible
- div.addEventListener("click", () => {
- document
- .querySelectorAll("#time-slots .slot.free.selected")
- .forEach(el => el.classList.remove("selected"));
- div.classList.add("selected");
- horaInput.value = time; // se rellena el input de hora
- });
- }
-
- container.appendChild(div);
- });
- }
-
- // Flatpickr en tu input .fecha
- flatpickr(".fecha", {
- dateFormat: "Y-m-d", // formato interno
- minDate: "today",
- onChange: function(selectedDates, dateStr) {
- renderSlots(dateStr); // al elegir fecha, se muestran las horas debajo
- }
- });
-</script>
 
 
 </body>
