@@ -325,7 +325,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
    <script>
-document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", function () {
 
   /* ================= CONFIGURACIÓN ================= */
   const WORK_START = "09:00";
@@ -335,14 +335,21 @@ document.addEventListener("DOMContentLoaded", async function () {
   // 🔴 Dinámico desde el backend
   let busySlotsByDate = {};
 
-  // Al cargar la página, traemos las citas pagadas
-  try {
-    const res = await fetch("/citas-ocupadas");
-    busySlotsByDate = await res.json();
-    console.log("Citas ocupadas cargadas:", busySlotsByDate);
-  } catch (err) {
-    console.error("Error cargando citas ocupadas:", err);
-  }
+  // Traemos las citas pagadas del backend
+  fetch("/citas-ocupadas")
+    .then(res => res.json())
+    .then(data => {
+      busySlotsByDate = data;
+
+      // 🔹 Re-renderizamos los slots de cada caja si ya hay fechas seleccionadas
+      document.querySelectorAll(".box").forEach(box => {
+        const fechaInput = box.querySelector(".fecha");
+        if (fechaInput.value) {
+          renderSlots(box, fechaInput.value);
+        }
+      });
+    })
+    .catch(err => console.error("Error cargando citas ocupadas:", err));
 
   /* ================= UTILIDADES ================= */
   function generateSlots(start, end, stepMinutes) {
@@ -395,7 +402,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       container.appendChild(div);
     });
   }
-
+  
+  
   /* ================= CALENDARIO ================= */
   document.querySelectorAll(".box").forEach(box => {
     const fechaInput = box.querySelector(".fecha");
@@ -406,6 +414,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       minDate: "today",
       locale: "es",
       disableMobile: true,
+
+      // 🚫 Sábados y domingos deshabilitados
       disable: [
         function (date) {
           const day = date.getDay();
@@ -414,26 +424,33 @@ document.addEventListener("DOMContentLoaded", async function () {
       ],
 
       onDayCreate: function (dObj, dStr, fp, dayElem) {
-        const dateStr = dayElem.dateObj.toISOString().split("T")[0];
+        const dateObj = dayElem.dateObj;
+        const dateStr = dateObj.toISOString().split("T")[0];
+        const day = dateObj.getDay();
+
+        // 🟤 Fin de semana
+        if (day === 0 || day === 6) {
+          dayElem.style.background = "#e5e7eb";
+          dayElem.style.color = "#6b7280";
+          return;
+        }
+
         const busy = busySlotsByDate[dateStr] || [];
 
+        // 🔴 Día completo
         if (busy.length === allSlots.length && allSlots.length > 0) {
-          // 🔴 Día completo
           dayElem.style.background = "#f2b6b6";
           dayElem.style.color = "#7f1d1d";
-        } else if (busy.length > 0) {
-          // 🔴 Día parcial
-          dayElem.style.background = "#f2b6b6";
-          dayElem.style.color = "#7f1d1d";
-        } else {
-          // 🟢 Día libre
-          dayElem.style.background = "#b6f2c2";
-          dayElem.style.color = "#14532d";
+          return;
         }
+
+        // 🟢 Día con horas libres
+        dayElem.style.background = "#b6f2c2";
+        dayElem.style.color = "#14532d";
       },
 
       onChange: function (selectedDates, dateStr) {
-        renderSlots(box, dateStr); // ✅ Marca las horas
+        renderSlots(box, dateStr); // ✅ AHORA SÍ
       }
     });
   });
