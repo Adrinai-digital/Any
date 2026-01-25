@@ -44,56 +44,54 @@ const verificarToken = (req, res, next) => {
 };
 
 
-app.post(
-  "/webhook/stripe",
+app.post("/webhook/stripe",
   bodyParser.raw({ type: "application/json" }),
   (req, res) => {
     const sig = req.headers["stripe-signature"];
-
     let event;
 
     try {
-      event = stripe.webhooks.constructEvent(
-        req.body,
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET
-      );
+      event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
     } catch (err) {
-      console.error("Webhook signature error:", err.message);
-      return res.status(400).send(`Webhook Error`);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    handleStripeEvent(event);
+    if (event.type === "checkout.session.completed") {
+      const s = event.data.object;
+      const userId = s.metadata.user_id;
+      const cursoId = s.metadata.curso_id;
+      const fecha = s.metadata?.fecha;
+      const hora = s.metadata?.hora;
+
+      // ✅ Si tenemos fecha y hora, es una sesión de coaching
+      if (userId && cursoId && fecha && hora) {
+        db.query(
+          `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado, fecha, hora)
+           VALUES (?, ?, ?, 'pagado', ?, ?)`,
+          [userId, cursoId, s.payment_intent, fecha, hora],
+          (err) => {
+            if (err) console.error("Error creando cita de coaching:", err);
+            else console.log(`✅ Cita de coaching creada para ${userId} en ${fecha} ${hora}`);
+          }
+        );
+      } 
+      // 🔹 Si no tiene fecha/hora, dejamos el insert base para otros cursos
+      else if (userId && cursoId) {
+        db.query(
+          `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado)
+           VALUES (?, ?, ?, 'pagado')`,
+          [userId, cursoId, s.payment_intent],
+          (err) => {
+            if (err) console.error("Error creando cita de otro curso:", err);
+            else console.log(`✅ Cita creada para otro curso para usuario ${userId}`);
+          }
+        );
+      }
+    }
+
     res.json({ received: true });
   }
 );
-
-function handleStripeEvent(event) {
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
-
-    const userId = session.metadata?.user_id;
-    const cursoId = session.metadata?.curso_id;
-    const paymentId = session.payment_intent;
-
-    // 🔒 Si no es una sesión de coaching, no hacemos nada
-    if (!userId || !cursoId) return;
-
-    // 👉 Creamos UNA cita pendiente
-    db.query(
-      `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado)
-       VALUES (?, ?, ?, 'pagado')`,
-      [userId, cursoId, paymentId],
-      (err) => {
-        if (err) {
-          console.error("Error creando cita:", err);
-        } else {
-          console.log("✅ Cita creada para usuario", userId);
-        }
-      }
-    );
-  }
-}
 
 
 // Middlewares globales
@@ -520,6 +518,47 @@ app.post("/webhook/stripe",
     res.json({ received: true });
   }
 );
+
+app.post("/create-checkout-session", async (req, res) => {
+  const { userId, cursoId, fecha, hora } = req.body;
+
+  // Validación básica
+  if (!userId || !cursoId || !fecha || !hora) {
+    return res.status(400).send("Faltan datos: userId, cursoId, fecha u hora");
+  }
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+
+      line_items: [
+        {
+          price: "price_XXXXX", // Reemplaza con el ID de tu precio de Stripe
+          quantity: 1,
+        },
+      ],
+
+      mode: "payment",
+      success_url: "https://autoconocimientoygratitud.com/success.html?session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "https://autoconocimientoygratitud.com/cancel.html",
+
+      client_reference_id: userId,
+
+      metadata: {
+        user_id: userId,
+        curso_id: cursoId,
+        fecha: fecha, // fecha seleccionada por el usuario
+        hora: hora,   // hora seleccionada por el usuario
+      },
+    });
+
+    // Devuelve la URL para redirigir al usuario
+    res.json({ url: session.url });
+  } catch (err) {
+    console.error("Error creando sesión de Checkout:", err);
+    res.status(500).send("Error creando sesión de pago");
+  }
+});
 
 
 app.listen(PORT, () => {
