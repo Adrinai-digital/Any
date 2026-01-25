@@ -579,7 +579,27 @@ app.get("/citas-ocupadas", (req, res) => {
     }
   );
 });
+app.get("/citas-ocupadas", (req, res) => {
+  const query = `
+    SELECT fecha, hora
+    FROM citas
+    WHERE estado = 'pagado'
+      AND fecha IS NOT NULL
+  `;
 
+  db.query(query, (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    // Convertimos el resultado a { fecha: [hora, hora, ...] }
+    const busy = {};
+    rows.forEach(row => {
+      if (!busy[row.fecha]) busy[row.fecha] = [];
+      busy[row.fecha].push(row.hora);
+    });
+
+    res.json(busy); // ✅ Devuelve JSON correcto
+  });
+});
 
 app.listen(PORT, () => {
     const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
