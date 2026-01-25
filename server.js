@@ -561,25 +561,6 @@ app.post("/create-checkout-session", async (req, res) => {
 });
 // GET /citas-ocupadas
 app.get("/citas-ocupadas", (req, res) => {
-  db.query(
-    "SELECT fecha, hora FROM citas WHERE estado = 'pagado'",
-    (err, results) => {
-      if (err) return res.status(500).json({ error: err.message });
-
-      // Convertimos a un objeto { fecha: [horas...] }
-      const busySlotsByDate = {};
-      results.forEach(row => {
-        if (!busySlotsByDate[row.fecha]) busySlotsByDate[row.fecha] = [];
-        if (!busySlotsByDate[row.fecha].includes(row.hora)) {
-          busySlotsByDate[row.fecha].push(row.hora);
-        }
-      });
-
-      res.json(busySlotsByDate);
-    }
-  );
-});
-app.get("/citas-ocupadas", (req, res) => {
   const query = `
     SELECT fecha, hora
     FROM citas
@@ -594,7 +575,9 @@ app.get("/citas-ocupadas", (req, res) => {
     const busy = {};
     rows.forEach(row => {
       if (!busy[row.fecha]) busy[row.fecha] = [];
-      busy[row.fecha].push(row.hora);
+      if (!busy[row.fecha].includes(row.hora)) {
+        busy[row.fecha].push(row.hora);
+      }
     });
 
     res.json(busy); // ✅ Devuelve JSON correcto
