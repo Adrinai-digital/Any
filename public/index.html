@@ -325,24 +325,24 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
    <script>
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
   /* ================= CONFIGURACIÓN ================= */
   const WORK_START = "09:00";
   const WORK_END = "18:00";
   const STEP_MIN = 60;
 
-  // 🔴 EJEMPLO → luego vendrá del backend
+  // 🔴 Dinámico desde el backend
   let busySlotsByDate = {};
 
-// Al cargar la página, traemos las citas pagadas
-fetch("/citas-ocupadas")
-  .then(res => res.json())
-  .then(data => {
-    busySlotsByDate = data;
-  })
-  .catch(err => console.error("Error cargando citas ocupadas:", err));
-
+  // Al cargar la página, traemos las citas pagadas
+  try {
+    const res = await fetch("/citas-ocupadas");
+    busySlotsByDate = await res.json();
+    console.log("Citas ocupadas cargadas:", busySlotsByDate);
+  } catch (err) {
+    console.error("Error cargando citas ocupadas:", err);
+  }
 
   /* ================= UTILIDADES ================= */
   function generateSlots(start, end, stepMinutes) {
@@ -381,13 +381,12 @@ fetch("/citas-ocupadas")
       div.classList.add("slot");
 
       if (busy.includes(time)) {
-        div.classList.add("busy");
+        div.classList.add("busy"); // 🔴 Hora ocupada
       } else {
         div.classList.add("free");
         div.addEventListener("click", () => {
           container.querySelectorAll(".slot.selected")
             .forEach(el => el.classList.remove("selected"));
-
           div.classList.add("selected");
           horaInput.value = time;
         });
@@ -407,8 +406,6 @@ fetch("/citas-ocupadas")
       minDate: "today",
       locale: "es",
       disableMobile: true,
-
-      // 🚫 Sábados y domingos deshabilitados
       disable: [
         function (date) {
           const day = date.getDay();
@@ -417,33 +414,26 @@ fetch("/citas-ocupadas")
       ],
 
       onDayCreate: function (dObj, dStr, fp, dayElem) {
-        const dateObj = dayElem.dateObj;
-        const dateStr = dateObj.toISOString().split("T")[0];
-        const day = dateObj.getDay();
-
-        // 🟤 Fin de semana
-        if (day === 0 || day === 6) {
-          dayElem.style.background = "#e5e7eb";
-          dayElem.style.color = "#6b7280";
-          return;
-        }
-
+        const dateStr = dayElem.dateObj.toISOString().split("T")[0];
         const busy = busySlotsByDate[dateStr] || [];
 
-        // 🔴 Día completo
         if (busy.length === allSlots.length && allSlots.length > 0) {
+          // 🔴 Día completo
           dayElem.style.background = "#f2b6b6";
           dayElem.style.color = "#7f1d1d";
-          return;
+        } else if (busy.length > 0) {
+          // 🔴 Día parcial
+          dayElem.style.background = "#f2b6b6";
+          dayElem.style.color = "#7f1d1d";
+        } else {
+          // 🟢 Día libre
+          dayElem.style.background = "#b6f2c2";
+          dayElem.style.color = "#14532d";
         }
-
-        // 🟢 Día con horas libres
-        dayElem.style.background = "#b6f2c2";
-        dayElem.style.color = "#14532d";
       },
 
       onChange: function (selectedDates, dateStr) {
-        renderSlots(box, dateStr); // ✅ AHORA SÍ
+        renderSlots(box, dateStr); // ✅ Marca las horas
       }
     });
   });
