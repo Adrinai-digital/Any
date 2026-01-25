@@ -333,10 +333,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const STEP_MIN = 60;
 
   // 🔴 EJEMPLO → luego vendrá del backend
-  const busySlotsByDate = {
-    "2026-01-20": ["09:00", "10:00", "11:00", "12:00"],
-    "2026-01-21": ["10:00", "11:00"]
-  };
+  let busySlotsByDate = {};
+
+// Al cargar la página, traemos las citas pagadas
+fetch("/citas-ocupadas")
+  .then(res => res.json())
+  .then(data => {
+    busySlotsByDate = data;
+  })
+  .catch(err => console.error("Error cargando citas ocupadas:", err));
+
 
   /* ================= UTILIDADES ================= */
   function generateSlots(start, end, stepMinutes) {
