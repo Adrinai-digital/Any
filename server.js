@@ -1,9 +1,10 @@
 const path = require('path');
+const fs = require('fs');
 
 require('dotenv').config();
 
-
 console.log("✅ Existe metodo_learn.ejs:", fs.existsSync(path.join(__dirname, 'views/metodo_learn.ejs')));
+
 const cors = require('cors');
 const db = require('./db');
 const authMiddleware = require('./middlewares/authMiddleware');
@@ -17,15 +18,29 @@ const PORT = process.env.PORT || 3000;
 const express = require('express');
 const app = express();
 
+// ---------------- MIDDLEWARES ----------------
 app.use((req, res, next) => {
   console.log("📍 REQUEST:", req.method, req.originalUrl);
   next();
 });
 
+// middlewares de parseo y cookies
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(cors({
+    origin: 'https://autoconocimientoygratitud.com',
+    credentials: true
+}));
 
-const stripeWebhook = require('./routes/stripe-webhook');
-app.use('/webhook', stripeWebhook);
-// Middleware para verificar token desde cookies
+// motor de vistas
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// static
+app.use(express.static(path.join(__dirname, 'public')));
+
+// middleware de auth
 const verificarToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
     const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : req.cookies.token;
@@ -43,6 +58,9 @@ const verificarToken = (req, res, next) => {
     }
 };
 
+// ----------------- WEBHOOK STRIPE -----------------
+const stripeWebhook = require('./routes/stripe-webhook');
+app.use('/webhook', stripeWebhook);
 
 app.post("/webhook/stripe",
   bodyParser.raw({ type: "application/json" }),
@@ -63,7 +81,6 @@ app.post("/webhook/stripe",
       const fecha = s.metadata?.fecha;
       const hora = s.metadata?.hora;
 
-      // ✅ Si tenemos fecha y hora, es una sesión de coaching
       if (userId && cursoId && fecha && hora) {
         db.query(
           `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado, fecha, hora)
@@ -74,9 +91,7 @@ app.post("/webhook/stripe",
             else console.log(`✅ Cita de coaching creada para ${userId} en ${fecha} ${hora}`);
           }
         );
-      } 
-      // 🔹 Si no tiene fecha/hora, dejamos el insert base para otros cursos
-      else if (userId && cursoId) {
+      } else if (userId && cursoId) {
         db.query(
           `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado)
            VALUES (?, ?, ?, 'pagado')`,
@@ -93,42 +108,11 @@ app.post("/webhook/stripe",
   }
 );
 
-
-// Middlewares globales
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(cors({
-    origin: 'https://autoconocimientoygratitud.com',
-    credentials: true
-}));
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+// ----------------- RUTAS -----------------
 app.use('/api/citas', citasRoutes);
-app.use('/curso', citasRoutes); // para la ruta /curso/metodo-learn
+app.use('/curso', citasRoutes); // para /curso/metodo-learn
 
-// app._router.stack.forEach((r) => {
-// if (r.route && r.route.path) {
-// console.log(r.route.path);
-// } else if (r.name === 'router') {
-// r.handle.stack.forEach((route) => {
-// if (route.route) console.log(route.route.path);
-// });
-// }
-// });
-
-
-//app.use(express.json());
-//app.use(bodyParser.json());
- // importante para leer body en POST
-app.use(express.static(path.join(__dirname, 'public')));
-
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// Ruta de registro
+// Registro
 app.post('/register', async (req, res) => {
     const { nombre, email, password } = req.body;
     if (!nombre || !email || !password) {
@@ -153,7 +137,7 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// Ruta de login
+// Login
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -191,6 +175,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// Perfil
 app.get('/perfil', verificarToken, (req, res) => {
     const userId = req.user.id;
 
@@ -213,6 +198,7 @@ app.get('/perfil', verificarToken, (req, res) => {
     });
 });
 
+// Perfil-data
 app.get('/perfil-data', verificarToken, (req, res) => {
     const userId = req.user.id;
 
@@ -236,293 +222,16 @@ app.get('/perfil-data', verificarToken, (req, res) => {
     );
 });
 
+// Logout
 app.get('/logout', (req, res) => {
     res.clearCookie('token');
     res.redirect('/');
 });
 
-app.post("/crear-checkout", async (req, res) => {
-    const { productos, total, userEmail } = req.body;
-
-    if (!productos || !Array.isArray(productos) || productos.length === 0 || !total || !userEmail) {
-        return res.status(400).json({ error: '❌ Faltan datos importantes para procesar el pago' });
-    }
-
-    try {
-        const line_items = productos.map(producto => ({
-            price: producto.priceId,
-            quantity: producto.cantidad || 1
-        }));
-
-        let hasRecurring = false;
-
-        for (const producto of productos) {
-            const precio = await stripe.prices.retrieve(producto.priceId);
-            if (precio.recurring) {
-                hasRecurring = true;
-                break;
-            }
-        }
-
-        const sessionMode = hasRecurring ? 'subscription' : 'payment';
-        console.log('Productos antes de crear sesión:', productos);
-        console.log('Metadata enviada:', JSON.stringify(productos.map(p => p.priceId)));
-
-
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
-            line_items,
-            mode: sessionMode,
-            success_url: `https://autoconocimientoygratitud.com/success.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `https://autoconocimientoygratitud.com/cancel.html`,
-
-            customer_email: userEmail,
-            metadata: {
-                price_ids: JSON.stringify(productos.map(p => p.priceId))
-              }
-              
-        });
-
-        return res.status(200).json({ url: session.url });
-
-    } catch (error) {
-        console.error("❌ Error en Stripe:", error);
-        return res.status(500).json({
-            error: "Hubo un problema procesando el pago",
-            detalles: error.message
-        });
-    }
-});
-
-app.post('/agregar-al-carrito', verificarToken, async (req, res) => {
-    const { cursoId } = req.body;
-    const usuarioId = req.user.id;
-
-    if (!usuarioId || !cursoId) {
-        return res.status(400).json({ error: "Faltan datos en la solicitud." });
-    }
-
-    try {
-        const [existing] = await db.query(
-            'SELECT * FROM cursos_comprados WHERE usuario_id = ? AND curso_id = ?',
-            [usuarioId, cursoId]
-        );
-
-        if (existing.length > 0) {
-            return res.status(200).json({
-                message: "El curso ya fue agregado previamente.",
-                redirectUrl: `/curso${cursoId}.html`
-            });
-        }
-
-        await db.query(
-            'INSERT INTO cursos_comprados (usuario_id, curso_id) VALUES (?, ?)',
-            [usuarioId, cursoId]
-        );
-
-        const [curso] = await db.query(
-            'SELECT url_contenido FROM cursos WHERE id = ?',
-            [cursoId]
-        );
-
-        const url = curso[0]?.url_contenido || '/perfil';
-
-        return res.status(200).json({
-            message: "Curso agregado correctamente",
-            redirectUrl: url
-        });
-
-    } catch (error) {
-        console.error("❌ Error al agregar curso gratuito:", error);
-        return res.status(500).json({
-            error: "Error interno del servidor."
-        });
-    }
-});
-
-app.get('/success', async (req, res) => {
-    const sessionId = req.query.session_id;
-
-    if (!sessionId) {
-        return res.status(400).json({ error: "No session ID provided." });
-    }
-
-    try {
-        const session = await stripe.checkout.sessions.retrieve(sessionId);
-        const userEmail = session.customer_email;
-
-        db.query('SELECT id FROM usuarios WHERE email = ?', [userEmail], async (err, results) => {
-            if (err || results.length === 0) {
-                return res.status(500).json({ error: "Usuario no encontrado." });
-            }
-
-            const usuarioId = results[0].id;
-            const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
-
-            const insertarCurso = (cursoId, stripeSessionId, estado) => {
-                return new Promise((resolve, reject) => {
-                    db.query(
-                        'INSERT INTO pagos (usuario_id, curso_id, stripe_session_id, estado, fecha, fecha_pago, estado_pago) VALUES (?, ?, ?, ?, NOW(), NOW(), ?)',
-                        [usuarioId, cursoId, stripeSessionId, estado, 'completado'],
-                        (err) => {
-                            if (err) reject(err);
-                            else resolve();
-                        }
-                    );
-                });
-            };
-
-            for (const item of lineItems.data) {
-                const precioId = item.price.id;
-                db.query('SELECT id FROM cursos WHERE stripe_price_id = ?', [precioId], async (err, result) => {
-                    if (result && result.length > 0) {
-                        const cursoId = result[0].id;
-                        const stripeSessionId = session.id;
-                        const estado = 'completado';
-                        await insertarCurso(cursoId, stripeSessionId, estado);
-                    }
-                });
-            }
-
-            res.json({ email: userEmail });
-        });
-
-    } catch (error) {
-        console.error('Error al verificar el pago:', error);
-        res.status(500).json({ error: "Error al verificar el pago." });
-    }
-});
-
-app.get('/cancel', (req, res) => {
-    res.send("El pago fue cancelado. <a href='/'>Volver al inicio</a>");
-});
-
-
-app.post('/marcar-completado', authMiddleware, (req, res) => {
-    console.log('📥 Datos recibidos en /marcar-completado:', req.body);
-
-    const { video_id, cursoId } = req.body;
-
-    if (!video_id || !cursoId) {
-        return res.status(400).json({ error: 'Faltan datos en la solicitud' });
-    }
-
-    // Primero verificamos si ya existe el registro
-    const selectQuery = `
-        SELECT 1 FROM lecciones_completadas 
-        WHERE usuario_id = ? AND curso_id = ? AND video_id = ?
-    `;
-
-    db.query(selectQuery, [req.user.id, cursoId, video_id], (err, results) => {
-        if (err) {
-            console.error('❌ Error al verificar duplicado:', err.message);
-            return res.status(500).json({ error: 'Error al verificar el progreso' });
-        }
-        console.log('Resultados SELECT:', results); // <--- Añade esto para debug
-
-        if (results.length > 0) {
-            console.log('ℹ️ El video ya estaba marcado como completado');
-            return res.status(200).json({ message: 'Ya estaba completado' });
-        }
-
-        // Si no está marcado, lo insertamos
-        const insertQuery = `
-            INSERT INTO lecciones_completadas (usuario_id, curso_id, video_id)
-            VALUES (?, ?, ?)
-        `;
-
-        db.query(insertQuery, [req.user.id, cursoId, video_id], (err, result) => {
-            if (err) {
-                console.error('❌ Error al insertar:', err.message);
-                return res.status(500).json({ error: 'Error al marcar como completado' });
-            }
-
-            console.log('✅ Video marcado como completado');
-            res.status(200).json({ message: 'Video marcado como completado' });
-        });
-    });
-});
-app.get('/progreso', authMiddleware, (req, res) => {
-    console.log('Usuario en /progreso:', req.user);
-    console.log('Curso ID recibido:', req.query.cursoId);
-
-    const usuarioId = req.user.id;
-    const cursoId = req.query.cursoId;
-
-    if (!cursoId) {
-        return res.status(400).json({ error: 'Falta el ID del curso' });
-    }
-
-    const query = `
-        SELECT video_id FROM lecciones_completadas
-        WHERE usuario_id = ? AND curso_id = ?
-    `;
-
-    db.query(query, [usuarioId, cursoId], (err, results) => {
-        if (err) {
-            console.error('❌ Error al consultar progreso:', err.message);
-            return res.status(500).json({ error: 'Error interno del servidor' });
-        }
-
-        const completados = results.map(row => row.video_id);
-        console.log('Progreso retornado:', completados);
-        res.json({ completados });
-    });
-});
-app.get('/api/auth/check', (req, res) => {
-  const token = req.cookies.token;
-
-  if (!token) return res.json({ loggedIn: false });
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return res.json({
-      loggedIn: true,
-      user: {
-        id: decoded.id,
-        nombre: decoded.nombre,
-        email: decoded.email // ✅ aquí obtenemos el email
-      }
-    });
-  } catch (error) {
-    return res.json({ loggedIn: false });
-  }
-});
-
-
-app.post("/webhook/stripe",
-  bodyParser.raw({ type: "application/json" }),
-  (req, res) => {
-    const sig = req.headers["stripe-signature"];
-    let event;
-
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-    } catch (err) {
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    if (event.type === "checkout.session.completed") {
-      const s = event.data.object;
-      const userId = s.metadata.user_id;
-      const cursoId = s.metadata.curso_id;
-
-      // Insertamos la sesión de coaching como pendiente de agendar
-      db.query(
-        `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado)
-         VALUES (?, ?, ?, 'pagado')`,
-        [userId, cursoId, s.payment_intent]
-      );
-    }
-
-    res.json({ received: true });
-  }
-);
-
+// Crear checkout
 app.post("/create-checkout-session", async (req, res) => {
   const { userId, cursoId, fecha, hora } = req.body;
 
-  // Validación básica
   if (!userId || !cursoId || !fecha || !hora) {
     return res.status(400).send("Faltan datos: userId, cursoId, fecha u hora");
   }
@@ -530,36 +239,24 @@ app.post("/create-checkout-session", async (req, res) => {
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-
       line_items: [
-        {
-          price: "price_XXXXX", // Reemplaza con el ID de tu precio de Stripe
-          quantity: 1,
-        },
+        { price: "price_XXXXX", quantity: 1 },
       ],
-
       mode: "payment",
       success_url: "https://autoconocimientoygratitud.com/success.html?session_id={CHECKOUT_SESSION_ID}",
       cancel_url: "https://autoconocimientoygratitud.com/cancel.html",
-
       client_reference_id: userId,
-
-      metadata: {
-        user_id: userId,
-        curso_id: cursoId,
-        fecha: fecha, // fecha seleccionada por el usuario
-        hora: hora,   // hora seleccionada por el usuario
-      },
+      metadata: { user_id: userId, curso_id: cursoId, fecha, hora }
     });
 
-    // Devuelve la URL para redirigir al usuario
     res.json({ url: session.url });
   } catch (err) {
     console.error("Error creando sesión de Checkout:", err);
     res.status(500).send("Error creando sesión de pago");
   }
 });
-// GET /citas-ocupadas
+
+// ----------------- RUTA CITAS OCUPADAS -----------------
 app.get("/citas-ocupadas", (req, res) => {
   const query = `
     SELECT fecha, hora
@@ -571,7 +268,6 @@ app.get("/citas-ocupadas", (req, res) => {
   db.query(query, (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
 
-    // Convertimos el resultado a { fecha: [hora, hora, ...] }
     const busy = {};
     rows.forEach(row => {
       if (!busy[row.fecha]) busy[row.fecha] = [];
@@ -584,8 +280,8 @@ app.get("/citas-ocupadas", (req, res) => {
   });
 });
 
+// ----------------- LISTEN -----------------
 app.listen(PORT, () => {
     const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
     console.log(`Servidor corriendo en ${baseUrl}`);
 });
-
