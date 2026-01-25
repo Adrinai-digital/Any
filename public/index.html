@@ -336,7 +336,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let busySlotsByDate = {};
 
   // Traemos las citas pagadas del backend
-  fetch("/citas-ocupadas")
+  fetch("https://autoconocimientoygratitud.com/citas-ocupadas")
     .then(res => res.json())
     .then(data => {
       busySlotsByDate = data;
