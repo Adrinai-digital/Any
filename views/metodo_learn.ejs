@@ -16,18 +16,23 @@
  Estas son tus citas para este curso:
  </p>
 
+ <% const ahora = new Date(); %>
+
  <div class="citas-list">
  <% if (!citas || citas.length === 0) { %>
  <p class="citas-empty">No tienes citas agendadas aún.</p>
  <% } else { %>
- <% citas.forEach(cita => { %>
+ <% citas.forEach(cita => { 
+ const fechaCita = new Date(cita.fecha);
+ const esPasada = fechaCita < ahora;
+ %>
  <div class="cita-item">
  <div class="cita-header">
  <div class="cita-fecha-hora">
  <p class="cita-fecha">
  <span class="label">Fecha:</span>
  <span class="value">
- <%= new Date(cita.fecha).toLocaleDateString('es-ES') %>
+ <%= fechaCita.toLocaleDateString('es-ES') %>
  </span>
  </p>
  <p class="cita-hora">
@@ -38,6 +43,10 @@
 
  <div class="cita-estado-wrapper">
  <span class="label">Estado:</span>
+
+ <% if (esPasada) { %>
+ <span class="cita-estado estado-finalizada">✅ Finalizada</span>
+ <% } else { %>
  <span class="cita-estado
  <% if (cita.estado === 'pagado') { %> estado-confirmada <% } %>
  <% if (cita.estado === 'pendiente') { %> estado-pendiente <% } %>
@@ -51,6 +60,7 @@
  🔴 Cancelada
  <% } %>
  </span>
+ <% } %>
  </div>
  </div>
 
@@ -67,7 +77,6 @@
 
  <a href="/perfil" class="btn btn-secondary volver-perfil">← Volver a mi perfil</a>
 </div>
-
 
 </body>
 </html>

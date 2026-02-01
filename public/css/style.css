@@ -657,6 +657,10 @@ h2{
 .btn.btn-secondary.volver-perfil:hover {
  background: #e5e7eb;
 }
+.estado-finalizada {
+ background: #e0f2fe;
+ color: #075985;
+}
 
 /* Responsive */
 @media (max-width: 600px) {
