@@ -336,13 +336,14 @@ document.addEventListener("DOMContentLoaded", function () {
   let busySlotsByDate = {};
 
   // Traemos las citas pagadas del backend
-fetch("/api/citas/ocupadas") // ✅ ruta correcta en producción
+fetch("/api/citas/ocupadas", {
+  credentials: "include" // importante si usas cookies para auth
+})
   .then(res => res.json())
   .then(data => {
-    console.log("Citas ocupadas:", data); // para verificar que llega la info
+    console.log("Citas ocupadas:", data);
     busySlotsByDate = data;
 
-    // 🔹 Re-renderizamos los slots de cada caja si ya hay fechas seleccionadas
     document.querySelectorAll(".box").forEach(box => {
       const fechaInput = box.querySelector(".fecha");
       if (fechaInput.value) {
@@ -351,6 +352,7 @@ fetch("/api/citas/ocupadas") // ✅ ruta correcta en producción
     });
   })
   .catch(err => console.error("Error cargando citas ocupadas:", err));
+
 
 
   /* ================= UTILIDADES ================= */

@@ -226,6 +226,27 @@ router.get("/ocupadas", async (req, res) => {
   }
 });
 
+// GET /api/citas/ocupadas
+router.get("/ocupadas", authMiddleware, (req, res) => {
+  const query = `
+    SELECT fecha, hora
+    FROM citas
+    WHERE estado = 'pagado'
+      AND fecha IS NOT NULL
+  `;
+
+  db.query(query, (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    const busy = {};
+    rows.forEach(row => {
+      if (!busy[row.fecha]) busy[row.fecha] = [];
+      busy[row.fecha].push(row.hora.slice(0,5)); // solo HH:MM
+    });
+
+    res.json(busy);
+  });
+});
 
 
 
