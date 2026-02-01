@@ -8,26 +8,36 @@
 </head>
 <body>
 
-<div class="container">
-  <h1>Método Learn</h1>
+<div class="container citas-container">
+  <h1 class="page-title">Método Learn</h1>
 
-  <p>
+  <p class="citas-intro">
     Hola, <strong><%= usuario.nombre %></strong>.  
     Estas son tus citas para este curso:
   </p>
 
   <div class="citas-list">
     <% if (!citas || citas.length === 0) { %>
-      <p>No tienes citas agendadas aún.</p>
+      <p class="citas-empty">No tienes citas agendadas aún.</p>
     <% } else { %>
       <% citas.forEach(cita => { %>
         <div class="cita-item">
+      <div class="cita-header">
+      <div class="cita-fecha-hora">
+      <p class="cita-fecha">
+      <span class="label">Fecha:</span>
+      <span class="value">
           <p><strong>Fecha:</strong>
             <%= new Date(cita.fecha).toLocaleDateString('es-ES') %>
           </p>
-
+          <p class="cita-hora">
+          <span class="label">Hora:</span>
+          <span class="value"><%= cita.hora %></span>
+          </p>
           <p><strong>Hora:</strong> <%= cita.hora %></p>
-
+           <div class="cita-estado-wrapper">
+          <span class="label">Estado:</span>
+          <span class="cita-estado 
           <p><strong>Estado:</strong>
             <% if (cita.estado === 'pagado') { %>
               🟢 Confirmada
@@ -39,14 +49,16 @@
           </p>
 
           <% if (cita.observaciones) { %>
-            <p><strong>Observaciones:</strong> <%= cita.observaciones %></p>
+            <p class="cita-observaciones">
+            <span class="label">Observaciones:</span>
+            <p><strong>Observaciones:</strong> <span class="value"></span><%= cita.observaciones %></p>
           <% } %>
         </div>
       <% }) %>
     <% } %>
   </div>
 
-  <a href="/perfil" class="btn">← Volver a mi perfil</a>
+  <a href="/perfil" class="btn btn-secondary volver-perfil">← Volver a mi perfil</a>
 </div>
 
 </body>

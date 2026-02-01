@@ -530,6 +530,150 @@ h2{
 .slot-icon {
  font-size: 0.9em;
 }
+/* Contenedor general de la página de citas */
+.citas-container {
+ max-width: 800px;
+ margin: 40px auto;
+ padding: 24px;
+ background: #ffffff;
+ border-radius: 12px;
+ box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.page-title {
+ font-size: 2rem;
+ margin-bottom: 8px;
+ text-align: center;
+}
+
+.citas-intro {
+ text-align: center;
+ color: #555;
+ margin-bottom: 24px;
+}
+
+/* Lista de citas */
+.citas-list {
+ display: flex;
+ flex-direction: column;
+ gap: 16px;
+ margin-bottom: 24px;
+}
+
+.citas-empty {
+ text-align: center;
+ color: #777;
+}
+
+/* Tarjeta de cita */
+.cita-item {
+ background: #f9fafb;
+ border-radius: 10px;
+ padding: 16px 18px;
+ border: 1px solid #e5e7eb;
+ display: flex;
+ flex-direction: column;
+ gap: 8px;
+}
+
+/* Cabecera de la cita: fecha/hora + estado */
+.cita-header {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.cita-fecha-hora {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 12px 24px;
+}
+
+.cita-fecha,
+.cita-hora,
+.cita-observaciones {
+ margin: 0;
+}
+
+.cita-observaciones {
+ margin-top: 6px;
+}
+
+/* Etiquetas y valores */
+.label {
+ font-weight: 600;
+ color: #374151;
+ margin-right: 4px;
+}
+
+.value {
+ color: #111827;
+}
+
+/* Estado con pill (pastilla) de color */
+.cita-estado-wrapper {
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+
+.cita-estado {
+ padding: 4px 10px;
+ border-radius: 999px;
+ font-size: 0.85rem;
+ font-weight: 600;
+}
+
+/* Colores para cada estado */
+.estado-confirmada {
+ background: #dcfce7;
+ color: #166534;
+}
+
+.estado-pendiente {
+ background: #fef3c7;
+ color: #92400e;
+}
+
+.estado-cancelada {
+ background: #fee2e2;
+ color: #b91c1c;
+}
+
+/* Botón volver */
+.volver-perfil {
+ display: inline-block;
+ margin-top: 8px;
+}
+
+.btn.btn-secondary.volver-perfil {
+ background: #f3f4f6;
+ color: #111827;
+ border: 1px solid #d1d5db;
+}
+
+.btn.btn-secondary.volver-perfil:hover {
+ background: #e5e7eb;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+ .citas-container {
+ margin: 16px;
+ padding: 16px;
+ }
+
+ .cita-header {
+ align-items: flex-start;
+ }
+
+ .cita-fecha-hora {
+ flex-direction: column;
+ gap: 4px;
+ }
+}
 
 
 @media (max-width: 768px) {
