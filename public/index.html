@@ -411,23 +411,20 @@ document.addEventListener("DOMContentLoaded", function () {
       div.classList.add("slot");
 
       if (busy.includes(time)) {
- div.classList.add("busy"); // clase roja
- div.style.cursor = "not-allowed"; // 🔒 cursor bloqueado
+        div.classList.add("busy"); // 🔴 Hora ocupada
+      } else {
+        div.classList.add("free");
+        div.addEventListener("click", () => {
+          container.querySelectorAll(".slot.selected")
+            .forEach(el => el.classList.remove("selected"));
+          div.classList.add("selected");
+          horaInput.value = time;
+        });
+      }
 
- div.addEventListener("click", () => {
- // Opcional: pequeño aviso, igual que los fines de semana
- alert("Esta hora ya está reservada. Elige otra franja horaria.");
- });
-} else {
- div.classList.add("free");
- div.style.cursor = "pointer";
- div.addEventListener("click", () => {
- container.querySelectorAll(".slot.selected")
- .forEach(el => el.classList.remove("selected"));
- div.classList.add("selected");
- horaInput.value = time;
- });
-}
+      container.appendChild(div);
+    });
+  }
 
   /* ================= CALENDARIO ================= */
   document.querySelectorAll(".box").forEach(box => {
