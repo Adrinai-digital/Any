@@ -336,29 +336,41 @@ document.addEventListener("DOMContentLoaded", function () {
   let busySlotsByDate = {};
 
   // Traemos las citas pagadas del backend
-  fetch("/api/citas/ocupadas", {
-    credentials: "include" // importante si usas cookies para auth
-  })
-    .then(res => res.json())
-    .then(data => {
-      console.log("Citas ocupadas desde backend:", data);
-      busySlotsByDate = data;
+  fetch("/api/citas/ocupadas", { credentials: "include" })
+ .then(res => res.json())
+ .then(data => {
+ console.log("Citas ocupadas desde backend (raw):", data);
 
-      // 🔥 FIX 2: forzar repintado de calendarios ya creados
-      document.querySelectorAll(".fecha").forEach(input => {
-        if (input._flatpickr) {
-          input._flatpickr.redraw();
-        }
-      });
+ // 🔄 Normalizar: claves Date -> "YYYY-MM-DD" y horas "HH:MM"
+ const normalizado = {};
 
-      document.querySelectorAll(".box").forEach(box => {
-        const fechaInput = box.querySelector(".fecha");
-        if (fechaInput.value) {
-          renderSlots(box, fechaInput.value);
-        }
-      });
-    })
-    .catch(err => console.error("Error cargando citas ocupadas:", err));
+ Object.keys(data).forEach(key => {
+ const dateObj = new Date(key); // key es "Thu Jan 01 2026 00:00:00 GMT+0000 ..."
+ const yyyy = dateObj.getFullYear();
+ const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+ const dd = String(dateObj.getDate()).padStart(2, "0");
+ const fechaStr = `${yyyy}-${mm}-${dd}`; // "2026-01-01"
+
+ const horas = data[key].map(h => h.slice(0, 5)); // "09:00:00" -> "09:00"
+ normalizado[fechaStr] = horas;
+ });
+
+ busySlotsByDate = normalizado;
+ console.log("Citas ocupadas normalizadas:", busySlotsByDate);
+
+ document.querySelectorAll(".fecha").forEach(input => {
+ if (input._flatpickr) input._flatpickr.redraw();
+ });
+
+ document.querySelectorAll(".box").forEach(box => {
+ const fechaInput = box.querySelector(".fecha");
+ if (fechaInput && fechaInput.value) {
+ renderSlots(box, fechaInput.value);
+ }
+ });
+ })
+ .catch(err => console.error("Error cargando citas ocupadas:", err));
+
 
   /* ================= UTILIDADES ================= */
   function generateSlots(start, end, stepMinutes) {
