@@ -324,7 +324,7 @@
     <script src="https://kit.fontawesome.com/342eeb73cc.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
-   <script>
+  <script>
 document.addEventListener("DOMContentLoaded", function () {
 
   /* ================= CONFIGURACIÓN ================= */
@@ -336,24 +336,29 @@ document.addEventListener("DOMContentLoaded", function () {
   let busySlotsByDate = {};
 
   // Traemos las citas pagadas del backend
-fetch("/api/citas/ocupadas", {
-  credentials: "include" // importante si usas cookies para auth
-})
-  .then(res => res.json())
-  .then(data => {
-    console.log("Citas ocupadas:", data);
-    busySlotsByDate = data;
-
-    document.querySelectorAll(".box").forEach(box => {
-      const fechaInput = box.querySelector(".fecha");
-      if (fechaInput.value) {
-        renderSlots(box, fechaInput.value);
-      }
-    });
+  fetch("/api/citas/ocupadas", {
+    credentials: "include" // importante si usas cookies para auth
   })
-  .catch(err => console.error("Error cargando citas ocupadas:", err));
+    .then(res => res.json())
+    .then(data => {
+      console.log("Citas ocupadas:", data);
+      busySlotsByDate = data;
 
+      // 🔥 FIX 2: forzar repintado de calendarios ya creados
+      document.querySelectorAll(".fecha").forEach(input => {
+        if (input._flatpickr) {
+          input._flatpickr.redraw();
+        }
+      });
 
+      document.querySelectorAll(".box").forEach(box => {
+        const fechaInput = box.querySelector(".fecha");
+        if (fechaInput.value) {
+          renderSlots(box, fechaInput.value);
+        }
+      });
+    })
+    .catch(err => console.error("Error cargando citas ocupadas:", err));
 
   /* ================= UTILIDADES ================= */
   function generateSlots(start, end, stepMinutes) {
@@ -406,8 +411,7 @@ fetch("/api/citas/ocupadas", {
       container.appendChild(div);
     });
   }
-  
-  
+
   /* ================= CALENDARIO ================= */
   document.querySelectorAll(".box").forEach(box => {
     const fechaInput = box.querySelector(".fecha");
@@ -429,7 +433,10 @@ fetch("/api/citas/ocupadas", {
 
       onDayCreate: function (dObj, dStr, fp, dayElem) {
         const dateObj = dayElem.dateObj;
-        const dateStr = dateObj.toISOString().split("T")[0];
+
+        // 🔥 FIX 1: usar fecha LOCAL (NO toISOString)
+        const dateStr = fp.formatDate(dateObj, "Y-m-d");
+
         const day = dateObj.getDay();
 
         // 🟤 Fin de semana
