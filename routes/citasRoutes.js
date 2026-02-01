@@ -201,6 +201,37 @@ router.post("/confirmar", authMiddleware, (req, res) => {
   );
 });
 
+/* -------------------- CITAS OCUPADAS (HORAS PAGADAS) -------------------- */
+router.get("/ocupadas", (req, res) => {
+  const query = `
+    SELECT fecha, hora
+    FROM citas
+    WHERE estado = 'pagado'
+      AND fecha IS NOT NULL
+      AND hora IS NOT NULL
+  `;
+
+  db.query(query, (err, rows) => {
+    if (err) {
+      console.error("❌ Error obteniendo citas ocupadas:", err);
+      return res.status(500).json({ error: "Error obteniendo citas ocupadas" });
+    }
+
+    // { "2026-03-09": ["10:00:00", "11:00:00"] }
+    const busySlotsByDate = {};
+
+    rows.forEach(row => {
+      if (!busySlotsByDate[row.fecha]) {
+        busySlotsByDate[row.fecha] = [];
+      }
+      busySlotsByDate[row.fecha].push(row.hora);
+    });
+
+    res.json(busySlotsByDate);
+  });
+});
+
+
 
 
 module.exports = router;
