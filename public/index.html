@@ -380,7 +380,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!dateStr) return;
 
-    const busy = busySlotsByDate[dateStr] || [];
+    const busy = (busySlotsByDate[dateStr] || []).map(h => h.slice(0,5));
 
     allSlots.forEach(time => {
       const div = document.createElement("div");
