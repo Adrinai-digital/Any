@@ -393,38 +393,52 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ================= RENDER HORAS ================= */
   function renderSlots(box, dateStr) {
-    console.log("renderSlots() dateStr:", dateStr); // 👈
-    console.log("busySlotsByDate[dateStr]:", busySlotsByDate[dateStr]); // 👈
-    const container = box.querySelector(".time-slots");
-    const horaInput = box.querySelector(".hora");
+ console.log("renderSlots() dateStr:", dateStr);
+ console.log("busySlotsByDate[dateStr]:", busySlotsByDate[dateStr]);
 
-    container.innerHTML = "";
-    horaInput.value = "";
+ const container = box.querySelector(".time-slots");
+ const horaInput = box.querySelector(".hora");
 
-    if (!dateStr) return;
+ container.innerHTML = "";
+ horaInput.value = "";
 
-    const busy = (busySlotsByDate[dateStr] || []).map(h => h.slice(0,5));
+ if (!dateStr) return;
 
-    allSlots.forEach(time => {
-      const div = document.createElement("div");
-      div.textContent = time;
-      div.classList.add("slot");
+ // Tu lógica: ocupadas ya normalizadas a "HH:MM"
+ const busy = (busySlotsByDate[dateStr] || []).map(h => h.slice(0, 5));
 
-      if (busy.includes(time)) {
-        div.classList.add("busy"); // 🔴 Hora ocupada
-      } else {
-        div.classList.add("free");
-        div.addEventListener("click", () => {
-          container.querySelectorAll(".slot.selected")
-            .forEach(el => el.classList.remove("selected"));
-          div.classList.add("selected");
-          horaInput.value = time;
-        });
-      }
+ allSlots.forEach(time => {
+ const div = document.createElement("div");
+ div.textContent = time;
+ div.classList.add("slot");
 
-      container.appendChild(div);
-    });
-  }
+ if (busy.includes(time)) {
+ div.classList.add("busy"); // 🔴 Hora ocupada
+
+ // 👇 Al hacer click en una hora ocupada, mostramos/quitamos el icono 🚫
+ div.addEventListener("click", () => {
+ if (!div.dataset.marked) {
+ div.innerHTML = `${time} <span class="slot-icon">🚫</span>`;
+ div.dataset.marked = "1";
+ } else {
+ div.textContent = time;
+ delete div.dataset.marked;
+ }
+ });
+ } else {
+ div.classList.add("free");
+ div.addEventListener("click", () => {
+ container.querySelectorAll(".slot.selected")
+ .forEach(el => el.classList.remove("selected"));
+ div.classList.add("selected");
+ horaInput.value = time;
+ });
+ }
+
+ container.appendChild(div);
+ });
+}
+
 
   /* ================= CALENDARIO ================= */
   document.querySelectorAll(".box").forEach(box => {

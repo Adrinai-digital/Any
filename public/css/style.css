@@ -520,6 +520,17 @@ h2{
   outline: 3px solid #000;
 }
 
+.slot {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 4px;
+}
+
+.slot-icon {
+ font-size: 0.9em;
+}
+
 
 @media (max-width: 768px) {
     .menu {
