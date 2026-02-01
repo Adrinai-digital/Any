@@ -202,7 +202,29 @@ router.post("/confirmar", authMiddleware, (req, res) => {
 });
 
 /* -------------------- CITAS OCUPADAS (HORAS PAGADAS) -------------------- */
+// 🔴 Devuelve todas las citas pagadas (para calendario)
+router.get("/ocupadas", async (req, res) => {
+  try {
+    const [rows] = await new Promise((resolve, reject) => {
+      db.query(
+        `SELECT fecha, hora FROM citas WHERE estado='pagado' AND fecha IS NOT NULL`,
+        (err, result) => err ? reject(err) : resolve([result])
+      );
+    });
 
+    // Convertimos a { fecha: [hora, hora, ...] }
+    const busy = {};
+    rows.forEach(row => {
+      if (!busy[row.fecha]) busy[row.fecha] = [];
+      busy[row.fecha].push(row.hora.slice(0,5)); // solo HH:MM
+    });
+
+    res.json(busy);
+  } catch (err) {
+    console.error("❌ Error obteniendo citas ocupadas:", err);
+    res.status(500).json({ error: "Error al obtener citas ocupadas" });
+  }
+});
 
 // GET /api/citas/ocupadas
 router.get("/ocupadas", authMiddleware, (req, res) => {
