@@ -6,7 +6,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
+console.log("🔥 citasRoutes cargado");
 /* -------------------- CONFIGURACIÓN EMAIL -------------------- */
 const transporter = nodemailer.createTransport({
   host: "smtp.tuservidor.com",
