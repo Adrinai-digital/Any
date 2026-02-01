@@ -381,6 +381,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ================= RENDER HORAS ================= */
   function renderSlots(box, dateStr) {
+    console.log("renderSlots() dateStr:", dateStr); // 👈
+    console.log("busySlotsByDate[dateStr]:", busySlotsByDate[dateStr]); // 👈
     const container = box.querySelector(".time-slots");
     const horaInput = box.querySelector(".hora");
 
