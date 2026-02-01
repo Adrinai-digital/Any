@@ -202,33 +202,28 @@ router.post("/confirmar", authMiddleware, (req, res) => {
 });
 
 /* -------------------- CITAS OCUPADAS (HORAS PAGADAS) -------------------- */
-router.get("/ocupadas", (req, res) => {
-  const query = `
-    SELECT fecha, hora
-    FROM citas
-    WHERE estado = 'pagado'
-      AND fecha IS NOT NULL
-      AND hora IS NOT NULL
-  `;
-
-  db.query(query, (err, rows) => {
-    if (err) {
-      console.error("❌ Error obteniendo citas ocupadas:", err);
-      return res.status(500).json({ error: "Error obteniendo citas ocupadas" });
-    }
-
-    // { "2026-03-09": ["10:00:00", "11:00:00"] }
-    const busySlotsByDate = {};
-
-    rows.forEach(row => {
-      if (!busySlotsByDate[row.fecha]) {
-        busySlotsByDate[row.fecha] = [];
-      }
-      busySlotsByDate[row.fecha].push(row.hora);
+// 🔴 Devuelve todas las citas pagadas (para calendario)
+router.get("/ocupadas", async (req, res) => {
+  try {
+    const [rows] = await new Promise((resolve, reject) => {
+      db.query(
+        `SELECT fecha, hora FROM citas WHERE estado='pagado' AND fecha IS NOT NULL`,
+        (err, result) => err ? reject(err) : resolve([result])
+      );
     });
 
-    res.json(busySlotsByDate);
-  });
+    // Convertimos a { fecha: [hora, hora, ...] }
+    const busy = {};
+    rows.forEach(row => {
+      if (!busy[row.fecha]) busy[row.fecha] = [];
+      busy[row.fecha].push(row.hora.slice(0,5)); // solo HH:MM
+    });
+
+    res.json(busy);
+  } catch (err) {
+    console.error("❌ Error obteniendo citas ocupadas:", err);
+    res.status(500).json({ error: "Error al obtener citas ocupadas" });
+  }
 });
 
 

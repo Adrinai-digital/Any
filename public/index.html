@@ -336,20 +336,22 @@ document.addEventListener("DOMContentLoaded", function () {
   let busySlotsByDate = {};
 
   // Traemos las citas pagadas del backend
-  fetch("https://autoconocimientoygratitud.com/citas-ocupadas")
-    .then(res => res.json())
-    .then(data => {
-      busySlotsByDate = data;
+fetch("/api/citas/ocupadas") // ✅ ruta correcta en producción
+  .then(res => res.json())
+  .then(data => {
+    console.log("Citas ocupadas:", data); // para verificar que llega la info
+    busySlotsByDate = data;
 
-      // 🔹 Re-renderizamos los slots de cada caja si ya hay fechas seleccionadas
-      document.querySelectorAll(".box").forEach(box => {
-        const fechaInput = box.querySelector(".fecha");
-        if (fechaInput.value) {
-          renderSlots(box, fechaInput.value);
-        }
-      });
-    })
-    .catch(err => console.error("Error cargando citas ocupadas:", err));
+    // 🔹 Re-renderizamos los slots de cada caja si ya hay fechas seleccionadas
+    document.querySelectorAll(".box").forEach(box => {
+      const fechaInput = box.querySelector(".fecha");
+      if (fechaInput.value) {
+        renderSlots(box, fechaInput.value);
+      }
+    });
+  })
+  .catch(err => console.error("Error cargando citas ocupadas:", err));
+
 
   /* ================= UTILIDADES ================= */
   function generateSlots(start, end, stepMinutes) {
