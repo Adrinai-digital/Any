@@ -114,7 +114,7 @@ app.use('/curso', citasRoutes); // para /curso/metodo-learn
 
 // Registro
 app.post('/register', async (req, res) => {
-    const { nombre, email, password } = req.body;
+    const { nombre, email, password, telefono } = req.body;
     if (!nombre || !email || !password) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
@@ -123,8 +123,8 @@ app.post('/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const sql = 'INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)';
-        db.query(sql, [nombre, email, hashedPassword], (err) => {
+        const sql = 'INSERT INTO usuarios (nombre, email, password, telefono) VALUES (?, ?, ?, ?)';
+        db.query(sql, [nombre, email, hashedPassword, telefono || null], (err) => {
             if (err) {
                 console.error('Error en el registro:', err);
                 return res.status(500).json({ error: 'Error al registrar el usuario' });
