@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const db = require('../db');
-
+const { addCalendarEvent } = require("../services/googleCalendar");
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 router.post('/', express.raw({ type: 'application/json' }), async (req, res) => {
@@ -31,6 +31,20 @@ router.post('/', express.raw({ type: 'application/json' }), async (req, res) => 
 
       if (!priceIds.length) {
         console.warn('⚠️ No hay priceIds en metadata. Webhook de prueba o datos incompletos.');
+
+        // ======= GOOGLE CALENDAR (añadir evento) =======
+    const fecha = session.metadata?.fecha;
+    const hora = session.metadata?.hora;
+    const nombre = session.metadata?.nombre || session.customer_email;
+    const telefono = session.metadata?.telefono;
+
+    if (fecha && hora && telefono) {
+    await addCalendarEvent({ fecha, hora, nombre, telefono });
+    } else {
+    console.warn("Faltan datos para Calendar:", { fecha, hora, nombre, telefono });
+}
+// ===============================================
+
         return res.status(200).json({ received: true });
       }
 
