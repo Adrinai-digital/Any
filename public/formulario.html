@@ -35,7 +35,8 @@
                 <input type="text" name="nombre" id="registro-nombre" placeholder="Nombre" required>
                 <input type="email" name="email" id="registro-email" placeholder="Correo" required>
                 <input type="password" name="password" id="registro-password" placeholder="Contraseña" required>
-                <input type="tel" name="telefono" id="registro-telefono" placeholder="Teléfono" pattern="^\+\d{1,3}(?:[ -]?\d){6,14}$">
+                <input type="tel" name="telefono" id="registro-telefono" placeholder="(+34) 123 45 67 89"
+ maxlength="18">
                 <div class="botones">
                     <button type="submit">Registrarse</button>
                     <a href="/" class="btn">Volver al inicio</a>
@@ -70,6 +71,24 @@
                 document.getElementById('login-email').value = email;
                 mostrarFormulario('registro');
             }
+           
+            const tel = document.getElementById('registro-telefono');
+ if (tel) {
+ tel.addEventListener('input', () => {
+ const d = tel.value.replace(/\D/g, '').slice(0, 11);
+ const cc = d.slice(0, 2);
+ const n = d.slice(2);
+
+ let out = '';
+ if (cc.length) out = `(+${cc})`;
+ if (n.length) out += ` ${n.slice(0,3)}`;
+ if (n.length > 3) out += ` ${n.slice(3,5)}`;
+ if (n.length > 5) out += ` ${n.slice(5,7)}`;
+ if (n.length > 7) out += ` ${n.slice(7,9)}`;
+
+ tel.value = out;
+ });
+ }
         };
 
         // Registro con fetch
