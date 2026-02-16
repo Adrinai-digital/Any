@@ -1,7 +1,10 @@
 const { google } = require("googleapis");
 
+const raw = process.env.GOOGLE_CREDENTIALS_JSON;
+if (!raw) throw new Error("Falta GOOGLE_CREDENTIALS_JSON en .env");
+
 const auth = new google.auth.GoogleAuth({
- keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+ credentials: JSON.parse(raw),
  scopes: ["https://www.googleapis.com/auth/calendar"],
 });
 
