@@ -1,6 +1,9 @@
 const { google } = require("googleapis");
 
 const raw = process.env.GOOGLE_CREDENTIALS_JSON;
+
+console.log("GCJ len=", raw?.length, "start=", JSON.stringify((raw||"").slice(0, 10)));
+
 if (!raw) throw new Error("Falta GOOGLE_CREDENTIALS_JSON en .env");
 
 const auth = new google.auth.GoogleAuth({
