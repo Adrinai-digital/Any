@@ -1,7 +1,7 @@
 const { google } = require("googleapis");
 
 const auth = new google.auth.GoogleAuth({
- credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON), // service account JSON en una env
+ keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
  scopes: ["https://www.googleapis.com/auth/calendar"],
 });
 
@@ -9,7 +9,7 @@ async function addCalendarEvent({ fecha, hora, nombre, telefono }) {
  const calendar = google.calendar({ version: "v3", auth });
 
  const start = new Date(`${fecha}T${hora}:00`);
- const end = new Date(start.getTime() + 30 * 60 * 1000); // ajusta duración
+ const end = new Date(start.getTime() + 30 * 60 * 1000);
 
  return calendar.events.insert({
  calendarId: process.env.GCAL_CALENDAR_ID,
