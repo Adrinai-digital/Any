@@ -1,5 +1,5 @@
 const { google } = require("googleapis");
-const creds = JSON.parse(Buffer.from(process.env.GOOGLE_CREDENTIALS_B64, 'base64').toString('utf8'));
+
 const raw = process.env.GOOGLE_CREDENTIALS_JSON;
 if (!raw) throw new Error("Falta GOOGLE_CREDENTIALS_JSON en .env");
 
