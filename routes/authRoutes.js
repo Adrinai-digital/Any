@@ -222,7 +222,7 @@ const transporter = nodemailer.createTransport({
 async function enviarAviso(cita) {
   await transporter.sendMail({
     from: `"Tu Web" <${process.env.EMAIL_USER}>`,
-    to: "tucorreo@gmail.com",
+    to: "info@autoconocimientoygratitud.com",
     subject: "Nueva cita agendada",
     html: `
       <p>Se ha agendado una cita:</p>
@@ -279,8 +279,8 @@ router.post("/crear-pago-cita", authMiddleware, async (req, res) => {
         fecha,
         hora
       },
-      success_url: "https://tusitio.com/perfil",
-      cancel_url: "https://tusitio.com/cancelado"
+      success_url: "https://autoconocimientoygratitud.com/perfil",
+      cancel_url: "https://autoconocimientoygratitud.com/cancelado"
     });
 
     // Guardar cita pendiente en DB

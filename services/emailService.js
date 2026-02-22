@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 async function enviarAviso(cita) {
   await transporter.sendMail({
     from: `"Tu Web" <${process.env.EMAIL_USER}>`,
-    to: "tucorreo@gmail.com",
+    to: "info@autoconocimientoygratitud.com",
     subject: "Nueva cita agendada",
     html: `
       <p>Se ha agendado una cita:</p>
