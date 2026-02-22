@@ -31,5 +31,47 @@ router.post('/create-checkout-session', async (req, res) => {
         res.status(500).json({ error: 'Error al crear la sesión de pago' });
     }
 });
+// paymentRoutes.js
+router.post('/crear-checkout', async (req, res) => {
+    try {
+        const { productos, userEmail, cita } = req.body;
 
+        if (!productos || !userEmail) {
+            return res.status(400).json({ error: 'Faltan datos obligatorios' });
+        }
+
+        const lineItems = productos.map(item => ({
+            price: item.priceId,
+            quantity: item.cantidad,
+        }));
+
+        const sessionData = {
+            payment_method_types: ['card'],
+            line_items: lineItems,
+            mode: 'payment',
+            customer_email: userEmail,
+            success_url: `${process.env.BASE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.BASE_URL}/cancel.html`,
+        };
+
+        // Si es Método Learn, pasamos metadata con fecha, hora y teléfono
+        if (cita) {
+            sessionData.metadata = {
+                curso_id: cita.curso_id,
+                fecha: cita.fecha,
+                hora: cita.hora,
+                telefono: cita.telefono || ''
+            };
+        }
+
+        const session = await stripe.checkout.sessions.create(sessionData);
+
+        console.log("✅ Stripe session creada:", session);
+
+        res.json({ url: session.url });
+    } catch (error) {
+        console.error("❌ Error en /crear-checkout:", error);
+        res.status(500).json({ error: 'Error al crear la sesión de pago' });
+    }
+});
 module.exports = router;
