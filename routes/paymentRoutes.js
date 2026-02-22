@@ -74,4 +74,6 @@ router.post('/crear-checkout', async (req, res) => {
         res.status(500).json({ error: 'Error al crear la sesión de pago' });
     }
 });
+
+
 module.exports = router;

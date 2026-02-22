@@ -17,7 +17,7 @@ const citasRoutes = require('./routes/citasRoutes');
 const PORT = process.env.PORT || 3000;
 const express = require('express');
 const app = express();
-
+const paymentRoutes = require('./routes/paymentRoutes');
 // ---------------- MIDDLEWARES ----------------
 app.use((req, res, next) => {
   console.log("📍 REQUEST:", req.method, req.originalUrl);
@@ -61,6 +61,7 @@ const verificarToken = (req, res, next) => {
 // ----------------- WEBHOOK STRIPE -----------------
 const stripeWebhook = require('./routes/stripe-webhook');
 app.use('/webhook', stripeWebhook);
+app.use('/', paymentRoutes);
 
 app.post("/webhook/stripe",
   bodyParser.raw({ type: "application/json" }),
@@ -111,7 +112,6 @@ app.post("/webhook/stripe",
 // ----------------- RUTAS -----------------
 app.use('/api/citas', citasRoutes);
 app.use('/curso', citasRoutes); // para /curso/metodo-learn
-
 // Registro
 app.post('/register', async (req, res) => {
     const { nombre, email, password, telefono } = req.body;
