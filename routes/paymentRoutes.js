@@ -1,36 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const stripe = require('../stripe'); // Asegúrate de que la ruta sea correcta
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-// Crear un PaymentIntent (si se usa el método tradicional con clientSecret)
-router.post('/checkout', async (req, res) => {
-    try {
-        const { amount, currency, paymentMethodId } = req.body;
-
-        if (!amount || !currency || !paymentMethodId) {
-            return res.status(400).json({ error: 'Faltan datos obligatorios' });
-        }
-
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount,
-            currency,
-            payment_method: paymentMethodId,
-            confirm: true,
-            confirmation_method: 'manual',
-            return_url: `${process.env.BASE_URL}/payment-success`,  // Cambiado a producción
-        });
-
-        res.json({
-            success: true,
-            clientSecret: paymentIntent.client_secret,
-        });
-    } catch (error) {
-        console.error('❌ Error al crear PaymentIntent:', error);
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// Crear una sesión de Stripe Checkout (el flujo más sencillo para cursos)
+// Crear una sesión de Stripe Checkout
 router.post('/create-checkout-session', async (req, res) => {
     const { items, userEmail } = req.body;
 
