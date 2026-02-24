@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+exports.stripe = stripe;
 const prices = await Promise.all(productos.map(p => stripe.prices.retrieve(p.priceId)));
 const hasRecurring = prices.some(pr => pr.type === "recurring");
 const hasOneTime = prices.some(pr => pr.type === "one_time");
@@ -11,23 +12,11 @@ if (hasRecurring && hasOneTime) {
 
 const mode = hasRecurring ? "subscription" : "payment";
 
-const session = await stripe.checkout.sessions.create({
- payment_method_types: ["card"],
- line_items: lineItems,
- mode,
- customer_email: userEmail,
- success_url: `${process.env.BASE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
- cancel_url: `${process.env.BASE_URL}/cancel.html`,
-});
-
-return res.json({ url: session.url });
-// Crear una sesión de Stripe Checkout
 router.post('/create-checkout-session', async (req, res) => {
  const { items, userEmail } = req.body;
  if (!items || !userEmail) return res.status(400).json({ error: 'Faltan productos o email del usuario' });
 
  const line_items = items.map(item => ({ price: item.priceId, quantity: item.quantity }));
- const modeGuess = items.some(i => String(i.tipo).toLowerCase() === 'suscripcion') ? 'subscription' : 'payment';
 
  const basePayload = {
  line_items,
@@ -40,19 +29,17 @@ router.post('/create-checkout-session', async (req, res) => {
  const modeGuess = items.some(i => String(i.tipo).toLowerCase() === "suscripcion")
  ? "subscription"
  : "payment";
+
  console.log("checkout items:", items.map(i => ({ tipo: i.tipo, priceId: i.priceId })), "modeGuess:", modeGuess);
+
  const session = await stripe.checkout.sessions.create({ ...basePayload, mode: modeGuess });
  return res.json({ url: session.url });
  } catch (e) {
- if (e?.message?.includes('passed a recurring price')) {
- const session = await stripe.checkout.sessions.create({ ...basePayload, mode: 'subscription' });
- return res.json({ url: session.url });
- }
- console.error('❌ Error en /crear-checkout:', e);
- return res.status(500).json({ error: 'Error al crear la sesión de pago' });
+ console.error("❌ Error en /create-checkout-session:", e);
+ return res.status(500).json({ error: "Error al crear la sesión de pago" });
  }
 });
-// paymentRoutes.js
+
 router.post('/crear-checkout', async (req, res) => {
     try {
         const { productos, userEmail, cita } = req.body;
@@ -65,7 +52,7 @@ router.post('/crear-checkout', async (req, res) => {
             price: item.priceId,
             quantity: item.cantidad,
         }));
-         const prices = await Promise.all(productos.map(p => stripe.prices.retrieve(p.priceId)));
+ const prices = await Promise.all(productos.map(p => stripe.prices.retrieve(p.priceId)));
  const hasRecurring = prices.some(pr => pr.type === "recurring");
  const hasOneTime = prices.some(pr => pr.type === "one_time");
 
@@ -76,7 +63,7 @@ router.post('/crear-checkout', async (req, res) => {
         const sessionData = {
             payment_method_types: ['card'],
             line_items: lineItems,
-            mode: 'subscription',
+            mode,
             customer_email: userEmail,
             success_url: `${process.env.BASE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.BASE_URL}/cancel.html`,
