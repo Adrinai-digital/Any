@@ -253,6 +253,7 @@ app.post("/create-checkout-session", (req, res) => {
 
  try {
  const session = await stripe.checkout.sessions.create({
+ mode: 'subscription', // antes: 'payment'
  line_items: [{ price: curso.stripe_price_id, quantity: 1 }],
  mode,
  success_url: "https://autoconocimientoygratitud.com/success.html?session_id={CHECKOUT_SESSION_ID}",
