@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 exports.stripe = stripe;
 const prices = await Promise.all(productos.map(p => stripe.prices.retrieve(p.priceId)));
 const hasRecurring = prices.some(pr => pr.type === "recurring");
