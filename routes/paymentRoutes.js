@@ -18,6 +18,10 @@ router.post('/create-checkout-session', async (req, res) => {
  };
 
  try {
+ const modeGuess = items.some(i => String(i.tipo).toLowerCase() === "suscripcion")
+ ? "subscription"
+ : "payment";
+ console.log("checkout items:", items.map(i => ({ tipo: i.tipo, priceId: i.priceId })), "modeGuess:", modeGuess);
  const session = await stripe.checkout.sessions.create({ ...basePayload, mode: modeGuess });
  return res.json({ url: session.url });
  } catch (e) {
