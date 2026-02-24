@@ -1,7 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const prices = await Promise.all(productos.map(p => stripe.prices.retrieve(p.priceId)));
+const hasRecurring = prices.some(pr => pr.type === "recurring");
+const hasOneTime = prices.some(pr => pr.type === "one_time");
 
+if (hasRecurring && hasOneTime) {
+ return res.status(400).json({ error: "No se pueden mezclar suscripciones y pago único en el mismo checkout." });
+}
+
+const mode = hasRecurring ? "subscription" : "payment";
+
+const session = await stripe.checkout.sessions.create({
+ payment_method_types: ["card"],
+ line_items: lineItems,
+ mode,
+ customer_email: userEmail,
+ success_url: `${process.env.BASE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+ cancel_url: `${process.env.BASE_URL}/cancel.html`,
+});
+
+return res.json({ url: session.url });
 // Crear una sesión de Stripe Checkout
 router.post('/create-checkout-session', async (req, res) => {
  const { items, userEmail } = req.body;
@@ -46,7 +65,14 @@ router.post('/crear-checkout', async (req, res) => {
             price: item.priceId,
             quantity: item.cantidad,
         }));
+         const prices = await Promise.all(productos.map(p => stripe.prices.retrieve(p.priceId)));
+ const hasRecurring = prices.some(pr => pr.type === "recurring");
+ const hasOneTime = prices.some(pr => pr.type === "one_time");
 
+ if (hasRecurring && hasOneTime) {
+ return res.status(400).json({ error: "No se pueden mezclar suscripciones y pago único en el mismo checkout." });
+ }
+    const mode = hasRecurring ? "subscription" : "payment";
         const sessionData = {
             payment_method_types: ['card'],
             line_items: lineItems,
