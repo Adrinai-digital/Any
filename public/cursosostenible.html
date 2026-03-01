@@ -58,6 +58,10 @@
             width: 100%;
             margin: 10px 0;
           }
+          .tab.locked {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
         </style>
         <!-- Cargar la API de YouTube -->
         <script src="https://www.youtube.com/iframe_api"></script>
@@ -81,9 +85,9 @@
 
 <body>
     <div class="tabs">
-        <div class="tab active" onclick="showModule(1)">gratitud</div>
-        <div class="tab" onclick="showModule(2)">Módulo 1</div>
-        <div class="tab" onclick="showModule(3)">Módulo 2</div>
+        <div class="tab active" onclick="showModule(1)"data-module="1">gratitud</div>
+        <div class="tab" onclick="showModule(2)"data-module="2">Módulo 1</div>
+        <div class="tab" onclick="showModule(3)"data-module="3">Módulo 2</div>
         
     </div>
     <div class="whatsapp">
@@ -116,6 +120,7 @@
       <source src="/audios/dia 01 eterno presente/Dia1_tarea.mp3" type="audio/mpeg">
       Tu navegador no soporta audio.
     </audio>
+    data-module="1">
   </div>
 
   <div class="dia">
@@ -130,6 +135,7 @@
       <source src="/audios/dia 02 doy amor/Dia2_tarea.mp3" type="audio/mpeg">
       Tu navegador no soporta audio.
     </audio>
+    data-module="1">
   </div>
 
   <!-- Día 3 -->
@@ -145,6 +151,7 @@
       <source src="/audios/dia 03 me rodeo de pura luz/Dia3_tarea.mp3" type="audio/mpeg">
       Tu navegador no soporta audio.
     </audio>
+    data-module="1">
   </div>
 
   <div class="dia">
@@ -159,6 +166,7 @@
       <source src="/audios/dia 04 soy sanacion/Dia4_tarea.mp3" type="audio/mpeg">
       Tu navegador no soporta audio.
     </audio>
+    data-module="1">
   </div>
   
   <div class="dia">
@@ -173,6 +181,7 @@
       <source src="/audios/dia 05 llena todo vacio/Dia5_tarea.mp3" type="audio/mpeg">
       Tu navegador no soporta audio.
     </audio>
+    data-module="1">
   </div>
 
   <div class="dia">
@@ -187,6 +196,7 @@
       <source src="/audios/dia 06 hoy todo se disuelve/Dia6_tarea.mp3" type="audio/mpeg">
       Tu navegador no soporta audio.
     </audio>
+    data-module="1">
   </div>
 
   <div class="dia">
@@ -201,6 +211,7 @@
       <source src="/audios/dia 07 orden divino/Dia7_tarea.mp3" type="audio/mpeg">
       Tu navegador no soporta audio.
     </audio>
+    data-module="1">
   </div>
 
   <div class="dia">
@@ -215,6 +226,7 @@
       <source src="/audios/dia 08 jesus es mi amigo/Dia8_tarea.mp3" type="audio/mpeg">
       Tu navegador no soporta audio.
     </audio>
+    data-module="1">
   </div>
   <div class="dia">
     <h2>Día 9 – No doy poder</h2>
@@ -228,6 +240,7 @@
       <source src="/audios/dia 09 no doy poder/Dia9_tarea.mp3" type="audio/mpeg">
       Tu navegador no soporta audio.
     </audio>
+    data-module="1">
   </div>
   <div class="dia">
     <h2>Día 10 – Vida espiritual</h2>
@@ -241,6 +254,7 @@
       <source src="/audios/dia 10 vida espiritual/Dia10_tarea.mp3" type="audio/mpeg">
       Tu navegador no soporta audio.
     </audio>
+    data-module="1">
   </div>
     <div class="dia">
         <h2>Día 11 – Sanidad economica</h2>
@@ -254,6 +268,7 @@
         <source src="/audios/dia 11 sanidad economica/Dia11_tarea.mp3" type="audio/mpeg">
         Tu navegador no soporta audio.
         </audio>
+        data-module="1">
     </div>
     <div class="dia">
         <h2>Día 12 – Providion divina</h2>
@@ -267,6 +282,7 @@
         <source src="/audios/dia 12 provision divina/Dia12_tarea.mp3" type="audio/mpeg">
         Tu navegador no soporta audio.
         </audio>
+        data-module="1">
     </div>
     <div class="dia">
         <h2>Día 13 – Fuego Transformador</h2>
@@ -280,6 +296,7 @@
         <source src="/audios/dia 13 fuego tranformador/Dia13_tarea.mp3" type="audio/mpeg">
         Tu navegador no soporta audio.
         </audio>
+        data-module="1">
     </div>
     <div class="dia">
         <h2>Día 14 – Rayo Azul</h2>
@@ -293,6 +310,7 @@
         <source src="/audios/dia 14 rayo azul/Dia14_tarea.mp3" type="audio/mpeg">
         Tu navegador no soporta audio.
         </audio>
+        data-module="1">
     </div>
     <div class="dia">
         <h2>Día 15 – Ilumina mi Prosperidad</h2>
@@ -306,6 +324,7 @@
         <source src="/audios/dia 15 ilumina mi prosperidad/Dia15_tarea.mp3" type="audio/mpeg">
         Tu navegador no soporta audio.
         </audio>
+        data-module="1">
     </div>
     <div class="dia">
         <h2>Día 16 – Soy Resultado del Amor</h2>
@@ -319,6 +338,7 @@
         <source src="/audios/dia 16 soy resultado del amor/Dia16_tarea.mp3" type="audio/mpeg">
         Tu navegador no soporta audio.
         </audio>
+        data-module="1">
     </div>
     <div class="dia">
         <h2>Día 17 – Mi Deber y Respeto</h2>
@@ -332,6 +352,7 @@
         <source src="/audios/dia 17 mi deber y respeto/Dia17_tarea.mp3" type="audio/mpeg">
         Tu navegador no soporta audio.
         </audio>
+        data-module="1">
     </div>
     <div class="dia">
         <h2>Día 18 – Acepto</h2>
@@ -345,6 +366,7 @@
         <source src="/audios/dia 18 acepto/Dia18_tarea.mp3" type="audio/mpeg">
         Tu navegador no soporta audio.
         </audio>
+        data-module="1">
     </div>
     <div class="dia">
         <h2>Día 19 – Magia Amor y Prosperidad</h2>
@@ -358,6 +380,7 @@
         <source src="/audios/dia 19 magia amor y prosperidad/Dia19_tarea.mp3" type="audio/mpeg">
         Tu navegador no soporta audio.
         </audio>
+        data-module="1">
     </div>
     <div class="dia">
         <h2>Día 20 – Dar Libremente</h2>
@@ -384,6 +407,7 @@
       <source src="/audios/dia 21 agradece por siempre/Dia21_tarea.mp3" type="audio/mpeg">
       Tu navegador no soporta audio.
     </audio>
+    data-module="1">
   </div>
 
     </div>
@@ -481,6 +505,7 @@
                     estado.classList.remove("not-completed");
                     estado.classList.add("completed");
                 }
+                verificarDesbloqueoModulos();
             });
 
             console.log('✅ Progreso cargado:', completados);
@@ -549,7 +574,15 @@
         }
 
         showModule(1);
-
+        // Bloquear todos excepto el primero
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach((tab, index) => {
+       if (index !== 0) {
+        tab.classList.add("locked");
+        tab.style.pointerEvents = "none";
+        tab.style.opacity = "0.5";
+    }
+});
         const firstVideo = document.querySelector('.lesson-video');
         const cursoId = firstVideo ? firstVideo.dataset.cursoId : null;
 
@@ -561,6 +594,36 @@
             onYouTubeIframeAPIReady();
         }
     });
+
+    function verificarDesbloqueoModulos() {
+    const modulos = document.querySelectorAll('.content');
+
+    modulos.forEach((modulo, index) => {
+        const moduleNumber = modulo.dataset.module;
+        const videos = document.querySelectorAll(`.lesson-video[data-module="${moduleNumber}"]`);
+
+        let completados = 0;
+
+        videos.forEach(video => {
+            const videoId = video.dataset.videoId;
+            const estado = document.getElementById(`status-${videoId}`);
+            if (estado && estado.classList.contains("completed")) {
+                completados++;
+            }
+        });
+
+        // Si TODOS los videos están completados
+        if (videos.length > 0 && completados === videos.length) {
+            const nextTab = document.querySelectorAll('.tab')[index + 1];
+            if (nextTab) {
+                nextTab.classList.remove("locked");
+                nextTab.classList.add("unlocked");
+                nextTab.style.pointerEvents = "auto";
+                nextTab.style.opacity = "1";
+            }
+        }
+    });
+}
 </script>
 
     <script src="/js/cursos.js"></script>
