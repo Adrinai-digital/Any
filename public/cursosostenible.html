@@ -623,7 +623,73 @@
             }
         }
     });
+
 }
+// Guardar audios completados por módulo
+const progresoAudios = {};
+
+// Inicializar bloqueo de módulos
+function bloquearModulos() {
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach((tab, index) => {
+        if (index !== 0) {
+            tab.classList.add("locked");
+            tab.style.pointerEvents = "none";
+            tab.style.opacity = "0.5";
+        }
+    });
+}
+
+// Verificar si un módulo está completo
+function verificarModuloCompleto(moduleNumber) {
+    const audios = document.querySelectorAll(`.dia[data-module="${moduleNumber}"] audio`);
+    
+    if (!progresoAudios[moduleNumber]) {
+        progresoAudios[moduleNumber] = new Set();
+    }
+
+    if (progresoAudios[moduleNumber].size === audios.length) {
+        desbloquearSiguienteModulo(moduleNumber);
+    }
+}
+
+// Desbloquear siguiente módulo
+function desbloquearSiguienteModulo(moduleNumber) {
+    const siguienteIndex = parseInt(moduleNumber);
+    const tabs = document.querySelectorAll('.tab');
+
+    if (tabs[siguienteIndex]) {
+        tabs[siguienteIndex].classList.remove("locked");
+        tabs[siguienteIndex].style.pointerEvents = "auto";
+        tabs[siguienteIndex].style.opacity = "1";
+        console.log("✅ Módulo desbloqueado");
+    }
+}
+
+// Detectar cuando un audio termina
+function activarSeguimientoAudios() {
+    const todosAudios = document.querySelectorAll('.dia audio');
+
+    todosAudios.forEach((audio, index) => {
+        audio.addEventListener('ended', function () {
+            const dia = audio.closest('.dia');
+            const moduleNumber = dia.dataset.module;
+
+            if (!progresoAudios[moduleNumber]) {
+                progresoAudios[moduleNumber] = new Set();
+            }
+
+            progresoAudios[moduleNumber].add(index);
+            verificarModuloCompleto(moduleNumber);
+        });
+    });
+}
+
+// Al cargar la página
+document.addEventListener("DOMContentLoaded", () => {
+    bloquearModulos();
+    activarSeguimientoAudios();
+});
 </script>
 
     <script src="/js/cursos.js"></script>
