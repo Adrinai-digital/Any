@@ -38,9 +38,9 @@ const mode = (tipo === "membresia") ? "subscription" : "payment";
 
     // Crear sesión de Stripe
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [{ price: priceId, quantity: 1 }],
-      mode: "payment",
+    payment_method_types: ["card"],
+    line_items: [{ price: priceId, quantity: 1 }],
+    mode,
       customer_email: req.user.email,
       metadata: { user_id: userId, curso_id, fecha, hora, telefono },
       success_url: `${process.env.BASE_URL}/perfil`,
