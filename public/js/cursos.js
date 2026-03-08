@@ -72,3 +72,16 @@ document.addEventListener("DOMContentLoaded", function () {
     let firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 });
+document.addEventListener("DOMContentLoaded", () => {
+ console.log("cursos.js cargado");
+
+ document.querySelectorAll(".lesson-audio").forEach(a => {
+ a.addEventListener("ended", () => {
+ console.log("ended", a.dataset.audioId, a.dataset.cursoId);
+ marcarComoCompletado(a.dataset.audioId, a.dataset.cursoId);
+
+ const s = document.getElementById(`status-${a.dataset.audioId}`);
+ if (s) { s.textContent = "Completado"; s.className = "completed"; }
+ });
+ });
+});
