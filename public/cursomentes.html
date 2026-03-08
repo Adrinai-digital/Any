@@ -1331,14 +1331,14 @@ sin ataque es un paso hacia la paz interior y la unión con Dios.
         return;
     }
 
-    fetch('/api/marcar-completado', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ video_id: videoId, cursoId: cursoId })
-    })
+    fetch('https://autoconocimientoygratitud.com/api/marcar-completado', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'Authorization': `Bearer ${token}`
+ },
+ body: JSON.stringify({ video_id: videoId, cursoId })
+})
     .then(async response => {
         console.log("✅ Respuesta recibida del servidor:", response);
         const text = await response.text(); // leer cuerpo de la respuesta
