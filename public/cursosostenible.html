@@ -607,13 +607,15 @@
 
     // Al cargar la página
     document.addEventListener("DOMContentLoaded", async () => {
+        
         usuarioId = await obtenerUsuarioId();
         if (!usuarioId) {
             console.error('❌ No se pudo obtener el ID del usuario.');
             return;
-            initAudios();
+            
         }
-
+        initAudios();
+        activarSeguimientoAudios();
         window.showModule(1);
         // Bloquear todos excepto el primero
       const tabs = document.querySelectorAll('.tab');
