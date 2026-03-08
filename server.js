@@ -18,7 +18,6 @@ const PORT = process.env.PORT || 3000;
 const express = require('express');
 const app = express();
 const paymentRoutes = require('./routes/paymentRoutes');
-const authRoutes = require('./routes/authRoutes');
 // ---------------- MIDDLEWARES ----------------
 app.use((req, res, next) => {
   console.log("📍 REQUEST:", req.method, req.originalUrl);
@@ -58,7 +57,7 @@ const verificarToken = (req, res, next) => {
         return res.status(401).json({ error: 'Token inválido o expirado' });
     }
 };
-app.use('/api', authRoutes); // rutas pasan a /api/perfil-data y /api/marcar-completado
+
 // ----------------- WEBHOOK STRIPE -----------------
 const stripeWebhook = require('./routes/stripe-webhook');
 app.use('/webhook', stripeWebhook);

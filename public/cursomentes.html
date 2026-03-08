@@ -1304,7 +1304,7 @@ sin ataque es un paso hacia la paz interior y la unión con Dios.
         if (!token) return null;
 
         try {
-            const response = await fetch('/api/perfil-data', {
+            const response = await fetch('/perfil-data', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -1331,14 +1331,14 @@ sin ataque es un paso hacia la paz interior y la unión con Dios.
         return;
     }
 
-    fetch('https://autoconocimientoygratitud.com/api/marcar-completado', {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${token}`
- },
- body: JSON.stringify({ video_id: videoId, cursoId })
-})
+    fetch('/marcar-completado', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ video_id: videoId, cursoId: cursoId })
+    })
     .then(async response => {
         console.log("✅ Respuesta recibida del servidor:", response);
         const text = await response.text(); // leer cuerpo de la respuesta
