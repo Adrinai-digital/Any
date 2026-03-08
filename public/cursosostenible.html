@@ -85,9 +85,9 @@
 
 <body>
     <div class="tabs">
-        <div class="tab active" onclick="showModule(1)"data-module="1">gratitud</div>
-        <div class="tab" onclick="showModule(2)"data-module="2">Módulo 1</div>
-        <div class="tab" onclick="showModule(3)"data-module="3">Módulo 2</div>
+        <div class="tab active" onclick="showModule(1)" data-module="1">gratitud</div>
+        <div class="tab" onclick="showModule(2)" data-module="2">Módulo 1</div>
+        <div class="tab" onclick="showModule(3)" data-module="3">Módulo 2</div>
         
     </div>
     <div class="whatsapp">
@@ -595,9 +595,15 @@
  });
  });
 }
+window.showModule = function (n) {
+ document.querySelectorAll(".content").forEach(el => el.classList.remove("active"));
+ const target = document.getElementById(`module${n}`);
+ if (target) target.classList.add("active");
 
-document.addEventListener("DOMContentLoaded", initAudios);
-
+ document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+ const tab = document.querySelector(`.tab[data-module="${n}"]`);
+ if (tab) tab.classList.add("active");
+};
 
     // Al cargar la página
     document.addEventListener("DOMContentLoaded", async () => {
@@ -605,6 +611,7 @@ document.addEventListener("DOMContentLoaded", initAudios);
         if (!usuarioId) {
             console.error('❌ No se pudo obtener el ID del usuario.');
             return;
+            initAudios();
         }
 
         showModule(1);
