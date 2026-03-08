@@ -674,6 +674,29 @@ function bloquearModulos() {
     });
 }
 
+// Detectar cuando un audio termina
+function activarSeguimientoAudios() {
+ document.querySelectorAll('.dia audio.lesson-audio').forEach(audio => {
+ audio.addEventListener('ended', () => {
+ const moduleNumber = audio.closest('.dia')?.dataset.module;
+ const cursoId = audio.dataset.cursoId;
+ const audioId = audio.dataset.audioId;
+
+ if (moduleNumber) {
+ if (!progresoAudios[moduleNumber]) progresoAudios[moduleNumber] = new Set();
+ progresoAudios[moduleNumber].add(audioId);
+ verificarModuloCompleto(moduleNumber);
+ }
+
+ if (cursoId && audioId) marcarComoCompletado(audioId, cursoId);
+
+ const s = document.querySelector(`span[data-audio-id="${audioId}"]`);
+ if (s) { s.textContent = "Completado"; s.className = "completed"; }
+ });
+ });
+}
+
+
 // Verificar si un módulo está completo
 function verificarModuloCompleto(moduleNumber) {
     const audios = document.querySelectorAll(`.dia[data-module="${moduleNumber}"] audio`);
@@ -686,7 +709,6 @@ function verificarModuloCompleto(moduleNumber) {
         desbloquearSiguienteModulo(moduleNumber);
     }
 }
-
 // Desbloquear siguiente módulo
 function desbloquearSiguienteModulo(moduleNumber) {
     const siguienteIndex = parseInt(moduleNumber);
@@ -700,24 +722,6 @@ function desbloquearSiguienteModulo(moduleNumber) {
     }
 }
 
-// Detectar cuando un audio termina
-function activarSeguimientoAudios() {
- document.querySelectorAll('.lesson-audio').forEach(audio => {
- audio.addEventListener('ended', () => {
- const cursoId = audio.dataset.cursoId;
- const audioId = audio.dataset.audioId;
-
- marcarComoCompletado(audioId, cursoId);
-
- const s = document.getElementById(`status-${audioId}`);
- if (s) { s.textContent = "Completado"; s.className = "completed"; }
-
- const dia = audio.closest('.dia');
- const moduleNumber = dia?.dataset.module;
- if (moduleNumber) verificarModuloCompleto(moduleNumber);
- });
- });
-}
 </script>
 
     <script src="/js/cursos.js" defer></script>
