@@ -85,9 +85,9 @@
 
 <body>
     <div class="tabs">
-        <div class="tab active" onclick="showModule(1)" data-module="1">gratitud</div>
-        <div class="tab" onclick="showModule(2)" data-module="2">Módulo 1</div>
-        <div class="tab" onclick="showModule(3)" data-module="3">Módulo 2</div>
+        <div class="tab active" onclick="window.showModule(1)">gratitud</div>
+        <div class="tab" onclick="window.showModule(2)">Módulo 2</div>
+        <div class="tab" onclick="window.showModule(3)">Módulo 3</div>
         
     </div>
     <div class="whatsapp">
@@ -612,7 +612,6 @@
  });
  });
 }
-
     // Al cargar la página
     document.addEventListener("DOMContentLoaded", async () => {
         
