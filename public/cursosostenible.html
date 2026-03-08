@@ -724,21 +724,10 @@ document.addEventListener("DOMContentLoaded", () => {
     bloquearModulos();
     activarSeguimientoAudios();
 });
-document.addEventListener("DOMContentLoaded", () => {
- document.querySelectorAll(".lesson-audio").forEach(audio => {
- audio.addEventListener("ended", () => {
- const cursoId = audio.dataset.cursoId;
- const audioId = audio.dataset.audioId;
- marcarComoCompletado(audioId, cursoId);
 
- const s = document.getElementById(`status-${audioId}`);
- if (s) { s.textContent = "Completado"; s.className = "completed"; }
- });
- });
-});
 </script>
 
-    <script src="/js/cursos.js"></script>
+    <script src="/js/cursos.js" defer></script>
     
 </body>
 </html>
