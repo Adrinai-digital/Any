@@ -517,37 +517,45 @@
         });
     }
 
-    // Cargar progreso del usuario desde el backend
     async function cargarProgresoUsuario(cursoId) {
-        const token = localStorage.getItem('token');
-        if (!token) return;
+ const token = localStorage.getItem("token");
+ if (!token) return;
 
-        try {
-            const response = await fetch(`/progreso?cursoId=${cursoId}`, {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+ const response = await fetch(`/progreso?cursoId=${encodeURIComponent(cursoId)}`, {
+ headers: { Authorization: `Bearer ${token}` }
+ });
+ if (!response.ok) return;
 
-            if (!response.ok) throw new Error('No se pudo obtener progreso');
+ const data = await response.json();
+ const completados = data.completados || [];
 
-            const data = await response.json();
-            const completados = data.completados || [];
+ completados.forEach(id => {
+ // 1) Estado (videos o audios)
+ const estado =
+ document.getElementById(`status-${id}`) ||
+ document.querySelector(`span[data-audio-id="${id}"], span[data-video-id="${id}"]`);
 
-            completados.forEach(videoId => {
-                const estado = document.getElementById(`status-${videoId}`);
-                if (estado) {
-                    estado.textContent = 'Completado';
-                    estado.classList.remove("not-completed");
-                    estado.classList.add("completed");
-                }
-                verificarDesbloqueoModulos();
-            });
+ if (estado) {
+ estado.textContent = "Completado";
+ estado.classList.remove("not-completed");
+ estado.classList.add("completed");
+ }
 
-            console.log('✅ Progreso cargado:', completados);
-        } catch (error) {
-            console.error('❌ Error al cargar progreso:', error);
-        }
-    }
+ // 2) Reconstruir progreso de audios para desbloqueo al entrar
+ const audio = document.querySelector(`audio[data-audio-id="${id}"]`);
+ if (audio) {
+ const moduleNumber = audio.closest(".dia")?.dataset.module;
+ if (moduleNumber) {
+ if (!progresoAudios[moduleNumber]) progresoAudios[moduleNumber] = new Set();
+ progresoAudios[moduleNumber].add(String(id));
+ }
+ }
+ });
+
+ // 3) Recalcular desbloqueo una sola vez
+ Object.keys(progresoAudios).forEach(verificarModuloCompleto);
+ verificarDesbloqueoModulos();
+}
 
     // Inicializar reproductores de YouTube cuando la API esté lista
     function onYouTubeIframeAPIReady() {
