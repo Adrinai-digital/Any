@@ -1304,7 +1304,7 @@ sin ataque es un paso hacia la paz interior y la unión con Dios.
         if (!token) return null;
 
         try {
-            const response = await fetch('/perfil-data', {
+            const response = await fetch('/api/perfil-data', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -1331,7 +1331,7 @@ sin ataque es un paso hacia la paz interior y la unión con Dios.
         return;
     }
 
-    fetch('/marcar-completado', {
+    fetch('/api/marcar-completado', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
