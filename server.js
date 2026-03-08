@@ -294,6 +294,26 @@ app.get("/citas-ocupadas", (req, res) => {
     res.json(busy); // ✅ Devuelve JSON correcto
   });
 });
+app.post('/marcar-completado', verificarToken, (req, res) => {
+ const usuario_id = req.user.id;
+ const { video_id, cursoId } = req.body;
+ const curso_id = cursoId;
+
+ if (!usuario_id || !curso_id || !video_id) {
+ return res.status(400).json({ error: 'Faltan datos' });
+ }
+
+ db.query(
+ `INSERT INTO lecciones_completadas (usuario_id, curso_id, video_id, completado)
+ VALUES (?, ?, ?, 1)
+ ON DUPLICATE KEY UPDATE completado=1, fecha_completado=CURRENT_TIMESTAMP`,
+ [usuario_id, curso_id, video_id],
+ (err) => {
+ if (err) return res.status(500).json({ error: 'Error guardando progreso' });
+ return res.json({ ok: true });
+ }
+ );
+});
 
 // ----------------- LISTEN -----------------
 app.listen(PORT, () => {
