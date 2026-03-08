@@ -72,15 +72,3 @@ document.addEventListener("DOMContentLoaded", function () {
     let firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 });
-document.addEventListener("DOMContentLoaded", () => {
- document.querySelectorAll(".lesson-audio").forEach(audio => {
- audio.addEventListener("ended", () => {
- const cursoId = audio.dataset.cursoId;
- const audioId = audio.dataset.audioId;
- marcarComoCompletado(audioId, cursoId);
-
- const s = document.getElementById(`status-${audioId}`);
- if (s) { s.textContent = "Completado"; s.className = "completed"; }
- });
- });
-});
