@@ -26,6 +26,15 @@ router.post("/crear-pago", authMiddleware, async (req, res) => {
         (err, result) => (err ? reject(err) : resolve(result))
       );
     });
+    // Obtener tipo de curso para elegir el mode
+const tipo = await new Promise((resolve, reject) => {
+ db.query("SELECT tipo FROM cursos WHERE id = ?", [curso_id], (err, rows) => {
+ if (err) return reject(err);
+ resolve(rows?.[0]?.tipo);
+ });
+});
+
+const mode = (tipo === "membresia") ? "subscription" : "payment";
 
     // Crear sesión de Stripe
     const session = await stripe.checkout.sessions.create({
