@@ -8,21 +8,21 @@ const cookieParser = require('cookie-parser');
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 // Middleware para verificar el token desde la cookie
-function authMiddleware(req, res, next) {
-    const token = req.cookies.token;
+//function authMiddleware(req, res, next) {
+   // const token = req.cookies.token;
 
-    if (!token) {
-        return res.status(401).json({ error: 'Acceso denegado, token requerido' });
-    }
+    //if (!token) {
+     //   return res.status(401).json({ error: 'Acceso denegado, token requerido' });
+   // }
 
-    try {
-        const verificado = jwt.verify(token, process.env.JWT_SECRET);
-        req.usuario = verificado;
-        next();
-    } catch (error) {
-        res.status(401).json({ error: 'Token inválido o expirado' });
-    }
-}
+   // try {
+     //   const verificado = jwt.verify(token, process.env.JWT_SECRET);
+     //   req.usuario = verificado;
+      //  next();
+   // } catch (error) {
+      //  res.status(401).json({ error: 'Token inválido o expirado' });
+   // }
+//}
 
 // Ruta de registro
 router.post('/register', async (req, res) => {
@@ -173,7 +173,7 @@ router.get('/logout', (req, res) => {
 // Ruta para marcar un video como completado
 router.post('/marcar-completado', authMiddleware, (req, res) => {
     const { video_id, curso_id } = req.body;
-    const usuario_id = req.user.id;
+    const usuario_id = req.usuario.id;
 
     if (!video_id || !curso_id || !usuario_id) {
         return res.status(400).json({ error: 'Faltan datos necesarios' });
