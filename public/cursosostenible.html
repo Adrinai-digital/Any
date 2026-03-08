@@ -473,6 +473,15 @@
             return null;
         }
     }
+    window.showModule = function (n) {
+ document.querySelectorAll(".content").forEach(el => el.classList.remove("active"));
+ const target = document.getElementById(`module${n}`);
+ if (target) target.classList.add("active");
+
+ document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+ const tab = document.querySelector(`.tab[data-module="${n}"]`);
+ if (tab) tab.classList.add("active");
+};
 
     // Marcar video como completado en el servidor
     function marcarComoCompletado(videoId, cursoId) {
@@ -595,15 +604,6 @@
  });
  });
 }
-window.showModule = function (n) {
- document.querySelectorAll(".content").forEach(el => el.classList.remove("active"));
- const target = document.getElementById(`module${n}`);
- if (target) target.classList.add("active");
-
- document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
- const tab = document.querySelector(`.tab[data-module="${n}"]`);
- if (tab) tab.classList.add("active");
-};
 
     // Al cargar la página
     document.addEventListener("DOMContentLoaded", async () => {
@@ -614,7 +614,7 @@ window.showModule = function (n) {
             initAudios();
         }
 
-        showModule(1);
+        window.showModule(1);
         // Bloquear todos excepto el primero
       const tabs = document.querySelectorAll('.tab');
       tabs.forEach((tab, index) => {
