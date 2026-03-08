@@ -582,26 +582,22 @@
  const cursoId = audio.dataset.cursoId;
  const audioId = audio.dataset.audioId;
 
- if (usuarioId) marcarComoCompletado(audioId, cursoId);
+ if (usuarioId) {
+ marcarComoCompletado(audioId, cursoId);
+ }
+
+ const statusEl = document.getElementById(`status-${audioId}`);
+ if (statusEl) {
+ statusEl.textContent = "Completado";
+ statusEl.classList.remove("not-completed");
+ statusEl.classList.add("completed");
+ }
  });
  });
 }
 
 document.addEventListener("DOMContentLoaded", initAudios);
 
-    // Mostrar el módulo activo
-    function showModule(moduleNumber) {
-        const modules = document.querySelectorAll('.content');
-        const tabs = document.querySelectorAll('.tab');
-
-        modules.forEach((mod, index) => {
-            mod.classList.toggle('active', index === moduleNumber - 1);
-        });
-
-        tabs.forEach((tab, index) => {
-            tab.classList.toggle('active', index === moduleNumber - 1);
-        });
-    }
 
     // Al cargar la página
     document.addEventListener("DOMContentLoaded", async () => {
