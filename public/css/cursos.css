@@ -109,7 +109,43 @@ body {
   background-size: cover;             /* 📏 hace que cubra todo */
   background-position: center;        /* 🎯 centra la imagen */
 }
+.contenedor-dos-columnas {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* dos columnas iguales */
+  gap: 40px;
+  max-width: 1100px;
+  margin: auto;
+  padding: 40px 20px;
+}
 
+/* columnas */
+.columna {
+  width: 100%;
+}
+
+/* tarjeta derecha */
+.tarjeta-beneficios {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.tarjeta-beneficios ul {
+  padding-left: 20px;
+}
+
+.tarjeta-beneficios li {
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+/* responsive (móvil) */
+@media (max-width: 768px) {
+  .contenedor-dos-columnas {
+    grid-template-columns: 1fr; /* se vuelve una sola columna */
+  }
+}
 .gratitud1-header {
 
     background-image: url("/images/portada_gratitud1.jpg");
