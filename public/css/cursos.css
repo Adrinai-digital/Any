@@ -53,7 +53,7 @@ body {
 }
 
 /* Otros encabezados */
-.tarot-header, .mentes-header, .gratitud-header, .circulo-header, .almas-header {
+.tarot-header, .mentes-header, .gratitud-header, .gratitud1-header, .sostenible-header .almas-header {
     position: relative;
     width: 100vw;
     height: 60vh;
