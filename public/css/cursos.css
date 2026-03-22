@@ -102,10 +102,12 @@ body {
 .gratitud-header {
     background-image: url("/images/fondo.jpg");
 }
-.sostenible-header {
 
-    background-image: url("/images/pormenbresiacir.jpg");
-    
+.sostenible-header {
+  background-image: url("/images/pormenbresiacir.jpg"); /* ajusta la ruta */
+  background-repeat: no-repeat;       /* 🚫 evita que se repita */
+  background-size: cover;             /* 📏 hace que cubra todo */
+  background-position: center;        /* 🎯 centra la imagen */
 }
 
 .gratitud1-header {
