@@ -361,6 +361,28 @@ body {
 .tarjeta-beneficios a:hover {
   text-decoration: underline;
 }
+
+.audio-box {
+  display: inline-block; /* 🔥 clave para que se ajuste al contenido */
+  padding: 20px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.15); 
+  -webkit-backdrop-filter: blur(10px); /* efecto suave */
+  backdrop-filter: blur(10px);  /* 🔥 Safari */ /* efecto vidrio */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.audio-box audio {
+  width: 300px; /* puedes ajustar (250px, 350px, etc.) */
+  max-width: 100%;
+}
+
+.audio-titulo {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+}
 /* Responsive móvil */
 @media (max-width: 768px) {
     .lesson-video {
