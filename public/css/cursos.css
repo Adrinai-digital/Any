@@ -53,7 +53,7 @@ body {
 }
 
 /* Otros encabezados */
-.tarot-header, .mentes-header, .gratitud-header, .gratitud1-header, .almas-header {
+.tarot-header, .mentes-header, .gratitud-header, .gratitud1-header, .gratitud1-header.sostenible-header, .almas-header {
     position: relative;
     width: 100vw;
     height: 60vh;
@@ -202,7 +202,7 @@ body {
     line-height: 1.6;
     margin-top: 20px;
 }
-.sostenible-header::before {
+.circulo-header::before {
     content: "";
     position: absolute;
     top: 0; left: 0;
@@ -210,7 +210,7 @@ body {
     background: rgba(0, 0, 0, 0.6);
     z-index: 1;
 }
-.sostenible-header .container {
+.circulo-header .container {
     position: relative;
     z-index: 2;
     max-width: 800px;
@@ -220,12 +220,12 @@ body {
     align-items: center;
     gap: 20px;
 }
-.sostenible-header h1 {
+.circulo-header h1 {
     font-size: 2.5rem;
     color: white;
     text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
 }
-.sostenible-header p {
+.circulo-header p {
     font-size: 1.2rem;
     color: white;
 }
