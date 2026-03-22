@@ -1,751 +1,103 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Acompañamiento Sostenido y Consciente</title>
-        <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"/>
-        <link rel="stylesheet" href="css/cursos.css">
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-            background: #fefaf5;
-            color: #333;
-          }
-      
-          h1, h2, h3 {
-            color: #b86b27;
-          }
-      
-          .portada {
-            text-align: center;
-            margin-bottom: 40px;
-          }
-          .portada iframe {
-            width: 100%;
-            max-width: 700px;
-            height: 400px;
-            border: none;
-            border-radius: 10px;
-          }
-      
-          .whatsapp {
-            text-align: center;
-            margin: 30px 0;
-          }
-      
-          .whatsapp a {
-            display: inline-block;
-            background-color: #25D366;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: bold;
-          }
-      
-          .dia {
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin-bottom: 30px;
-            border-radius: 10px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-          }
-      
-          audio {
-            width: 100%;
-            margin: 10px 0;
-          }
-          .tab.locked {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-        </style>
-        <!-- Cargar la API de YouTube -->
-        <script src="https://www.youtube.com/iframe_api"></script>
-    </head>
-    
-<header class="circulo-header">
-  <div class="container">
-    <h1>Acompañamiento Sostenido y Consciente</h1>
-    <p>¿Qué incluye el Acompañamiento Sostenido y Consciente?</p>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursos Sostenibles</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
 
-    <div class="video-portada">
-      <iframe 
-        src="https://www.youtube.com/embed/BD27DoafIbk?si=VByVQT2wJL1kree6"
-        title="YouTube video player"
-        allowfullscreen>
-      </iframe>
-    </div>
-  </div>
-</header>
+    h1 {
+      text-align: center;
+    }
 
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
 
+    .card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      cursor: pointer;
+    }
+
+    .card h3 {
+      padding: 10px;
+    }
+  </style>
+</head>
 <body>
-    <div class="tabs">
-        <div class="tab active" onclick="window.showModule(1)"data-module="1">gratitud</div>
-        <div class="tab" onclick="window.showModule(2)" data-module="2">Módulo 2</div>
-        <div class="tab" onclick="window.showModule(3)" data-module="3">Módulo 3</div>
-    </div>
-    <div class="whatsapp">
-        <a href="https://chat.whatsapp.com/J3dX6h0qpJeDVp6nxEjALq" target="_blank" rel="noopener noreferrer">
-          📩 ¿Tienes dudas? Escríbenos en la comunidad
-        </a>
-      </div>
-      <div class="tarjeta-beneficios">
-      <ul>
-    <li>✦ * 1 sesión mensual individual(puede ser de coaching, psicoterapia o <a href="https://www.gaia.com/es/article/canalizacion-espiritual?utm_source=google+search+paid&utm_medium=cpc&utm_campaign=IA-SPANISH-DYNAMIC&utm_term=&gad_source=1&gad_campaignid=22909003614&gbraid=0AAAAADELEj9m7XwrO_U7jx-fu_GmzqwHy&gclid=CjwKCAiAkvDMBhBMEiwAnUA9Ba7-0bQmdLBfRgpY1huf__X0aSFXQJk6mAmWGcV906YvIAZaSnvLPxoCZqQQAvD_BwE" target="_blank" rel="noopener">canalización espiritual</a> según tu proceso)</li>
-    <li>✦ * Acceso completo al Método LEAR Herramienta estructurada para trabajar claridad emocional, toma de decisiones y orden interno.</li>
-    <li>✦ * Biblioteca terapéutica digital Manuales, guías prácticas y material de integración organizado en la plataforma.</li>
-    <li>✦ * Espacio de acompañamiento continuo Para sostener tu proceso más allá de una sesión aislada.</li>
-    <li>✦ * Posibilidad de realizar preguntas directas a Anysabel  dentro del espacio. Vía whatsapp. Audios etc. </li>
-    <li>✦ * * Acceso mientras la suscripción esté activa. (Las sesiones no son acumulativas.)</li>
-      </ul>
-        <audio controls>
-      <source src="/audios/introduccion_gratitud.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-      </audio>
 
+<h1>Selecciona un tema</h1>
+
+<div class="grid">
   
-  </div>
-    <section class="course-content">
-            <div id="module1" class="content active">
-            <h2>GRATITUD</h2>
-            <div class="dia" data-module="1">
-    <h2>Día 1 – Eterno Presente</h2>
-    <h3>🎧 Audio de la lección:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_1">
-      <source src="/audios/dia 01 eterno presente/Dia1_leccion.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson1-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_1">No completado</span></p>
-    <h3>📝 Audio del ejercicio:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_2">
-      <source src="/audios/dia 01 eterno presente/Dia1_tarea.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson2-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_2">No completado</span></p>
-    
+  <div class="card">
+  <a href="cursogratitud1.html">
+    <img src="public/images/gratitud1.jpg" alt="Tema 1">
+  </a>
+  <h3>GRATITUD</h3>
+</div>
+
+  <div class="card">
+    <a href="tema2.html">
+      <img src="https://via.placeholder.com/300x200?text=Tema+2" alt="Tema 2">
+    </a>
+    <h3>Tema 2</h3>
   </div>
 
-
-
-
-  <div class="dia" data-module="1">
-    <h2>Día 2 – Doy Amor</h2>
-    <h3>🎧 Audio de la lección:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_3">
-      <source src="/audios/dia 02 doy amor/Dia2_leccion.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson3-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_3">No completado</span></p>
-    <h3>📝 Audio del ejercicio:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_4">
-      <source src="/audios/dia 02 doy amor/Dia2_tarea.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson4-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_4">No completado</span></p>
+  <div class="card">
+    <a href="tema3.html">
+      <img src="https://via.placeholder.com/300x200?text=Tema+3" alt="Tema 3">
+    </a>
+    <h3>Tema 3</h3>
   </div>
 
-  <!-- Día 3 -->
-  <div class="dia" data-module="1">
-    <h2>Día 3 – Me rodeo de pura luz</h2>
-    <h3>🎧 Audio de la lección:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_5">
-      <source src="/audios/dia 03 me rodeo de pura luz/Dia3_leccion.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson5-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_5">No completado</span></p>
-    <h3>📝 Audio del ejercicio:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_6">
-      <source src="/audios/dia 03 me rodeo de pura luz/Dia3_tarea.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson6-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_6">No completado</span></p>
+  <div class="card">
+    <a href="tema4.html">
+      <img src="https://via.placeholder.com/300x200?text=Tema+4" alt="Tema 4">
+    </a>
+    <h3>Tema 4</h3>
   </div>
 
-  <div class="dia" data-module="1">
-    <h2>Día 4 – Soy Sanación</h2>
-    <h3>🎧 Audio de la lección:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_7">
-      <source src="/audios/dia 04 soy sanacion/Dia4_leccion.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson7-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_7">No completado</span></p>
-    <h3>📝 Audio del ejercicio:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_8">
-      <source src="/audios/dia 04 soy sanacion/Dia4_tarea.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-  <p id="module1-lesson8-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_8">No completado</span></p>
-  </div>
-  
-  <div class="dia" data-module="1">
-    <h2>Día 5 – Llena tod Vacio</h2>
-    <h3>🎧 Audio de la lección:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_9">
-      <source src="/audios/dia 05 llena todo vacio/Dia5_leccion.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson9-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_9">No completado</span></p>
-    <h3>📝 Audio del ejercicio:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_10">
-      <source src="/audios/dia 05 llena todo vacio/Dia5_tarea.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson10-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_10">No completado</span></p>
+  <div class="card">
+    <a href="tema5.html">
+      <img src="https://via.placeholder.com/300x200?text=Tema+5" alt="Tema 5">
+    </a>
+    <h3>Tema 5</h3>
   </div>
 
-  <div class="dia" data-module="1">
-    <h2>Día 6 – Hoy todo se Disuelve</h2>
-    <h3>🎧 Audio de la lección:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_11">
-      <source src="/audios/dia 06 hoy todo se disuelve/Dia6_leccion.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson11-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_11">No completado</span></p>
-    <h3>📝 Audio del ejercicio:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_12">
-      <source src="/audios/dia 06 hoy todo se disuelve/Dia6_tarea.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio. 
-    </audio>
-    <p id="module1-lesson12-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_12">No completado</span></p>
+  <div class="card">
+    <a href="tema6.html">
+      <img src="https://via.placeholder.com/300x200?text=Tema+6" alt="Tema 6">
+    </a>
+    <h3>Tema 6</h3>
   </div>
 
-  <div class="dia" data-module="1">
-    <h2>Día 7 – Orden Divino</h2>
-    <h3>🎧 Audio de la lección:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_13">
-      <source src="/audios/dia 07 orden divino/Dia7_leccion.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson13-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_13">No completado</span></p>
-    <h3>📝 Audio del ejercicio:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_14">
-      <source src="/audios/dia 07 orden divino/Dia7_tarea.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-   <p id="module1-lesson14-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_14">No completado</span></p>
-  </div>
+</div>
 
-  <div class="dia" data-module="1">
-    <h2>Día 8 – Jesus es mi amigo</h2>
-    <h3>🎧 Audio de la lección:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_15">
-      <source src="/audios/dia 08 jesus es mi amigo/Dia8_leccion.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson15-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_15">No completado</span></p>
-    <h3>📝 Audio del ejercicio:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_16">
-      <source src="/audios/dia 08 jesus es mi amigo/Dia8_tarea.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio. 
-    </audio>
-    <p id="module1-lesson16-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_16">No completado</span></p>
-  </div>
-  <div class="dia" data-module="1">
-    <h2>Día 9 – No doy poder</h2>
-    <h3>🎧 Audio de la lección:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_17">
-      <source src="/audios/dia 09 no doy poder/Dia9_leccion.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson17-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_17">No completado</span></p>
-    <h3>📝 Audio del ejercicio:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_18">
-      <source src="/audios/dia 09 no doy poder/Dia9_tarea.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson18-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_18">No completado</span></p>
-  </div>
-  <div class="dia" data-module="1">
-    <h2>Día 10 – Vida espiritual</h2>
-    <h3>🎧 Audio de la lección:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_19">
-      <source src="/audios/dia 10 vida espiritual/Dia10_leccion.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-     <p id="module1-lesson19-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_19">No completado</span></p>
-    <h3>📝 Audio del ejercicio:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_20">
-      <source src="/audios/dia 10 vida espiritual/Dia10_tarea.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio. 
-    </audio>
-     <p id="module1-lesson20-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_20">No completado</span></p>
-  </div>
-    <div class="dia" data-module="1">
-        <h2>Día 11 – Sanidad economica</h2>
-        <h3>🎧 Audio de la lección:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_21">
-        <source src="/audios/dia 11 sanidad economica/Dia11_leccion.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson21-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_21">No completado</span></p>
-        <h3>📝 Audio del ejercicio:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_22">
-        <source src="/audios/dia 11 sanidad economica/Dia11_tarea.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson22-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_22">No completado</span></p>
-    </div>
-    <div class="dia" data-module="1">
-        <h2>Día 12 – Providion divina</h2>
-        <h3>🎧 Audio de la lección:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_23">
-        <source src="/audios/dia 12 provision divina/Dia12_leccion.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson23-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_23">No completado</span></p>
-        <h3>📝 Audio del ejercicio:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_24">
-        <source src="/audios/dia 12 provision divina/Dia12_tarea.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-         <p id="module1-lesson24-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_24">No completado</span></p>
-    </div>
-    <div class="dia" data-module="1">
-        <h2>Día 13 – Fuego Transformador</h2>
-        <h3>🎧 Audio de la lección:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_25">
-        <source src="/audios/dia 13 fuego tranformador/Dia13_leccion.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson25-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_25">No completado</span></p>
-        <h3>📝 Audio del ejercicio:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_26">
-        <source src="/audios/dia 13 fuego tranformador/Dia13_tarea.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-       <p id="module1-lesson26-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_26">No completado</span></p>
-    </div>
-    <div class="dia" data-module="1">
-        <h2>Día 14 – Rayo Azul</h2>
-        <h3>🎧 Audio de la lección:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_27">
-        <source src="/audios/dia 14 rayo azul/Dia14_leccion.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson27-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_27">No completado</span></p>
-        <h3>📝 Audio del ejercicio:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_28">
-        <source src="/audios/dia 14 rayo azul/Dia14_tarea.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson28-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_28">No completado</span></p>
-    </div>
-    <div class="dia" data-module="1">
-        <h2>Día 15 – Ilumina mi Prosperidad</h2>
-        <h3>🎧 Audio de la lección:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_29">
-        <source src="/audios/dia 15 ilumina mi prosperidad/Dia15_leccion.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson29-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_29">No completado</span></p>
-        <h3>📝 Audio del ejercicio:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_30">
-        <source src="/audios/dia 15 ilumina mi prosperidad/Dia15_tarea.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson30-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_30">No completado</span></p>
-    </div>
-    <div class="dia" data-module="1">
-        <h2>Día 16 – Soy Resultado del Amor</h2>
-        <h3>🎧 Audio de la lección:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_31">
-        <source src="/audios/dia 16 soy resultado del amor/Dia16_leccion.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson31-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_31">No completado</span></p>
-        <h3>📝 Audio del ejercicio:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_32">
-        <source src="/audios/dia 16 soy resultado del amor/Dia16_tarea.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson32-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_32">No completado</span></p>
-    </div>
-    <div class="dia" data-module="1">
-        <h2>Día 17 – Mi Deber y Respeto</h2>
-        <h3>🎧 Audio de la lección:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_33">
-        <source src="/audios/dia 17 mi deber y respeto/Dia17_leccion.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson33-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_33">No completado</span></p>
-        <h3>📝 Audio del ejercicio:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_34">
-        <source src="/audios/dia 17 mi deber y respeto/Dia17_tarea.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson34-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_34">No completado</span></p>
-    </div>
-    <div class="dia" data-module="1">
-        <h2>Día 18 – Acepto</h2>
-        <h3>🎧 Audio de la lección:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_35">
-        <source src="/audios/dia 18 acepto/Dia18_leccion.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson35-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_35">No completado</span></p>
-        <h3>📝 Audio del ejercicio:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_36">
-        <source src="/audios/dia 18 acepto/Dia18_tarea.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-         <p id="module1-lesson36-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_36">No completado</span></p>
-    </div>
-    <div class="dia" data-module="1">
-        <h2>Día 19 – Magia Amor y Prosperidad</h2>
-        <h3>🎧 Audio de la lección:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_37">
-        <source src="/audios/dia 19 magia amor y prosperidad/Dia19_leccion.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson37-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_37">No completado</span></p>
-        <h3>📝 Audio del ejercicio:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_38">
-        <source src="/audios/dia 19 magia amor y prosperidad/Dia19_tarea.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson38-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_38">No completado</span></p>
-    </div>
-    <div class="dia" data-module="1">
-        <h2>Día 20 – Dar Libremente</h2>
-        <h3>🎧 Audio de la lección:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_39">
-        <source src="/audios/dia 20 dar libremente/Dia20_leccion.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson39-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_39">No completado</span></p>
-        <h3>📝 Audio del ejercicio:</h3>
-        <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_40">
-        <source src="/audios/dia 20 dar libremente/Dia20_tarea.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-        </audio>
-        <p id="module1-lesson40-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_40">No completado</span></p>
-  <!-- Día 21 -->
-  <div class="dia" data-module="1">
-    <h2>Día 21 – Agradecer Por Siempre</h2>
-    <h3>🎧 Audio de la lección:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_41">
-      <source src="/audios/dia 21 agradece por siempre/Dia21_leccion.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson41-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_41">No completado</span></p>
-    <h3>📝 Audio del ejercicio:</h3>
-    <audio class="lesson-audio" controls data-curso-id="5" data-audio-id="audio_42">
-      <source src="/audios/dia 21 agradece por siempre/Dia21_tarea.mp3" type="audio/mpeg">
-      Tu navegador no soporta audio.
-    </audio>
-    <p id="module1-lesson42-status">Estado: <span class="not-completed" data-curso-id="5" data-audio-id="audio_42">No completado</span></p>
-  </div>
-
-    </div>
-         </section>
-    
-    <script src="https://www.youtube.com/iframe_api"></script>
-<script>
-    if (window.trustedTypes) {
-  if (!window.trustedTypes.getPolicy || !window.trustedTypes.getPolicy('default')) {
-    window.trustedTypes.createPolicy('default', {
-      createHTML: input => input,
-      createScript: input => input,
-      createScriptURL: input => input
-    });
-  }
-}
-    let players = [];
-    let usuarioId = null;
-
-    // Obtener el ID del usuario desde el token
-    async function obtenerUsuarioId() {
-        const token = localStorage.getItem('token');
-        if (!token) return null;
-
-        try {
-            const response = await fetch('/perfil-data', {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!response.ok) return null;
-
-            const data = await response.json();
-            return data.usuario.id;
-        } catch (error) {
-            console.error('❌ Error al obtener usuario:', error);
-            return null;
-        }
-    }
-    window.showModule = function (n) {
- document.querySelectorAll(".content").forEach(el => el.classList.remove("active"));
- const target = document.getElementById(`module${n}`);
- if (target) target.classList.add("active");
-
- document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
- const tab = document.querySelector(`.tab[data-module="${n}"]`);
- if (tab) tab.classList.add("active");
-};
-
-    // Marcar video como completado en el servidor
-    function marcarComoCompletado(videoId, cursoId) {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            console.error('⚠️ No hay token. Usuario no autenticado.');
-            return;
-        }
-
-        fetch('/marcar-completado', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ video_id: videoId, cursoId: cursoId })
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log(`✅ Video ${videoId} marcado como completado`);
-                const estado = document.getElementById(`status-${videoId}`);
-                if (estado) {
-                    estado.textContent = 'Completado';
-                    estado.classList.remove("not-completed");
-                    estado.classList.add("completed");
-                }
-            } else {
-                console.error('❌ Error al marcar video como completado');
-            }
-        })
-        .catch(err => {
-            console.error('❌ Error de red:', err);
-        });
-    }
-
-    async function cargarProgresoUsuario(cursoId) {
- const token = localStorage.getItem("token");
- if (!token) return;
-
- const response = await fetch(`/progreso?cursoId=${encodeURIComponent(cursoId)}`, {
- headers: { Authorization: `Bearer ${token}` }
- });
- if (!response.ok) return;
-
- const data = await response.json();
- const completados = data.completados || [];
-
- completados.forEach(id => {
- // 1) Estado (videos o audios)
- const estado =
- document.getElementById(`status-${id}`) ||
- document.querySelector(`span[data-audio-id="${id}"], span[data-video-id="${id}"]`);
-
- if (estado) {
- estado.textContent = "Completado";
- estado.classList.remove("not-completed");
- estado.classList.add("completed");
- }
-
- // 2) Reconstruir progreso de audios para desbloqueo al entrar
- const audio = document.querySelector(`audio[data-audio-id="${id}"]`);
- if (audio) {
- const moduleNumber = audio.closest(".dia")?.dataset.module;
- if (moduleNumber) {
- if (!progresoAudios[moduleNumber]) progresoAudios[moduleNumber] = new Set();
- progresoAudios[moduleNumber].add(String(id));
- }
- }
- });
-
- // 3) Recalcular desbloqueo una sola vez
- Object.keys(progresoAudios).forEach(verificarModuloCompleto);
- verificarDesbloqueoModulos();
-}
-
-    // Inicializar reproductores de YouTube cuando la API esté lista
-    function onYouTubeIframeAPIReady() {
-        const videoContainers = document.querySelectorAll('.lesson-video');
-
-        videoContainers.forEach((container, index) => {
-            const videoId = container.dataset.videoId;
-            const cursoId = container.dataset.cursoId;
-
-            const playerDiv = document.createElement('div');
-            const divId = `youtube-player-${index}`;
-            playerDiv.id = divId;
-            container.appendChild(playerDiv);
-
-            players[index] = new YT.Player(divId, {
-  height: "315",
-  width: "560",
-  videoId: videoId,
-  playerVars: {
-    rel: 0,
-    modestbranding: 1,
-    showinfo: 0,
-    fs: 1,
-    enablejsapi: 1,
-    origin: window.location.origin
-  },
-  events: {
-    'onStateChange': function (event) {
-      if (event.data === YT.PlayerState.ENDED && usuarioId) {
-        marcarComoCompletado(videoId, cursoId);
-      }
-    }
-  }
-});
-
-        });
-    }
-    function initAudios() {
- document.querySelectorAll(".lesson-audio").forEach(audio => {
- audio.addEventListener("ended", () => {
- const cursoId = audio.dataset.cursoId;
- const audioId = audio.dataset.audioId;
-
- if (usuarioId) {
- marcarComoCompletado(audioId, cursoId);
- }
-
- const statusEl = document.getElementById(`status-${audioId}`);
- if (statusEl) {
- statusEl.textContent = "Completado";
- statusEl.classList.remove("not-completed");
- statusEl.classList.add("completed");
- }
- });
- });
-}
-    // Al cargar la página
-    document.addEventListener("DOMContentLoaded", async () => {
-        
-        usuarioId = await obtenerUsuarioId();
-        if (!usuarioId) {
-            console.error('❌ No se pudo obtener el ID del usuario.');
-            return;
-            
-        }
-        initAudios();
-        activarSeguimientoAudios();
-        window.showModule(1);
-        // Bloquear todos excepto el primero
-      const tabs = document.querySelectorAll('.tab');
-      tabs.forEach((tab, index) => {
-       if (index !== 0) {
-        tab.classList.add("locked");
-        tab.style.pointerEvents = "none";
-        tab.style.opacity = "0.5";
-    }
-});
-        const firstVideo = document.querySelector('.lesson-video');
-        const cursoId = firstVideo ? firstVideo.dataset.cursoId : null;
-
-        if (cursoId) {
-            await cargarProgresoUsuario(cursoId);
-        }
-
-        if (typeof YT !== 'undefined' && YT.loaded) {
-            onYouTubeIframeAPIReady();
-        }
-    });
-
-    function verificarDesbloqueoModulos() {
-    const modulos = document.querySelectorAll('.content');
-
-    modulos.forEach((modulo, index) => {
-        const moduleNumber = modulo.dataset.module;
-        const videos = document.querySelectorAll(`.lesson-video[data-module="${moduleNumber}"]`);
-
-        let completados = 0;
-
-        videos.forEach(video => {
-            const videoId = video.dataset.videoId;
-            const estado = document.getElementById(`status-${videoId}`);
-            if (estado && estado.classList.contains("completed")) {
-                completados++;
-            }
-        });
-
-        // Si TODOS los videos están completados
-        if (videos.length > 0 && completados === videos.length) {
-            const nextTab = document.querySelectorAll('.tab')[index + 1];
-            if (nextTab) {
-                nextTab.classList.remove("locked");
-                nextTab.classList.add("unlocked");
-                nextTab.style.pointerEvents = "auto";
-                nextTab.style.opacity = "1";
-            }
-        }
-    });
-
-}
-// Guardar audios completados por módulo
-const progresoAudios = {};
-
-// Inicializar bloqueo de módulos
-function bloquearModulos() {
-    const tabs = document.querySelectorAll('.tab');
-    tabs.forEach((tab, index) => {
-        if (index !== 0) {
-            tab.classList.add("locked");
-            tab.style.pointerEvents = "none";
-            tab.style.opacity = "0.5";
-        }
-    });
-}
-
-// Detectar cuando un audio termina
-function activarSeguimientoAudios() {
- document.querySelectorAll('.dia audio.lesson-audio').forEach(audio => {
- audio.addEventListener('ended', () => {
- const moduleNumber = audio.closest('.dia')?.dataset.module;
- const cursoId = audio.dataset.cursoId;
- const audioId = audio.dataset.audioId;
-
- if (moduleNumber) {
- if (!progresoAudios[moduleNumber]) progresoAudios[moduleNumber] = new Set();
- progresoAudios[moduleNumber].add(audioId);
- verificarModuloCompleto(moduleNumber);
- }
-
- if (cursoId && audioId) marcarComoCompletado(audioId, cursoId);
-
- const s = document.querySelector(`span[data-audio-id="${audioId}"]`);
- if (s) { s.textContent = "Completado"; s.className = "completed"; }
- });
- });
-}
-
-
-// Verificar si un módulo está completo
-function verificarModuloCompleto(moduleNumber) {
-    const audios = document.querySelectorAll(`.dia[data-module="${moduleNumber}"] audio`);
-    
-    if (!progresoAudios[moduleNumber]) {
-        progresoAudios[moduleNumber] = new Set();
-    }
-
-    if (progresoAudios[moduleNumber].size === audios.length) {
-        desbloquearSiguienteModulo(moduleNumber);
-    }
-}
-// Desbloquear siguiente módulo
-function desbloquearSiguienteModulo(moduleNumber) {
-    const siguienteIndex = parseInt(moduleNumber);
-    const tabs = document.querySelectorAll('.tab');
-
-    if (tabs[siguienteIndex]) {
-        tabs[siguienteIndex].classList.remove("locked");
-        tabs[siguienteIndex].style.pointerEvents = "auto";
-        tabs[siguienteIndex].style.opacity = "1";
-        console.log("✅ Módulo desbloqueado");
-    }
-}
-
-</script>
-
-    <script src="/js/cursos.js" defer></script>
-    
 </body>
 </html>
