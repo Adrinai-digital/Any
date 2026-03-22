@@ -102,9 +102,15 @@ body {
 .gratitud-header {
     background-image: url("/images/fondo.jpg");
 }
-.circulo-header {
+.sostenible-header {
 
     background-image: url("/images/pormenbresiacir.jpg");
+    
+}
+
+.gratitud1-header {
+
+    background-image: url("/images/GRATITUD.jpg");
     
 }
 .almas-header {
