@@ -374,6 +374,7 @@ body {
   margin-left: 98px; /* ajusta: 20px, 60px, etc. */
 }
 
+
 .audio-box audio {
   width: 300px; /* puedes ajustar (250px, 350px, etc.) */
   max-width: 100%;
@@ -383,6 +384,26 @@ body {
   margin-bottom: 10px;
   font-size: 16px;
   color: #333;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Tablets */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Móviles */
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 /* Responsive móvil */
 @media (max-width: 768px) {
