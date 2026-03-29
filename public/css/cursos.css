@@ -391,7 +391,11 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
-
+.card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 /* Tablets */
 @media (max-width: 900px) {
   .grid {
