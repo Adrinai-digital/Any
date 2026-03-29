@@ -386,19 +386,7 @@ body {
   color: #333;
 }
 
-/* 📱 Tablets (2 columnas) */
-@media (max-width: 900px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
 
-/* 📱 Móviles (1 columna) */
-@media (max-width: 600px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-}
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;
