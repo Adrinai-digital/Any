@@ -386,29 +386,19 @@ body {
   color: #333;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-.card img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-/* Tablets */
-@media (max-width: 900px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+/* 📱 Tablets (2 columnas) */
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
 
-/* Móviles */
-@media (max-width: 600px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-}
+    /* 📱 Móviles (1 columna) */
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
 /* Responsive móvil */
 @media (max-width: 768px) {
     .lesson-video {
