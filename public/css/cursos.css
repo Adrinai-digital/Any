@@ -402,7 +402,26 @@ body {
   color: #cccccc;
   text-decoration: none;
 }
+.spotify-seccion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
 
+/* Solo afecta a esta sección */
+.spotify-seccion .spotify-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.spotify-seccion iframe {
+  width: 100%;
+  height: 152px;
+  border: none;
+  border-radius: 12px;
+}
 
 @media (max-width: 900px) {
   .grid {
