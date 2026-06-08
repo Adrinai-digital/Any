@@ -43,7 +43,10 @@ img {
     padding: 100px 0; /* Aquí pones el padding, NO en .header */
     z-index: 1;
 }
-
+.citas_online{
+    color: #F3E9D2;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
 .logo{
     
         width: 100px; /* o el tamaño que prefieras */
