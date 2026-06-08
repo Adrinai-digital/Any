@@ -202,7 +202,7 @@ p{
 }
 .header-txt p {
     text-align: justify;
-    color: #181713;
+    color: #FFFFFF !important;
     margin-bottom: 30px;
     padding: 0 10px;
 }
