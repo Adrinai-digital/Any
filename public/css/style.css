@@ -664,67 +664,6 @@ h2{
 }
 
 
-/* 1. CONTENEDOR DEL POP-UP: Ahora el fondo es un gris translúcido muy suave */
-.modal-calendario-container {
-    display: none; 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(40, 40, 40, 0.55); /* Gris oscuro pero muy translúcido y difuminado */
-    -webkit-backdrop-filter: blur(4px);
-    backdrop-filter: blur(4px); /* Aplica un ligero efecto de desenfoque a tu web de fondo */
-    z-index: 99999; 
-    justify-content: center; 
-    align-items: center;
-}
-
-/* 2. CAJA CENTRAL DEL POP-UP: Más ancha, más alta y con borde dorado elegante */
-.modal-calendario-caja {
-    position: relative; 
-    width: 95%; 
-    max-width: 1150px; /* Aumentamos el ancho máximo para que se vea todo espacioso */
-    height: 90%;       /* Aumentamos la altura para evitar barras de scroll incómodas */
-    background: #ffffff; 
-    border-radius: 20px; /* Bordes un poquito más redondeados, como en el diseño */
-    border: 2px solid #c5a880; /* Un borde fino con el tono dorado de tu marca Mundo Luz */
-    overflow: hidden; 
-    box-shadow: 0px 10px 35px rgba(0, 0, 0, 0.2);
-}
-
-/* 3. BOTÓN DE CERRAR: Mantiene tu lila corporativo y añade un toque de sombra */
-.modal-calendario-cerrar {
-    position: absolute; 
-    top: 15px; 
-    right: 20px; 
-    background: #cf6cbb; /* Tu color rosa/lila */
-    color: #ffffff; 
-    border: none; 
-    padding: 10px 18px; 
-    border-radius: 8px; 
-    cursor: pointer; 
-    font-weight: bold; 
-    z-index: 100000; 
-    font-family: 'Montserrat', sans-serif; /* O la tipografía principal de tu web */
-    font-size: 14px; 
-    letter-spacing: 0.5px;
-    box-shadow: 0 4px 10px rgba(207, 108, 187, 0.3); /* Sombra lila suave */
-    transition: all 0.3s ease;
-}
-
-/* Efecto al pasar el ratón por encima del botón de cerrar */
-.modal-calendario-cerrar:hover {
-    background: #b55ca3; /* Se oscurece un pelín al pasar el cursor */
-    transform: translateY(-1px);
-}
-
-/* 4. MARCO DEL CALENDARIO: Ocupa todo el espacio interior de la caja */
-.modal-calendario-iframe {
-    width: 100%; 
-    height: 100%; 
-    border: none;
-}
 /* Responsive */
 @media (max-width: 600px) {
  .citas-container {
