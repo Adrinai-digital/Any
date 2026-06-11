@@ -101,7 +101,19 @@
                    Cada paso hacia tu bienestar comienza con una decisión. Reserva una cita personalizada y encuentra la orientación que necesitas para avanzar con confianza y armonía.
                 </p>
                 <a href="https://wa.me/34627781846?text=Estoy%20interesado/a%20en%20información%20sobre%20las%20terapias" class="btn-1">Información</a>
-                <a href="https://cal.com/autoconocimientoygratitud" class="btn-1" data-cal-link="autoconocimientoygratitud">Reservar cita</a>
+                <a href="#" class="btn-1" onclick="abrirCalendarioMaster(event)">Reservar cita</a>
+
+<div id="popup-agenda-dual" class="modal-calendario-container">
+    <div class="modal-calendario-caja">
+        
+        <button onclick="cerrarCalendarioMaster()" class="modal-calendario-cerrar">✕ Cerrar</button>
+        
+        <iframe src="https://cal.com/autoconocimientoygratitud?embed=true" 
+                title="Calendario de reservas para sesiones de Tarot y Coaching" 
+                class="modal-calendario-iframe">
+        </iframe>
+    </div>
+</div>
             
         </div>
     </header>
@@ -525,22 +537,16 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-<script type="text/javascript">
-  (function (C, A, L) { 
-    let p = function (a, ar) { a.q.push(ar); }; 
-    C.Cal = C.Cal || function () { let am = arguments; if (!am.length) { return; } C.Cal.q = C.Cal.q || []; p(C.Cal, am); }; 
-    C.Cal("init", { origin: "https://cal.com" }); 
-    
-    // Aquí le decimos que actúe como Pop-up flotante integrado
-    C.Cal("ui", {
-      "theme": "light",
-      "styles": {
-        "eventTypeListItem": { "backgroundColor": "#cf6cbb" }
-      },
-      "hideEventTypeDetails": false,
-      "layout": "month_view"
-    }); 
-  })(window, window.document, "https://cal.com");
+
+
+<script>
+function abrirCalendarioMaster(e) {
+    e.preventDefault();
+    document.getElementById('popup-agenda-dual').style.display = 'flex';
+}
+function cerrarCalendarioMaster() {
+    document.getElementById('popup-agenda-dual').style.display = 'none';
+}
 </script>
 </body>
 </html>
