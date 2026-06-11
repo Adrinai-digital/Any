@@ -662,19 +662,7 @@ h2{
  background: #e0f2fe;
  color: #075985;
 }
-/* Contenedor del Pop-up (Fondo oscuro) */
-.modal-calendario-container {
-    display: none; 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(0, 0, 0, 0.6); 
-    z-index: 99999; 
-    justify-content: center; 
-    align-items: center;
-}
+
 
 /* 1. CONTENEDOR DEL POP-UP: Ahora el fondo es un gris translúcido muy suave */
 .modal-calendario-container {
