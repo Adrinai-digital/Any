@@ -101,7 +101,7 @@
                    Cada paso hacia tu bienestar comienza con una decisión. Reserva una cita personalizada y encuentra la orientación que necesitas para avanzar con confianza y armonía.
                 </p>
                 <a href="https://wa.me/34627781846?text=Estoy%20interesado/a%20en%20información%20sobre%20las%20terapias" class="btn-1">Información</a>
-                <a href="https://cal.com/autoconocimientoygratitud" class="btn-1" id="boton-cal-popup">Reservar cita</a>
+                <a href="https://cal.com/autoconocimientoygratitud" class="btn-1" data-cal-link="autoconocimientoygratitud">Reservar cita</a>
             
         </div>
     </header>
@@ -530,28 +530,19 @@ document.addEventListener("DOMContentLoaded", function () {
     let p = function (a, ar) { a.q.push(ar); }; 
     C.Cal = C.Cal || function () { let am = arguments; if (!am.length) { return; } C.Cal.q = C.Cal.q || []; p(C.Cal, am); }; 
     C.Cal("init", { origin: "https://cal.com" }); 
-    C.Cal("ui", {"theme":"light","styles":{"eventTypeListItem":{"backgroundColor":"#cf6cbb"}},"hideEventTypeDetails":false,"layout":"month_view"}); 
+    
+    // Aquí le decimos que actúe como Pop-up flotante integrado
+    C.Cal("ui", {
+      "theme": "light",
+      "styles": {
+        "eventTypeListItem": { "backgroundColor": "#cf6cbb" }
+      },
+      "hideEventTypeDetails": false,
+      "layout": "month_view"
+    }); 
   })(window, window.document, "https://cal.com");
-
-  // Esperamos a que la web esté 100% cargada para activar el pop-up en tu botón
-  window.addEventListener("DOMContentLoaded", function() {
-    setTimeout(function() {
-      const boton = document.getElementById("boton-cal-popup");
-      if (boton) {
-        // Le asignamos la función de abrir el pop-up integrado de Cal.com
-        boton.addEventListener("click", function(e) {
-          e.preventDefault(); // Evita que se vaya a otra web
-          Cal("modal", {
-            link: "autoconocimientoygratitud"
-          });
-        });
-      }
-    }, 500); // Espera medio segundo por seguridad
-  });
 </script>
 </body>
 </html>
 
-
-</body>
-</html>     
+ 
