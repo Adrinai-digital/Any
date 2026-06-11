@@ -41,58 +41,67 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_green.css">
     <!-- Estilos principales -->
     <link rel="stylesheet" href="/css/style.css">
-    <style>
+   <style>
   .modal-calendario-container {
-      display: none !important; /* El script cambiará esto a 'flex' al clicar */
-      position: fixed !important; 
-      top: 0 !important; 
-      left: 0 !important; 
-      width: 100% !important; 
-      height: 100% !important; 
-      background: rgba(40, 40, 40, 0.55) !important; 
-      -webkit-backdrop-filter: blur(4px) !important;
-      backdrop-filter: blur(4px) !important; 
-      z-index: 99999 !important; 
-      justify-content: center !important; 
-      align-items: center !important;
+      display: none; /* De entrada totalmente escondido */
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: rgba(40, 40, 40, 0.55); 
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px); 
+      z-index: 99999; 
+      justify-content: center; 
+      align-items: center;
   }
+  
+  /* Clase especial que activará el script al hacer clic */
+  .modal-calendario-container.activo {
+      display: flex !important;
+  }
+
   .modal-calendario-caja {
-      position: relative !important; 
-      width: 95% !important; 
-      max-width: 1150px !important; 
-      height: 90% !important; 
-      background: #ffffff !important; 
-      border-radius: 20px !important; 
-      border: 2px solid #c5a880 !important; 
-      overflow: hidden !important; 
-      box-shadow: 0px 10px 35px rgba(0, 0, 0, 0.2) !important;
+      position: relative; 
+      width: 95%; 
+      max-width: 1150px; 
+      height: 90%; 
+      background: #ffffff; 
+      border-radius: 20px; 
+      border: 2px solid #c5a880; /* Tu dorado elegante de Mundo Luz */
+      overflow: hidden; 
+      box-shadow: 0px 10px 35px rgba(0, 0, 0, 0.3);
   }
+  
   .modal-calendario-cerrar {
-      position: absolute !important; 
-      top: 15px !important; 
-      right: 20px !important; 
-      background: #cf6cbb !important; 
-      color: #ffffff !important; 
-      border: none !important; 
-      padding: 10px 18px !important; 
-      border-radius: 8px !important; 
-      cursor: pointer !important; 
-      font-weight: bold !important; 
-      z-index: 100000 !important; 
-      font-family: 'Montserrat', sans-serif !important; 
-      font-size: 14px !important; 
-      letter-spacing: 0.5px !important;
-      box-shadow: 0 4px 10px rgba(207, 108, 187, 0.3) !important; 
-      transition: all 0.3s ease !important;
+      position: absolute; 
+      top: 15px; 
+      right: 20px; 
+      background: #cf6cbb; /* Tu lila corporativo */
+      color: #ffffff; 
+      border: none; 
+      padding: 10px 18px; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      font-weight: bold; 
+      z-index: 100000; 
+      font-family: sans-serif; 
+      font-size: 14px; 
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 10px rgba(207, 108, 187, 0.3); 
+      transition: all 0.3s ease;
   }
+  
   .modal-calendario-cerrar:hover {
-      background: #b55ca3 !important; 
-      transform: translateY(-1px) !important;
+      background: #b55ca3; 
+      transform: translateY(-1px);
   }
+  
   .modal-calendario-iframe {
-      width: 100% !important; 
-      height: 100% !important; 
-      border: none !important;
+      width: 100%; 
+      height: 100%; 
+      border: none;
   }
 </style>
 </head>
@@ -157,11 +166,9 @@
                 <a href="https://wa.me/34627781846?text=Estoy%20interesado/a%20en%20información%20sobre%20las%20terapias" class="btn-1">Información</a>
                 <a href="#" class="btn-1" onclick="abrirCalendarioMaster(event)">Reservar cita</a>
 
-<div id="popup-agenda-dual" class="modal.calendario-container">
-    <div class="modal.calendario-caja">
-        
+<div id="popup-agenda-dual" class="modal-calendario-container">
+    <div class="modal-calendario-caja">
         <button onclick="cerrarCalendarioMaster()" class="modal-calendario-cerrar">✕ Cerrar</button>
-        
         <iframe src="https://cal.com/autoconocimientoygratitud?embed=true" 
                 title="Calendario de reservas para sesiones de Tarot y Coaching" 
                 class="modal-calendario-iframe">
@@ -596,10 +603,12 @@ document.addEventListener("DOMContentLoaded", function () {
 <script>
 function abrirCalendarioMaster(e) {
     e.preventDefault();
-    document.getElementById('popup-agenda-dual').style.setProperty('display', 'flex', 'important');
+    // Añadimos la clase 'activo' para que pase a display: flex
+    document.getElementById('popup-agenda-dual').classList.add('activo');
 }
 function cerrarCalendarioMaster() {
-    document.getElementById('popup-agenda-dual').style.setProperty('display', 'none', 'important');
+    // Quitamos la clase 'activo' para que vuelva a esconderse
+    document.getElementById('popup-agenda-dual').classList.remove('activo');
 }
 </script>
 </body>
