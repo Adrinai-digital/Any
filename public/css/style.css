@@ -781,3 +781,65 @@ h2{
       display: none;
     }
   }
+  /* ==========================================================================
+   RESPONSIVE: CATÁLOGO DE CURSOS (MÓVILES Y TABLETS)
+   ========================================================================== */
+
+/* 📱 Para móviles (Pantallas de menos de 768px de ancho) */
+@media (max-width: 768px) {
+    
+    /* Forzamos a que las tarjetas se coloquen una debajo de otra en una sola columna */
+    .box-container {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 30px !important; /* Añade una separación elegante de 30px entre curso y curso */
+        padding: 0 15px !important; /* Pequeño margen para que no toquen los bordes de la pantalla */
+    }
+
+    /* Hacemos que cada curso ocupe el ancho completo de la pantalla móvil */
+    .products .box {
+        width: 100% !important;
+        max-width: 400px !important; /* Evita que en móviles grandes la tarjeta se estire demasiado y quede fea */
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* Nos aseguramos de que las portadas se adapten perfectamente sin deformarse */
+    .products .box img {
+        width: 100% !important;
+        height: auto !important;
+        object-fit: cover !important;
+        border-radius: 12px 12px 0 0 !important; /* Redondea solo las esquinas de arriba de la imagen */
+    }
+
+    /* Ajustamos los textos del producto para que tengan aire en los lados */
+    .product-txt {
+        padding: 20px 15px !important;
+        text-align: center !important; /* Centra los títulos y precios para que luzcan más en móvil */
+    }
+
+    /* Separamos las secciones de Cursos de Pago y Gratuitos para que respiren */
+    .products.container {
+        padding-top: 40px !important;
+        padding-bottom: 40px !important;
+    }
+    
+    /* El botón de "Cargar más" también centrado y con margen */
+    .load-more-container {
+        margin-top: 25px !important;
+    }
+}
+
+/* ➔ Opcional: Para tablets (Pantallas entre 769px y 1024px) 
+   Si quieres que en tablets se vean de 2 en 2 en vez de súper estrujados */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .box-container {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 25px !important;
+        padding: 0 20px !important;
+    }
+}
