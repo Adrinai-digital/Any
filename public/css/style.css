@@ -843,3 +843,65 @@ h2{
         padding: 0 20px !important;
     }
 }
+/* ==========================================================================
+   CONTROL DE VISIBILIDAD DE BOTONES (ORDENADOR VS MÓVIL)
+   ========================================================================== */
+
+/* Por defecto en ordenador, la sección de móvil está totalmente oculta */
+.botones-movil-seccion {
+    display: none;
+}
+
+/* 📱 Cambios cuando la pantalla es de móvil (menos de 768px) */
+@media (max-width: 768px) {
+    
+    /* 1. Ocultamos el bloque problemático dentro del header */
+    .header .header-content {
+        display: none !important;
+    }
+    
+    /* 2. Activamos el bloque exterior que acabamos de crear */
+    .botones-movil-seccion {
+        display: block !important;
+        padding: 40px 20px;
+        text-align: center;
+        background: #ffffff; /* Puedes poner el color de fondo que mejor le vaya a tu web */
+    }
+
+    .botones-movil-seccion span {
+        font-size: 14px;
+        text-transform: uppercase;
+        color: #c5a880; /* Tu dorado corporativo */
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .botones-movil-seccion h2 {
+        font-size: 28px;
+        color: #333333;
+        margin-bottom: 15px;
+    }
+
+    .botones-movil-seccion p {
+        font-size: 15px;
+        color: #666666;
+        margin-bottom: 25px;
+        line-height: 1.6;
+    }
+
+    /* 3. Colocamos los dos botones ordenados uno debajo del otro o en flex */
+    .botones-movil-flex {
+        display: flex;
+        flex-direction: column;
+        gap: 15px; /* Separación entre ambos botones */
+        align-items: center;
+    }
+
+    .botones-movil-flex .btn-1 {
+        width: 100%;
+        max-width: 280px; /* Tamaño cómodo para pulsar con el pulgar */
+        text-align: center;
+        box-sizing: border-box;
+    }
+}
