@@ -111,7 +111,7 @@ app.use('/', paymentRoutes);
 
 // ----------------- RUTAS -----------------
 //app.use('/api/citas', citasRoutes);
-app.use('/curso'); // para /curso/metodo-learn
+app.use('/curso', cursoRoutes); // para /curso/metodo-learn
 Registro
 app.post('/register', async (req, res) => {
     const { nombre, email, password, telefono } = req.body;
