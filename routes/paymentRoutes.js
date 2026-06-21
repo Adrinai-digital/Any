@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { stripe } = require('../stripe');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+exports.stripe = stripe;
 
 router.post('/create-checkout-session', async (req, res) => {
  const { items, userEmail } = req.body;
@@ -59,23 +60,34 @@ router.post('/crear-checkout', async (req, res) => {
  }
     const mode = hasRecurring ? "subscription" : "payment";
         const sessionData = {
-  payment_method_types: ['card'],
-  line_items: lineItems,
-  mode,
-  customer_email: userEmail,
-  success_url: `${process.env.BASE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-  cancel_url: `${process.env.BASE_URL}/cancel.html`,
-};
+            payment_method_types: ['card'],
+            line_items: lineItems,
+            mode,
+            customer_email: userEmail,
+            success_url: `${process.env.BASE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.BASE_URL}/cancel.html`,
+        };
 
-const session = await stripe.checkout.sessions.create(sessionData);
+        // Si es Método Learn, pasamos metadata con fecha, hora y teléfono
+        if (cita) {
+            sessionData.metadata = {
+                curso_id: cita.curso_id,
+                fecha: cita.fecha,
+                hora: cita.hora,
+                telefono: cita.telefono || ''
+            };
+        }
 
-console.log("✅ Stripe session creada:", session);
+        const session = await stripe.checkout.sessions.create(sessionData);
 
-return res.json({ url: session.url });
-} catch (error) {
-  console.error("❌ Error en /crear-checkout:", error);
-  return res.status(500).json({ error: 'Error al crear la sesión de pago' });
-}
+        console.log("✅ Stripe session creada:", session);
+
+        res.json({ url: session.url });
+    } catch (error) {
+        console.error("❌ Error en /crear-checkout:", error);
+        res.status(500).json({ error: 'Error al crear la sesión de pago' });
+    }
 });
+
 
 module.exports = router;
