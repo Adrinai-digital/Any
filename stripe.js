@@ -1,7 +1,6 @@
+const Stripe = require('stripe');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
-
-const { stripe, STRIPE_PUBLIC_KEY } = require('./stripe');
 
 const isTest = (process.env.STRIPE_MODE || 'live') === 'test';
 
