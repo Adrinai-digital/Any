@@ -11,7 +11,6 @@ const authMiddleware = require('./middlewares/authMiddleware');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const express = require('express');
 const { STRIPE_PUBLIC_KEY } = require('./stripe');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
