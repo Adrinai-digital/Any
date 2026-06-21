@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const db = require("../db");
-const { enviarAviso } = require("../services/emailService");
-const { addCalendarEvent } = require("../services/googleCalendar");
 
 router.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
@@ -22,51 +20,30 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
-    const metadata = session.metadata;
+    const metadata = session.metadata || {};
 
-    const userId = metadata.user_id;
-    const cursoId = metadata.curso_id;
-    const fecha = metadata.fecha;
-    const hora = metadata.hora;
+    const userId = Number(metadata.user_id);
+    const cursoId = Number(metadata.curso_id);
 
     try {
       await new Promise((resolve, reject) => {
         db.query(
-          `INSERT INTO citas (user_id, curso_id, fecha, hora, estado)
-           VALUES (?, ?, ?, ?, 'pagado')
-           ON DUPLICATE KEY UPDATE estado='pagado'`,
-          [userId, cursoId, fecha, hora],
+          `INSERT INTO pagos
+            (usuario_id, curso_id, stripe_session_id, stripe_payment_intent_id, estado, estado_pago, fecha_pago)
+           VALUES (?, ?, ?, ?, 'completado', 'completado', NOW())`,
+          [userId, cursoId, session.id, session.payment_intent || null],
           (err, result) => (err ? reject(err) : resolve(result))
         );
       });
 
-      const cita = {
-        user_id: userId,
-        curso_id: cursoId,
-        fecha,
-        hora,
-        nombre: session.customer_details?.name || "Usuario",
-        email: session.customer_email,
-        telefono: session.customer_details?.phone || ""
-      };
-
-      setImmediate(async () => {
-        try {
-          await enviarAviso(cita);
-          await addCalendarEvent(cita);
-          console.log("✅ Email y Google Calendar enviados");
-        } catch (err) {
-          console.error("❌ Error notificando cita:", err);
-        }
-      });
-
+      return res.status(200).json({ received: true });
     } catch (err) {
-      console.error("❌ Error guardando cita pagada:", err);
-      return res.status(500).send("Error al actualizar cita");
+      console.error("❌ Error guardando pago:", err);
+      return res.status(500).send("Error guardando pago");
     }
   }
 
-  res.status(200).json({ received: true });
+  return res.status(200).json({ received: true });
 });
 
 module.exports = router;
