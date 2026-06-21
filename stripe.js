@@ -1,12 +1,18 @@
-// stripe.js (raíz)
 require('dotenv').config();
+
 const Stripe = require('stripe');
 
 const isTest = (process.env.STRIPE_MODE || 'live') === 'test';
 
-const stripe = new Stripe(
-  isTest ? process.env.STRIPE_SECRET_KEY_TEST : process.env.STRIPE_SECRET_KEY_LIVE
-);
+const secretKey = isTest
+  ? process.env.STRIPE_SECRET_KEY_TEST
+  : process.env.STRIPE_SECRET_KEY_LIVE;
+
+if (!secretKey) {
+  throw new Error('Falta la clave secreta de Stripe en .env');
+}
+
+const stripe = new Stripe(secretKey);
 
 const STRIPE_PUBLIC_KEY = isTest
   ? process.env.STRIPE_PUBLIC_KEY_TEST
