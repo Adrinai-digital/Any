@@ -2,6 +2,19 @@ const express = require("express");
 const router = express.Router();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const db = require("../db");
+const express = require('express');
+const router = express.Router();
+const { stripe, STRIPE_WEBHOOK_SECRET } = require('../stripe');
+
+router.post('/webhook/stripe', express.raw({ type: 'application/json' }), (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
 
 router.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
@@ -44,6 +57,9 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
   }
 
   return res.status(200).json({ received: true });
+});
+
+res.json({ received: true });
 });
 
 module.exports = router;
