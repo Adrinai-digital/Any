@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const verifyToken = require('../middlewares/authMiddleware');
 
-// Asegúrate de requerir tu conexión a la base de datos (db) si no está aquí arriba, por ejemplo:
-// const db = require('../config/db'); 
+// Requerimos la base de datos (subiendo un nivel desde la carpeta 'routes')
+const db = require('../db'); 
 
 // Ruta protegida: solo accesible con token válido
 router.get('/perfil', verifyToken, (req, res) => {
@@ -22,11 +22,9 @@ router.get('/cursos', verifyToken, (req, res) => {
 });
 
 // ==========================================
-// 
-// ==========================================
 // 1. RUTA GET: LEER EL PROGRESO AL REFRESCAR
 // ==========================================
-router.get('/lecciones-completadas', authMiddleware, (req, res) => {
+router.get('/lecciones-completadas', verifyToken, (req, res) => {
     const usuario_id = req.user.id;
 
     if (!usuario_id) {
@@ -49,7 +47,7 @@ router.get('/lecciones-completadas', authMiddleware, (req, res) => {
 // ==========================================
 // 2. RUTA POST: GUARDAR PROGRESO AL TERMINAR
 // ==========================================
-router.post('/marcar-completado', authMiddleware, (req, res) => {
+router.post('/marcar-completado', verifyToken, (req, res) => {
     const usuario_id = req.user.id;
     const { video_id, cursoId } = req.body;
     const curso_id = cursoId;
@@ -72,7 +70,5 @@ router.post('/marcar-completado', authMiddleware, (req, res) => {
         }
     );
 });
-
-
 
 module.exports = router;
