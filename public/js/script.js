@@ -246,7 +246,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
         verificarEstadoCompletado(video, index);
     });
-    await cargarProgresoUsuario();
+    try {
+        await cargarProgresoUsuario();
+    } catch (e) {
+        console.error("⚠️ No se pudo cargar el progreso de forma síncrona, reintentando...", e);
+        // Si falla por culpa de la carga de otros scripts, lo reintentamos de forma asíncrona un milisegundo después
+        setTimeout(() => {
+            cargarProgresoUsuario().catch(err => console.error("Error definitivo:", err));
+        }, 100);
+    }
 });
 
 // ==========================================
