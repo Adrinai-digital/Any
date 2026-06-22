@@ -66,7 +66,7 @@ app.use('/', paymentRoutes);
 
 
 // ----------------- RUTAS -----------------
-app.use('/api/citas', citasRoutes);
+
 app.use('/curso', citasRoutes); // para /curso/metodo-learn
 // Registro
 app.post('/register', async (req, res) => {
