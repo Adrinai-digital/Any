@@ -5,24 +5,6 @@ const router = express.Router();
 const db = require('../db');
 const authMiddleware = require('../middlewares/authMiddleware');  // ajusta según tu estructura
 const cookieParser = require('cookie-parser');
-const nodemailer = require("nodemailer");
-const { google } = require("googleapis");
-// Middleware para verificar el token desde la cookie
-//function authMiddleware(req, res, next) {
-   // const token = req.cookies.token;
-
-    //if (!token) {
-     //   return res.status(401).json({ error: 'Acceso denegado, token requerido' });
-   // }
-
-   // try {
-     //   const verificado = jwt.verify(token, process.env.JWT_SECRET);
-     //   req.usuario = verificado;
-      //  next();
-   // } catch (error) {
-      //  res.status(401).json({ error: 'Token inválido o expirado' });
-   // }
-//}
 
 // Ruta de registro
 router.post('/register', async (req, res) => {
@@ -163,7 +145,6 @@ router.get('/perfil', authMiddleware, (req, res) => {
     });
 });
 
-
 // Ruta para cerrar sesión
 router.get('/logout', (req, res) => {
     res.clearCookie('token');
@@ -194,6 +175,7 @@ router.post('/marcar-completado', authMiddleware, (req, res) => {
         res.json({ message: '✅ Video marcado como completado' });
     });
 });
+
 router.get('/api/auth/check', (req, res) => {
     const token = req.cookies.token;
 
@@ -202,102 +184,11 @@ router.get('/api/auth/check', (req, res) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
         res.json({ loggedIn: true, user: { id: decoded.id, nombre: decoded.nombre } });
     } catch (error) {
         res.json({ loggedIn: false });
     }
-});
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.tuservidor.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-
-async function enviarAviso(cita) {
-  await transporter.sendMail({
-    from: `"Tu Web" <${process.env.EMAIL_USER}>`,
-    to: "info@autoconocimientoygratitud.com",
-    subject: "Nueva cita agendada",
-    html: `
-      <p>Se ha agendado una cita:</p>
-      <p>Usuario: ${cita.nombre} (${cita.email})</p>
-      <p>Curso: ${cita.curso_id}</p>
-      <p>Fecha: ${cita.fecha}</p>
-      <p>Hora: ${cita.hora}</p>
-    `
-  });
-}
-
-/* -------------------- GOOGLE CALENDAR -------------------- */
-async function agregarAGoogleCalendar(cita) {
-  const auth = new google.auth.GoogleAuth({
-    keyFile: "credentials.json",
-    scopes: ["https://www.googleapis.com/auth/calendar"]
-  });
-
-  const calendar = google.calendar({ version: "v3", auth });
-
-  await calendar.events.insert({
-    calendarId: "primary",
-    requestBody: {
-      summary: `Cita Método Learn - ${cita.nombre}`,
-      description: `Usuario: ${cita.nombre} (${cita.email})`,
-      start: { dateTime: `${cita.fecha}T${cita.hora}`, timeZone: "Europe/Madrid" },
-      end: { dateTime: new Date(new Date(`${cita.fecha}T${cita.hora}`).getTime() + 60*60*1000).toISOString(), timeZone: "Europe/Madrid" }
-    }
-  });
-}
-
-/* -------------------- CREAR PAGO DE CITA -------------------- */
-router.post("/crear-pago-cita", authMiddleware, async (req, res) => {
-  const { curso_id, price_id, fecha, hora } = req.body;
-  const userId = req.user.id;
-
-  if (!fecha || !hora) return res.status(400).json({ error: "Debes seleccionar fecha y hora" });
-
-  try {
-    // Crear sesión de Stripe
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "payment",
-      customer_email: req.user.email,
-      line_items: [
-        {
-          price: price_id,
-          quantity: 1
-        }
-      ],
-      metadata: {
-        user_id: userId,
-        curso_id,
-        fecha,
-        hora
-      },
-      success_url: "https://autoconocimientoygratitud.com/perfil",
-      cancel_url: "https://autoconocimientoygratitud.com/cancelado"
-    });
-
-    // Guardar cita pendiente en DB
-    db.query(
-      `INSERT INTO citas (user_id, curso_id, estado, fecha, hora, stripe_payment_id, nombre, email)
-       VALUES (?, ?, 'pendiente', ?, ?, ?, ?, ?)`,
-      [userId, curso_id, fecha, hora, session.payment_intent, req.user.nombre, req.user.email],
-      (err) => {
-        if (err) console.error("Error guardando cita pendiente:", err);
-      }
-    );
-
-    res.json({ url: session.url });
-  } catch (err) {
-    console.error("Error creando sesión de Stripe:", err);
-    res.status(500).json({ error: "No se pudo crear la sesión de pago" });
-  }
 });
 
 module.exports = router;
