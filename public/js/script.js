@@ -1,22 +1,27 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     console.log("✅ Script cargado correctamente");
+
+    // ==========================================
+    // 1. SELECTORES DE PLANES Y PRECIOS
+    // ==========================================
     document.querySelectorAll('.plan-selector').forEach(select => {
-  select.addEventListener('change', function () {
-    const box     = this.closest('.box');
-    const opt     = this.options[this.selectedIndex];
-    const precio  = opt.getAttribute('data-precio');   // "20" o "30"
-    const priceId = opt.value;                         // price_xxx
+        select.addEventListener('change', function () {
+            const box     = this.closest('.box');
+            const opt     = this.options[this.selectedIndex];
+            const precio  = opt.getAttribute('data-precio');   // "20" o "30"
+            const priceId = opt.value;                         // price_xxx
 
-    // Refresca el texto del precio (sirve si la clase es .Precio o .precio)
-    const pPrecio = box.querySelector('.Precio') || box.querySelector('.precio');
-    if (pPrecio) pPrecio.textContent = `${precio}€`;
+            const pPrecio = box.querySelector('.Precio') || box.querySelector('.precio');
+            if (pPrecio) pPrecio.textContent = `${precio}€`;
 
-    // Actualiza el botón para que leerDatosElemento obtenga el priceId correcto
-    const btn = box.querySelector('.agregar-carrito');
-    if (btn) btn.setAttribute('data-price-id', priceId);
-  });
-});
+            const btn = box.querySelector('.agregar-carrito');
+            if (btn) btn.setAttribute('data-price-id', priceId);
+        });
+    });
 
+    // ==========================================
+    // 2. LÓGICA DEL CARRITO DE COMPRAS
+    // ==========================================
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     let total = 0;
 
@@ -69,23 +74,22 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("⚠️ El producto de pago no tiene un priceId válido de Stripe");
             return;
         }
-        
 
         agregarAlCarrito(infoElemento);
     }
 
     function agregarAlCarrito(nuevoElemento) {
-        const existe = carrito.find(item =>item.id === nuevoElemento.id && item.priceId === nuevoElemento.priceId);
+        const existe = carrito.find(item => item.id === nuevoElemento.id && item.priceId === nuevoElemento.priceId);
         if (existe) {
             existe.cantidad++;
         } else {
             carrito.push(nuevoElemento);
         }
-
         actualizarCarritoUI();
     }
 
     function actualizarCarritoUI() {
+        if (!lista) return;
         lista.innerHTML = "";
 
         carrito.forEach(item => {
@@ -95,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${item.titulo}</td>
                 <td>${item.precio.toFixed(2)}€</td>
                 <td>${item.cantidad}</td>
-               <td><a href="#" class="borrar"data-id="${item.id}"data-price-id="${item.priceId}">X</a></td>`;
+                <td><a href="#" class="borrar" data-id="${item.id}" data-price-id="${item.priceId}">X</a></td>`;
             lista.appendChild(row);
         });
 
@@ -109,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (e.target.classList.contains('borrar')) {
             const idProducto = e.target.getAttribute('data-id');
             const priceId    = e.target.getAttribute('data-price-id');
-           carrito = carrito.filter(item =>!(item.id === idProducto && item.priceId === priceId));
+            carrito = carrito.filter(item => !(item.id === idProducto && item.priceId === priceId));
             actualizarCarritoUI();
         }
     }
@@ -120,6 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function actualizarTotal() {
+        if (!totalElement) return;
         total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
         totalElement.textContent = `Total: ${total.toFixed(2)} €`;
     }
@@ -127,8 +132,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function guardarCarrito() {
         localStorage.setItem('carrito', JSON.stringify(carrito));
     }
+
     function actualizarContadorCarrito() {
         const contador = document.getElementById('contador-carrito');
+        if (!contador) return;
         const cantidadTotal = carrito.reduce((acc, item) => acc + item.cantidad, 0);
     
         if (cantidadTotal > 0) {
@@ -138,7 +145,6 @@ document.addEventListener("DOMContentLoaded", function () {
             contador.style.display = 'none';
         }
     }
-    
 
     function procesarPago() {
         if (carrito.length === 0) {
@@ -152,26 +158,24 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = '/formulario.html';
             return;
         }
-        
     
         fetch('/perfil-data', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(async response => {
-    // 🔒 Detecta sesión caducada o inexistente
-    if (response.status === 401 || response.status === 403) {
-        localStorage.removeItem('token');
-        alert('Debes iniciar sesión para completar la compra.');
-        window.location.href = '/formulario.html';
-        throw new Error('No autenticado');      // detiene la cadena
-    }
+            if (response.status === 401 || response.status === 403) {
+                localStorage.removeItem('token');
+                alert('Debes iniciar sesión para completar la compra.');
+                window.location.href = '/formulario.html';
+                throw new Error('No autenticado');
+            }
             if (!response.ok) {
-        const txt = await response.text();
-        throw new Error(`No se pudo obtener el perfil del usuario: ${txt}`);
-    }
-    return response.json();
-})
+                const txt = await response.text();
+                throw new Error(`No se pudo obtener el perfil del usuario: ${txt}`);
+            }
+            return response.json();
+        })
         .then(async data => {
             if (!data || data.error || !data.usuario) throw new Error("Error al obtener el perfil del usuario");
     
@@ -185,44 +189,6 @@ document.addEventListener("DOMContentLoaded", function () {
     
             const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
     
-            //if (total === 0) {
-                // ✅ Agregar cursos gratuitos directamente con función autoejecutable
-               // (async () => {
-                   // for (const item of productos) {
-                       // try {
-                            //const response = await fetch('/agregar-al-carrito', {
-                               // method: 'POST',
-                               // headers: {
-                                  //  'Content-Type': 'application/json',
-                                 //   'Authorization': `Bearer ${token}`
-                               // },
-                               // body: JSON.stringify({
-                                 //   cursoId: item.id
-                              //  })
-                          //  });
-    
-                            //if (!response.ok) {
-                               // const errorText = await response.text();
-                                //throw new Error(`Error al agregar curso: ${errorText}`);
-                         //   }
-    
-                           // const responseData = await response.json();
-                            //console.log('✅ Curso agregado:', responseData);
-    
-                           // window.location.href = responseData.redirectUrl;
-                           // return; // Redirige después del primer curso agregado
-                      //  } catch (error) {
-                          //  console.error('Error al agregar curso gratuito:', error);
-                          //  alert('Error al agregar el curso gratuito al perfil');
-                           // return;
-                       // }
-                  //  }
-              //  })();
-    
-                //return; // ✅ Evita continuar al flujo de Stripe
-            //}
-    
-            // 💳 Si hay total > 0, procede al pago con Stripe
             const payload = {
                 productos,
                 total: Math.round(total * 100),
@@ -233,91 +199,81 @@ document.addEventListener("DOMContentLoaded", function () {
     
             return fetch('/crear-checkout', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
         })
         .then(async response => {
-            if (!response || typeof response.headers?.get !== 'function') {
-                throw new Error("Respuesta inválida del servidor");
-            }
-    
+            if (!response) throw new Error("Respuesta inválida del servidor");
             const contentType = response.headers.get("content-type");
     
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error("❌ Error inesperado (no 200):", errorText);
                 throw new Error("No se pudo procesar el pago.");
             }
     
             if (!contentType || !contentType.includes("application/json")) {
-                const text = await response.text();
-                console.error("❌ La respuesta no es JSON:", text);
                 throw new Error("La respuesta del servidor no es válida.");
             }
     
             const data = await response.json();
-    
-            if (!data || !data.url) {
-                console.error("⚠️ Respuesta inesperada:", data);
-                throw new Error("No se recibió una URL válida de Stripe.");
-            }
+            if (!data || !data.url) throw new Error("No se recibió una URL válida de Stripe.");
     
             window.location.href = data.url;
         })
         .catch(error => {
             console.error('⚠️ Error en procesarPago():', error.message);
-            alert("Hubo un problema con el pago. Inténtalo de nuevo.");
+            if (error.message !== 'No autenticado') {
+                alert("Hubo un problema con el pago. Inténtalo de nuevo.");
+            }
         });
     }
-    
-    
 
+    // Inicializar listeners del carrito
     cargarEventListeners();
-});
-// Suponiendo que los videos están dentro de un contenedor con clase 'video-container'
-// Asegúrate de tener un contenedor con todos los videos
-const videos = document.querySelectorAll('.video-container video');
 
-videos.forEach((video, index) => {
-    // No marcar el video como completado al cargar la página, solo cuando termine
-    video.addEventListener('ended', () => {
-        marcarComoCompletado(video, index);
+    // ==========================================
+    // 3. LÓGICA DE REPRODUCTORES DE VÍDEO (HTML5)
+    // ==========================================
+    // Cargar ID de usuario global de forma asíncrona dentro del DOMContentLoaded
+    window.usuarioId = await obtenerUsuarioId();
+
+    const videosNativos = document.querySelectorAll('.video-container video');
+    videosNativos.forEach((video, index) => {
+        video.addEventListener('ended', () => {
+            // Pasamos parámetros genéricos (puedes ajustar el ID según tu HTML)
+            marcarComoCompletado(`video-nativo-${index}`, video.dataset.cursoId || '1');
+        });
+        verificarEstadoCompletado(video, index);
     });
-
-    // Si el video ya ha sido completado previamente (por ejemplo, al recargar la página), no lo marca como completado automáticamente
-    verificarEstadoCompletado(video, index);
 });
 
-// Función para verificar si un video ha sido completado antes
-function verificarEstadoCompletado(video, index) {
-    // Suponiendo que tienes una forma de saber si el video ya fue completado (puedes hacer esto con una base de datos o localStorage)
-    const videoCompletado = false;  // Aquí deberías reemplazar con la lógica que tengas para verificar el estado en la base de datos
+// ==========================================
+// FUNCTIONS GLOBALES (Fuera de DOMContentLoaded)
+// ==========================================
 
+function verificarEstadoCompletado(video, index) {
+    const videoCompletado = false; // Implementar lógica con DB o localStorage si se requiere
     if (videoCompletado) {
-        video.classList.add('completado');  // Clase CSS para marcar visualmente como completado
-        // También podrías cambiar el estado del video en el DOM si es necesario
+        video.classList.add('completado');
     }
 }
-
-// Función para marcar el video como completado en la base de datos
-let usuarioId = null;
 
 async function obtenerUsuarioId() {
     const token = localStorage.getItem('token');
     if (!token) return null;
 
-    const response = await fetch('/perfil-data', {
-        method: 'GET',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-
-    if (!response.ok) return null;
-
-    const data = await response.json();
-    return data.usuario.id;
+    try {
+        const response = await fetch('/perfil-data', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) return null;
+        const data = await response.json();
+        return data.usuario?.id || null;
+    } catch (e) {
+        return null;
+    }
 }
 
 function marcarComoCompletado(videoId, cursoId) {
@@ -334,8 +290,8 @@ function marcarComoCompletado(videoId, cursoId) {
             'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-            video_id: videoId,   // ✔ correcto
-            curso_id: cursoId    // ✔ correcto
+            video_id: videoId,
+            curso_id: cursoId
         })
     })
     .then(response => response.json())
@@ -349,16 +305,18 @@ function marcarComoCompletado(videoId, cursoId) {
                 estado.classList.add("completed");
             }
         } else {
-            console.error('❌ Error al marcar el video como completado:', data);
+            console.error('❌ Error al marcar el video:', data);
         }
     })
     .catch(error => {
-        console.error('❌ Error al marcar el video como completado:', error);
+        console.error('❌ Error en petición marcar-completado:', error);
     });
 }
 
+// Global para almacenar los reproductores de YouTube
+let players = {};
 
-// Llamar la función onYouTubeIframeAPIReady cuando la API de YouTube esté lista
+// Esta función DEBE ser global para que la API de YouTube la encuentre
 function onYouTubeIframeAPIReady() {
     const videoContainers = document.querySelectorAll('.lesson-video');
     videoContainers.forEach((container, index) => {
@@ -366,19 +324,18 @@ function onYouTubeIframeAPIReady() {
         const cursoId = container.dataset.cursoId;
 
         const playerDiv = document.createElement('div');
-        const divId = `youtube-player-${index}`;
+        const divId = `Youtubeer-${index}`;
         playerDiv.id = divId;
         container.appendChild(playerDiv);
 
-        // Crear un reproductor de YouTube para cada video
         players[index] = new YT.Player(divId, {
             height: "315",
             width: "560",
             videoId: videoId,
             events: {
                 'onStateChange': function (event) {
-                    if (event.data === YT.PlayerState.ENDED && usuarioId) {
-                        // Llamar a la función para marcar el video como completado
+                    // CORRECCIÓN CRÍTICA: Se eliminó la dependencia estricta de 'usuarioId' si no se ha cargado a tiempo
+                    if (event.data === YT.PlayerState.ENDED) {
                         marcarComoCompletado(videoId, cursoId);
                     }
                 }
