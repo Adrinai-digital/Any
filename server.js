@@ -110,8 +110,12 @@ app.post("/webhook/stripe",
 );
 
 // ----------------- RUTAS -----------------
+// ----------------- RUTAS -----------------
+const protectedRoutes = require('./routes/protectedRoutes'); // 1. Añade esta línea arriba con los requires o aquí
+
 app.use('/api/citas', citasRoutes);
 app.use('/curso', citasRoutes); // para /curso/metodo-learn
+app.use('/', protectedRoutes);    // 🔥 2. Añade esto aquí para activar las rutas protegidas en la raíz
 // Registro
 app.post('/register', async (req, res) => {
     const { nombre, email, password, telefono } = req.body;
