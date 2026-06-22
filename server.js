@@ -23,9 +23,8 @@ app.use((req, res, next) => {
   console.log("📍 REQUEST:", req.method, req.originalUrl);
   next();
 });
-const stripeWebhook = require('./routes/stripe-webhook');
+
 // middlewares de parseo y cookies
-app.use('/webhook/stripe', express.raw({ type: 'application/json' }), stripeWebhook);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -60,13 +59,58 @@ const verificarToken = (req, res, next) => {
 };
 
 // ----------------- WEBHOOK STRIPE -----------------
-
+const stripeWebhook = require('./routes/stripe-webhook');
+app.use('/webhook', stripeWebhook);
 app.use('/', paymentRoutes);
 
+app.post("/webhook/stripe",
+  bodyParser.raw({ type: "application/json" }),
+  (req, res) => {
+    const sig = req.headers["stripe-signature"];
+    let event;
 
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    if (event.type === "checkout.session.completed") {
+      const s = event.data.object;
+      const userId = s.metadata.user_id;
+      const cursoId = s.metadata.curso_id;
+      const fecha = s.metadata?.fecha;
+      const hora = s.metadata?.hora;
+
+      if (userId && cursoId && fecha && hora) {
+        db.query(
+          `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado, fecha, hora)
+           VALUES (?, ?, ?, 'pagado', ?, ?)`,
+          [userId, cursoId, s.payment_intent, fecha, hora],
+          (err) => {
+            if (err) console.error("Error creando cita de coaching:", err);
+            else console.log(`✅ Cita de coaching creada para ${userId} en ${fecha} ${hora}`);
+          }
+        );
+      } else if (userId && cursoId) {
+        db.query(
+          `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado)
+           VALUES (?, ?, ?, 'pagado')`,
+          [userId, cursoId, s.payment_intent],
+          (err) => {
+            if (err) console.error("Error creando cita de otro curso:", err);
+            else console.log(`✅ Cita creada para otro curso para usuario ${userId}`);
+          }
+        );
+      }
+    }
+
+    res.json({ received: true });
+  }
+);
 
 // ----------------- RUTAS -----------------
-
+app.use('/api/citas', citasRoutes);
 app.use('/curso', citasRoutes); // para /curso/metodo-learn
 // Registro
 app.post('/register', async (req, res) => {
@@ -228,9 +272,28 @@ app.post("/create-checkout-session", (req, res) => {
 });
 
 // ----------------- RUTA CITAS OCUPADAS -----------------
+app.get("/citas-ocupadas", (req, res) => {
+  const query = `
+    SELECT fecha, hora
+    FROM citas
+    WHERE estado = 'pagado'
+      AND fecha IS NOT NULL
+  `;
 
+  db.query(query, (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
 
-  
+    const busy = {};
+    rows.forEach(row => {
+      if (!busy[row.fecha]) busy[row.fecha] = [];
+      if (!busy[row.fecha].includes(row.hora)) {
+        busy[row.fecha].push(row.hora);
+      }
+    });
+
+    res.json(busy); // ✅ Devuelve JSON correcto
+  });
+});
 app.post('/marcar-completado', verificarToken, (req, res) => {
  const usuario_id = req.user.id;
  const { video_id, cursoId } = req.body;
