@@ -1924,40 +1924,55 @@ Cada lección de <em>Un Curso de Milagros</em> nos acerca al reconocimiento de q
         
 }
 
-    // Cargar progreso del usuario desde el backend
-async function cargarProgresoUsuario() {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+  // Cargar progreso del usuario desde el backend
+    async function cargarProgresoUsuario() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.warn('⚠️ No se cargó el progreso porque no hay token en localStorage');
+            return;
+        }
 
-    try {
-        // 🔄 Cambiado de /progreso a /lecciones-completadas para conectar con tu Backend real
-        const response = await fetch('/lecciones-completadas', {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
+        try {
+            console.log('📡 Solicitando lecciones completadas al servidor...');
+            const response = await fetch('/lecciones-completadas', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
 
-        if (!response.ok) throw new Error('No se pudo obtener el progreso real');
+            console.log('🔄 Respuesta cruda del servidor:', response.status);
 
-        const data = await response.json();
-        // Cambiamos a 'completados' o lo que devuelva tu backend (ej. data.completados)
-        // Como tu backend devuelve los datos, mapeamos los video_id correspondientes
-        const completados = data.completados || []; 
-
-        completados.forEach(videoId => {
-            const estado = document.getElementById(`status-${videoId}`);
-            console.log("Cargando progreso:", videoId, "estado encontrado:", estado);
-            if (estado) {
-                estado.textContent = 'Completado';
-                estado.classList.remove("not-completed");
-                estado.classList.add("completed");
+            if (!response.ok) {
+                const errorTexto = await response.text();
+                throw new Error(`Error en servidor (${response.status}): ${errorTexto}`);
             }
-        });
 
-        console.log('✅ Estados actualizados tras carga de YouTube:', completados);
-    } catch (error) {
-        console.error('❌ Error al cargar progreso:', error);
+            const data = await response.json();
+            console.log('📦 Datos JSON recibidos del backend:', data);
+
+            // Extraemos los completados (manejando si viene como array directo o propiedad)
+            const completados = data.completados || data || [];
+            console.log('🔢 Array de IDs a procesar:', completados);
+
+            completados.forEach(item => {
+                // Si el backend devuelve objetos sueltos, extrae el video_id. Si es texto, lo usa directo.
+                const videoId = typeof item === 'object' ? item.video_id : item;
+                
+                const estado = document.getElementById(`status-${videoId}`);
+                console.log(`🔍 Buscando HTML para el vídeo [${videoId}]:`, estado ? "¡ENCONTRADO!" : "NO ENCONTRADO");
+                
+                if (estado) {
+                    estado.textContent = 'Completado';
+                    estado.classList.remove("not-completed");
+                    estado.classList.add("completed");
+                }
+            });
+
+            console.log('✅ Proceso de actualización de interfaz terminado.');
+
+        } catch (error) {
+            console.error('❌ Error crítico en cargarProgresoUsuario:', error);
+        }
     }
-}
 
     // Inicializar reproductores de YouTube cuando la API esté lista
     function onYouTubeIframeAPIReady() {
