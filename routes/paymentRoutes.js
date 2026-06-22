@@ -68,18 +68,7 @@ router.post('/crear-checkout', async (req, res) => {
             cancel_url: `${process.env.BASE_URL}/cancel.html`,
         };
 
-        // Si es Método Learn, pasamos metadata con fecha, hora y teléfono
-        if (cita) {
-  sessionData.metadata = {
-    user_id: req.user.id,
-    curso_id: cita.curso_id,
-    fecha: cita.fecha,
-    hora: cita.hora,
-    telefono: cita.telefono || ''
-  };
-}
-
-        const session = await stripe.checkout.sessions.create(sessionData);
+              const session = await stripe.checkout.sessions.create(sessionData);
 
         console.log("✅ Stripe session creada:", session);
 

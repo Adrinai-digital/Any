@@ -40,15 +40,6 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
         );
       });
 
-      const cita = {
-        user_id: userId,
-        curso_id: cursoId,
-        fecha,
-        hora,
-        nombre: session.customer_details?.name || "Usuario",
-        email: session.customer_email,
-        telefono: session.customer_details?.phone || ""
-      };
 
       setImmediate(async () => {
         try {
