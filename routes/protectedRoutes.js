@@ -5,15 +5,7 @@ const verifyToken = require('../middlewares/authMiddleware');
 // Requerimos la base de datos (subiendo un nivel desde la carpeta 'routes')
 const db = require('../db'); 
 
-// Ruta protegida: solo accesible con token válido
-router.get('/perfil', verifyToken, (req, res) => {
-    res.json({
-        message: 'Bienvenido al perfil protegido',
-        usuario: req.user
-    });
-});
-
-// Ruta protegida de ejemplo para cursos
+// Ruta protegida de ejemplo para cursos (Mantenla si la necesitas)
 router.get('/cursos', verifyToken, (req, res) => {
     res.json({
         message: 'Lista de cursos disponibles para el usuario autenticado',
