@@ -326,29 +326,91 @@ function marcarComoCompletado(videoId, cursoId) {
 let players = {};
 
 // Esta función DEBE ser global para que la API de YouTube la encuentre
+// Agrega estas variables globales arriba en tu script.js (fuera de las funciones)
+let playerActivo = null;
+let idContenedorActivo = null;
+
 function onYouTubeIframeAPIReady() {
     const videoContainers = document.querySelectorAll('.lesson-video');
+    
     videoContainers.forEach((container, index) => {
         const videoId = container.dataset.videoId;
         const cursoId = container.dataset.cursoId;
-
-        const playerDiv = document.createElement('div');
         const divId = `Youtubeer-${index}`;
-        playerDiv.id = divId;
-        container.appendChild(playerDiv);
 
-        players[index] = new YT.Player(divId, {
-            height: "315",
-            width: "560",
-            videoId: videoId,
-            events: {
-                'onStateChange': function (event) {
-                    // CORRECCIÓN CRÍTICA: Se eliminó la dependencia estricta de 'usuarioId' si no se ha cargado a tiempo
-                    if (event.data === YT.PlayerState.ENDED) {
-                        marcarComoCompletado(videoId, cursoId);
-                    }
+        if (!videoId) return;
+
+        // 1. En lugar de crear el reproductor, metemos un diseño de portada falsa con el ID del video
+        container.innerHTML = `
+            <div class="video-placeholder" id="placeholder-${divId}" style="position:relative; width:100%; height:315px; background: #1a1a1a url('https://img.youtube.com/vi/${videoId}/hqdefault.jpg') center center / cover no-repeat; cursor:pointer; display:flex; align-items:center; justify-content:center; border-radius:8px;">
+                <div class="play-button-icon" style="width: 70px; height: 70px; background: rgba(255, 0, 0, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s;">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+            </div>
+        `;
+
+        // 2. Al hacer clic en la portada, se monta el reproductor real
+        container.querySelector('.video-placeholder').addEventListener('click', () => {
+            cargarVideoOnDemand(container, divId, videoId, cursoId);
+        });
+    });
+}
+
+// Función auxiliar encargada de gestionar el ciclo de vida del reproductor único
+function cargarVideoOnDemand(container, divId, videoId, cursoId) {
+    // Si ya hay un reproductor reproduciéndose en OTRA lección, lo destruimos para liberar WebGL
+    if (playerActivo && typeof playerActivo.destroy === 'function') {
+        try {
+            playerActivo.destroy();
+            
+            // Restauramos la portada del vídeo anterior que se acaba de cerrar
+            const contenedorAnterior = document.getElementById(idContenedorActivo);
+            if (contenedorAnterior) {
+                const videoIdAnterior = contenedorAnterior.dataset.videoId;
+                const cursoIdAnterior = contenedorAnterior.dataset.cursoId;
+                
+                contenedorAnterior.innerHTML = `
+                    <div class="video-placeholder" id="placeholder-${idContenedorActivo}" style="position:relative; width:100%; height:315px; background: #1a1a1a url('https://img.youtube.com/vi/${videoIdAnterior}/hqdefault.jpg') center center / cover no-repeat; cursor:pointer; display:flex; align-items:center; justify-content:center; border-radius:8px;">
+                        <div class="play-button-icon" style="width: 70px; height: 70px; background: rgba(255, 0, 0, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                `;
+                // Volvemos a escuchar el clic por si el usuario decide regresar a este vídeo
+                contenedorAnterior.querySelector('.video-placeholder').addEventListener('click', () => {
+                    cargarVideoOnDemand(contenedorAnterior, idContenedorActivo, videoIdAnterior, cursoIdAnterior);
+                });
+            }
+        } catch (e) {
+            console.warn("Aviso al limpiar memoria del player anterior:", e);
+        }
+    }
+
+    // Guardamos qué contenedor aloja el vídeo actual
+    idContenedorActivo = container.id || divId;
+    if (!container.id) {
+        container.id = divId; // Forzamos un ID al contenedor padre si no lo tuviera
+    }
+
+    // Creamos el div interno que YouTube va a transformar en un <iframe>
+    container.innerHTML = `<div id="${divId}"></div>`;
+
+    // Inicializamos el objeto de YouTube únicamente para este elemento
+    playerActivo = new YT.Player(divId, {
+        height: "315",
+        width: "100%", // Usar 100% lo hace responsivo y se adapta mejor a tu contenedor css
+        videoId: videoId,
+        playerVars: {
+            'autoplay': 1, // Se reproduce en automático tras la interacción del clic
+            'enablejsapi': 1,
+            'origin': window.location.origin
+        },
+        events: {
+            'onStateChange': function (event) {
+                if (event.data === YT.PlayerState.ENDED) {
+                    marcarComoCompletado(videoId, cursoId);
                 }
             }
-        });
+        }
     });
 }

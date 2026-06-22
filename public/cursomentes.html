@@ -2036,35 +2036,53 @@ Cada lección de <em>Un Curso de Milagros</em> nos acerca al reconocimiento de q
 
     // Al cargar la página
     document.addEventListener("DOMContentLoaded", async () => {
-        usuarioId = await obtenerUsuarioId();
-        console.log("Usuario ID:", usuarioId);
-        if (!usuarioId) {
-            console.error('❌ No se pudo obtener el ID del usuario.');
-            return;
-        }
-
-        showModule(1);
-
-        // Si la API de YouTube ya cargó en paralelo, inicializamos los players
-        if (typeof YT !== 'undefined' && YT.loaded) {
-            onYouTubeIframeAPIReady();
-        }
-    });
-
-    // Mostrar el módulo activo
-    function showModule(moduleNumber) {
-        const modules = document.querySelectorAll('.content');
-        const tabs = document.querySelectorAll('.tab');
-
-        modules.forEach((mod, index) => {
-            mod.classList.toggle('active', index === moduleNumber - 1);
-        });
-
-        tabs.forEach((tab, index) => {
-            tab.classList.toggle('active', index === moduleNumber - 1);
-        });
+    // 1. Intentamos obtener el ID del usuario
+    usuarioId = await obtenerUsuarioId();
+    console.log("Usuario ID:", usuarioId);
+    
+    if (!usuarioId) {
+        console.error('❌ No se pudo obtener el ID del usuario.');
+        return;
     }
 
+    // 2. Mostramos el primer módulo por defecto
+    showModule(1);
+
+    // 3. Inicializamos las portadas de YouTube (Plan A)
+    // Esto limpia la memoria WebGL e inyecta los botones de Play inmediatamente
+    if (typeof YT !== 'undefined' && YT.loaded) {
+        onYouTubeIframeAPIReady();
+    } else {
+        // Por si acaso la API de YouTube tarda unos milisegundos más en cargar el script global
+        window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+    }
+
+    // 4. 🔥 LLAMADA CRÍTICA: Traemos el progreso del servidor Express
+    // Ahora que las portadas y el HTML están listos, pintamos cuáles están "Completados"
+    try {
+        if (typeof cargarProgresoUsuario === 'function') {
+            await cargarProgresoUsuario();
+        } else {
+            console.warn("⚠️ La función cargarProgresoUsuario no está accesible globalmente.");
+        }
+    } catch (error) {
+        console.error("❌ Error al cargar el progreso inicial:", error);
+    }
+});
+
+// Mostrar el módulo activo (Déjalo como está, está perfecto)
+function showModule(moduleNumber) {
+    const modules = document.querySelectorAll('.content');
+    const tabs = document.querySelectorAll('.tab');
+
+    modules.forEach((mod, index) => {
+        mod.classList.toggle('active', index === moduleNumber - 1);
+    });
+
+    tabs.forEach((tab, index) => {
+        tab.classList.toggle('active', index === moduleNumber - 1);
+    });
+}
     // Al cargar la página
     document.addEventListener("DOMContentLoaded", async () => {
         usuarioId = await obtenerUsuarioId();
