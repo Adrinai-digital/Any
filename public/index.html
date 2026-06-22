@@ -187,7 +187,7 @@
 
     <div class="box-container" id="lista-1">
 
-        <!-- MENTES MILAGROSAS--> 
+        <!-- MENTES MILAGROSAS -->
         <div class="box" data-id="prod_RpNtHevLVwzWcs" data-price-id="price_1Sn1wJHaR43tMVsO66EJbAy4" data-curso-id="1">
             <img src="/images/Mentes_milagrosas.jpg" alt="PORTADA Curso Mentes Milagrosas UCDM">
             <div class="product-txt">
@@ -195,14 +195,13 @@
                 <p>Rompe con las ilusiones del ego y encuentra tu verdadera libertad interior.</p>
                 <p class="Precio">27€</p>
                 <a href="#" class="agregar-carrito btn-3"
-                 data-id="prod_RpNtHevLVwzWcs"
+                   data-id="prod_RpNtHevLVwzWcs"
                    data-price-id="price_1Sn1wJHaR43tMVsO66EJbAy4"
                    data-curso-id="1">
                    Añadir al carrito
                 </a>
             </div>
         </div>
-
 
         <!-- ALMAS TERAPÉUTICAS NIVEL I -->
         <div class="box" data-id="prod_Sr4cBK4StXjtT4" data-price-id="price_1SmzKxHaR43tMVsOKZMZoh2V" data-curso-id="7">
@@ -368,8 +367,120 @@
   <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-  /* ================= CALENDARIO BÁSICO ================= */
-  // Si sigues usando flatpickr solo para seleccionar una fecha de inicio (sin horas ni bloqueos)
+  /* ================= CONFIGURACIÓN ================= */
+  const WORK_START = "09:00";
+  const WORK_END = "18:00";
+  const STEP_MIN = 60;
+
+  // 🔴 Dinámico desde el backend
+  let busySlotsByDate = {};
+
+  // Traemos las citas pagadas del backend
+  fetch("/api/citas/ocupadas", { credentials: "include" })
+ .then(res => res.json())
+ .then(data => {
+ console.log("Citas ocupadas desde backend (raw):", data);
+
+ // 🔄 Normalizar: claves Date -> "YYYY-MM-DD" y horas "HH:MM"
+ const normalizado = {};
+
+ Object.keys(data).forEach(key => {
+ const dateObj = new Date(key); // key es "Thu Jan 01 2026 00:00:00 GMT+0000 ..."
+ const yyyy = dateObj.getFullYear();
+ const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+ const dd = String(dateObj.getDate()).padStart(2, "0");
+ const fechaStr = `${yyyy}-${mm}-${dd}`; // "2026-01-01"
+
+ const horas = data[key].map(h => h.slice(0, 5)); // "09:00:00" -> "09:00"
+ normalizado[fechaStr] = horas;
+ });
+
+ busySlotsByDate = normalizado;
+ console.log("Citas ocupadas normalizadas:", busySlotsByDate);
+
+ document.querySelectorAll(".fecha").forEach(input => {
+ if (input._flatpickr) input._flatpickr.redraw();
+ });
+
+ document.querySelectorAll(".box").forEach(box => {
+ const fechaInput = box.querySelector(".fecha");
+ if (fechaInput && fechaInput.value) {
+ renderSlots(box, fechaInput.value);
+ }
+ });
+ })
+ .catch(err => console.error("Error cargando citas ocupadas:", err));
+
+
+  /* ================= UTILIDADES ================= */
+  function generateSlots(start, end, stepMinutes) {
+    const slots = [];
+    let [h, m] = start.split(":").map(Number);
+    const [endH, endM] = end.split(":").map(Number);
+
+    while (h < endH || (h === endH && m < endM)) {
+      slots.push(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`);
+      m += stepMinutes;
+      if (m >= 60) {
+        m -= 60;
+        h++;
+      }
+    }
+    return slots;
+  }
+
+  const allSlots = generateSlots(WORK_START, WORK_END, STEP_MIN);
+
+  /* ================= RENDER HORAS ================= */
+  function renderSlots(box, dateStr) {
+ console.log("renderSlots() dateStr:", dateStr);
+ console.log("busySlotsByDate[dateStr]:", busySlotsByDate[dateStr]);
+
+ const container = box.querySelector(".time-slots");
+ const horaInput = box.querySelector(".hora");
+
+ container.innerHTML = "";
+ horaInput.value = "";
+
+ if (!dateStr) return;
+
+ // Tu lógica: ocupadas ya normalizadas a "HH:MM"
+ const busy = (busySlotsByDate[dateStr] || []).map(h => h.slice(0, 5));
+
+ allSlots.forEach(time => {
+ const div = document.createElement("div");
+ div.textContent = time;
+ div.classList.add("slot");
+
+ if (busy.includes(time)) {
+ div.classList.add("busy"); // 🔴 Hora ocupada
+
+ // 👇 Al hacer click en una hora ocupada, mostramos/quitamos el icono 🚫
+ div.addEventListener("click", () => {
+ if (!div.dataset.marked) {
+ div.innerHTML = `${time} <span class="slot-icon">🚫</span>`;
+ div.dataset.marked = "1";
+ } else {
+ div.textContent = time;
+ delete div.dataset.marked;
+ }
+ });
+ } else {
+ div.classList.add("free");
+ div.addEventListener("click", () => {
+ container.querySelectorAll(".slot.selected")
+ .forEach(el => el.classList.remove("selected"));
+ div.classList.add("selected");
+ horaInput.value = time;
+ });
+ }
+
+ container.appendChild(div);
+ });
+}
+
+
+  /* ================= CALENDARIO ================= */
   document.querySelectorAll(".box").forEach(box => {
     const fechaInput = box.querySelector(".fecha");
     if (!fechaInput) return;
@@ -378,7 +489,48 @@ document.addEventListener("DOMContentLoaded", function () {
       dateFormat: "Y-m-d",
       minDate: "today",
       locale: "es",
-      disableMobile: true
+      disableMobile: true,
+
+      // 🚫 Sábados y domingos deshabilitados
+      disable: [
+        function (date) {
+          const day = date.getDay();
+          return day === 0 || day === 6;
+        }
+      ],
+
+      onDayCreate: function (dObj, dStr, fp, dayElem) {
+        const dateObj = dayElem.dateObj;
+
+        // 🔥 FIX 1: usar fecha LOCAL (NO toISOString)
+        const dateStr = fp.formatDate(dateObj, "Y-m-d");
+
+        const day = dateObj.getDay();
+
+        // 🟤 Fin de semana
+        if (day === 0 || day === 6) {
+          dayElem.style.background = "#e5e7eb";
+          dayElem.style.color = "#6b7280";
+          return;
+        }
+
+        const busy = busySlotsByDate[dateStr] || [];
+
+        // 🔴 Día completo
+        if (busy.length === allSlots.length && allSlots.length > 0) {
+          dayElem.style.background = "#f2b6b6";
+          dayElem.style.color = "#7f1d1d";
+          return;
+        }
+
+        // 🟢 Día con horas libres
+        dayElem.style.background = "#b6f2c2";
+        dayElem.style.color = "#14532d";
+      },
+
+      onChange: function (selectedDates, dateStr) {
+        renderSlots(box, dateStr); // ✅ AHORA SÍ
+      }
     });
   });
 
@@ -387,12 +539,23 @@ document.addEventListener("DOMContentLoaded", function () {
     boton.addEventListener("click", function (e) {
       const cursoId = boton.dataset.cursoId;
 
-      // Guardamos la información del curso directamente en el localStorage sin requerir citas
-      localStorage.setItem("curso_seleccionado", JSON.stringify({
-        curso_id: cursoId
-      }));
-      
-      console.log(`Curso ${cursoId} añadido al flujo de compra.`);
+      if (cursoId === "10") {
+        const box = boton.closest(".box");
+        const fecha = box.querySelector(".fecha").value;
+        const hora = box.querySelector(".hora").value;
+
+        if (!fecha || !hora) {
+          e.preventDefault();
+          alert("Debes seleccionar día y hora.");
+          return;
+        }
+
+        localStorage.setItem("cita_metodo_learn", JSON.stringify({
+          curso_id: 10,
+          fecha,
+          hora
+        }));
+      }
     });
   });
 
