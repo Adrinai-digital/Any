@@ -25,6 +25,7 @@ app.use((req, res, next) => {
 });
 
 // middlewares de parseo y cookies
+app.use('/webhook/stripe', express.raw({ type: 'application/json' }), stripeWebhook);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -60,7 +61,6 @@ const verificarToken = (req, res, next) => {
 
 // ----------------- WEBHOOK STRIPE -----------------
 const stripeWebhook = require('./routes/stripe-webhook');
-app.use('/webhook/stripe', stripeWebhook);
 app.use('/', paymentRoutes);
 
 
