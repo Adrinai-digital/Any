@@ -24,7 +24,10 @@ router.get('/cursos', verifyToken, (req, res) => {
 // ==========================================
 // 1. NUEVA RUTA GET: LEER EL PROGRESO
 // ==========================================
-router.get('/lecciones-completadas', verifyToken, (req, res) => {
+// ==========================================
+// 1. RUTA GET: LEER EL PROGRESO AL REFRESCAR
+// ==========================================
+router.get('/lecciones-completadas', authMiddleware, (req, res) => {
     const usuario_id = req.user.id;
 
     if (!usuario_id) {
@@ -40,6 +43,33 @@ router.get('/lecciones-completadas', verifyToken, (req, res) => {
                 return res.status(500).json({ error: 'Error obteniendo progreso' });
             }
             return res.json({ completados: results });
+        }
+    );
+});
+
+// ==========================================
+// 2. RUTA POST: GUARDAR PROGRESO AL TERMINAR
+// ==========================================
+router.post('/marcar-completado', authMiddleware, (req, res) => {
+    const usuario_id = req.user.id;
+    const { video_id, cursoId } = req.body;
+    const curso_id = cursoId;
+
+    if (!usuario_id || !curso_id || !video_id) {
+        return res.status(400).json({ error: 'Faltan datos' });
+    }
+
+    db.query(
+        `INSERT INTO lecciones_completadas (usuario_id, curso_id, video_id, completado)
+        VALUES (?, ?, ?, 1)
+        ON DUPLICATE KEY UPDATE completado=1, fecha_completado=CURRENT_TIMESTAMP`,
+        [usuario_id, curso_id, video_id],
+        (err) => {
+            if (err) {
+                console.error("❌ Error al guardar progreso:", err);
+                return res.status(500).json({ error: 'Error guardando progreso' });
+            }
+            return res.json({ ok: true });
         }
     );
 });
