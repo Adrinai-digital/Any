@@ -7,6 +7,22 @@ const authMiddleware = require('../middlewares/authMiddleware');  // ajusta seg�
 const cookieParser = require('cookie-parser');
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
+// Middleware para verificar el token desde la cookie
+//function authMiddleware(req, res, next) {
+   // const token = req.cookies.token;
+
+    //if (!token) {
+     //   return res.status(401).json({ error: 'Acceso denegado, token requerido' });
+   // }
+
+   // try {
+     //   const verificado = jwt.verify(token, process.env.JWT_SECRET);
+     //   req.usuario = verificado;
+      //  next();
+   // } catch (error) {
+      //  res.status(401).json({ error: 'Token inválido o expirado' });
+   // }
+//}
 
 // Ruta de registro
 router.post('/register', async (req, res) => {
@@ -123,7 +139,7 @@ router.post('/agregar-al-carrito', (req, res) => {
     });
 });
 
-// Ruta protegida: perfil HTML
+// Ruta protegida: perfil
 router.get('/perfil', authMiddleware, (req, res) => {
     const { id, nombre, email } = req.usuario;
 
@@ -147,13 +163,6 @@ router.get('/perfil', authMiddleware, (req, res) => {
     });
 });
 
-// 🌟 NUEVA RUTA: Datos del Perfil (JSON) requerida por tu script.js para procesarPago()
-router.get('/perfil-data', authMiddleware, (req, res) => {
-    const { id, nombre, email } = req.usuario;
-    res.json({
-        usuario: { id, nombre, email }
-    });
-});
 
 // Ruta para cerrar sesión
 router.get('/logout', (req, res) => {
@@ -185,27 +194,6 @@ router.post('/marcar-completado', authMiddleware, (req, res) => {
         res.json({ message: '✅ Video marcado como completado' });
     });
 });
-
-// 🌟 NUEVA RUTA: Obtener listado de lecciones completadas para persistencia al recargar
-router.get('/lecciones-completadas', authMiddleware, (req, res) => {
-    const usuario_id = req.usuario.id;
-
-    const query = `
-        SELECT video_id FROM lecciones_completadas 
-        WHERE usuario_id = ? AND completado = 1
-    `;
-
-    db.query(query, [usuario_id], (err, results) => {
-        if (err) {
-            console.error("❌ Error al obtener lecciones completadas:", err);
-            return res.status(500).json({ error: 'Error en la base de datos' });
-        }
-        
-        const completados = results.map(row => row.video_id);
-        res.json({ completados });
-    });
-});
-
 router.get('/api/auth/check', (req, res) => {
     const token = req.cookies.token;
 
