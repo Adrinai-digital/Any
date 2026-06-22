@@ -299,5 +299,33 @@ router.post("/crear-pago-cita", authMiddleware, async (req, res) => {
     res.status(500).json({ error: "No se pudo crear la sesión de pago" });
   }
 });
+// ==========================================
+// RUTA PARA OBTENER LAS LECCIONES COMPLETADAS
+// ==========================================
+router.get('/lecciones-completadas', authMiddleware, (req, res) => {
+    const usuario_id = req.usuario.id;
+
+    if (!usuario_id) {
+        return res.status(400).json({ error: 'Usuario no identificado' });
+    }
+
+    const query = `
+        SELECT video_id 
+        FROM lecciones_completadas 
+        WHERE usuario_id = ? AND completado = 1;
+    `;
+
+    db.query(query, [usuario_id], (err, results) => {
+        if (err) {
+            console.error("❌ Error al recuperar lecciones completadas:", err);
+            return res.status(500).json({ error: 'Error al consultar la base de datos' });
+        }
+
+        // Convertimos el resultado de la base de datos en un array limpio de textos: ["IOiqGYMvsLk", "6BWxoeb2HMQ"]
+        const completados = results.map(row => row.video_id);
+
+        res.json({ completados });
+    });
+});
 
 module.exports = router;
