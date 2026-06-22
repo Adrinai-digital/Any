@@ -228,28 +228,9 @@ app.post("/create-checkout-session", (req, res) => {
 });
 
 // ----------------- RUTA CITAS OCUPADAS -----------------
-app.get("/citas-ocupadas", (req, res) => {
-  const query = `
-    SELECT fecha, hora
-    FROM citas
-    WHERE estado = 'pagado'
-      AND fecha IS NOT NULL
-  `;
 
-  db.query(query, (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
 
-    const busy = {};
-    rows.forEach(row => {
-      if (!busy[row.fecha]) busy[row.fecha] = [];
-      if (!busy[row.fecha].includes(row.hora)) {
-        busy[row.fecha].push(row.hora);
-      }
-    });
-
-    res.json(busy); // ✅ Devuelve JSON correcto
-  });
-});
+  
 app.post('/marcar-completado', verificarToken, (req, res) => {
  const usuario_id = req.user.id;
  const { video_id, cursoId } = req.body;
