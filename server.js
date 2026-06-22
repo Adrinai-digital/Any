@@ -314,7 +314,31 @@ app.post('/marcar-completado', verificarToken, (req, res) => {
  }
  );
 });
+// ====== PEGA ESTO JUSTO DEBAJO DE TU APP.POST ======
 
+app.get('/lecciones-completadas', verificarToken, (req, res) => {
+    const usuario_id = req.user.id;
+
+    if (!usuario_id) {
+        return res.status(400).json({ error: 'Usuario no identificado' });
+    }
+
+    // Buscamos todas las lecciones que este usuario específico ya completó
+    db.query(
+        `SELECT video_id FROM lecciones_completadas WHERE usuario_id = ? AND completado = 1`,
+        [usuario_id],
+        (err, results) => {
+            if (err) {
+                console.error("❌ Error al consultar el progreso:", err);
+                return res.status(500).json({ error: 'Error obteniendo progreso' });
+            }
+
+            // results será un array de objetos tipo: [{ video_id: 'dQw4w9WgXcQ' }, ...]
+            // Se lo enviamos al frontend como JSON
+            return res.json({ completados: results });
+        }
+    );
+});
 // ----------------- LISTEN -----------------
 app.listen(PORT, () => {
     const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
