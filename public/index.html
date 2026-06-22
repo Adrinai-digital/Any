@@ -377,39 +377,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Traemos las citas pagadas del backend
   fetch("/api/citas/ocupadas", { credentials: "include" })
- .then(res => res.json())
- .then(data => {
- console.log("Citas ocupadas desde backend (raw):", data);
+    .then(res => res.json())
+    .then(data => {
+      console.log("Citas ocupadas desde backend (raw):", data);
 
- // 🔄 Normalizar: claves Date -> "YYYY-MM-DD" y horas "HH:MM"
- const normalizado = {};
+      // 🔄 Normalizar: claves Date -> "YYYY-MM-DD" y horas "HH:MM"
+      const normalizado = {};
 
- Object.keys(data).forEach(key => {
- const dateObj = new Date(key); // key es "Thu Jan 01 2026 00:00:00 GMT+0000 ..."
- const yyyy = dateObj.getFullYear();
- const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
- const dd = String(dateObj.getDate()).padStart(2, "0");
- const fechaStr = `${yyyy}-${mm}-${dd}`; // "2026-01-01"
+      Object.keys(data).forEach(key => {
+        const dateObj = new Date(key);
+        const yyyy = dateObj.getFullYear();
+        const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const dd = String(dateObj.getDate()).padStart(2, "0");
+        const fechaStr = `${yyyy}-${mm}-${dd}`;
 
- const horas = data[key].map(h => h.slice(0, 5)); // "09:00:00" -> "09:00"
- normalizado[fechaStr] = horas;
- });
+        const horas = data[key].map(h => h.slice(0, 5));
+        normalizado[fechaStr] = horas;
+      });
 
- busySlotsByDate = normalizado;
- console.log("Citas ocupadas normalizadas:", busySlotsByDate);
+      busySlotsByDate = normalizado;
+      console.log("Citas ocupadas normalizadas:", busySlotsByDate);
 
- document.querySelectorAll(".fecha").forEach(input => {
- if (input._flatpickr) input._flatpickr.redraw();
- });
+      document.querySelectorAll(".fecha").forEach(input => {
+        if (input._flatpickr) input._flatpickr.redraw();
+      });
 
- document.querySelectorAll(".box").forEach(box => {
- const fechaInput = box.querySelector(".fecha");
- if (fechaInput && fechaInput.value) {
- renderSlots(box, fechaInput.value);
- }
- });
- })
- .catch(err => console.error("Error cargando citas ocupadas:", err));
+      document.querySelectorAll(".box").forEach(box => {
+        const fechaInput = box.querySelector(".fecha");
+        if (fechaInput && fechaInput.value) {
+          renderSlots(box, fechaInput.value);
+        }
+      });
+    })
+    .catch(err => console.error("Error cargando citas ocupadas:", err));
 
 
   /* ================= UTILIDADES ================= */
@@ -433,51 +433,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ================= RENDER HORAS ================= */
   function renderSlots(box, dateStr) {
- console.log("renderSlots() dateStr:", dateStr);
- console.log("busySlotsByDate[dateStr]:", busySlotsByDate[dateStr]);
+    console.log("renderSlots() dateStr:", dateStr);
+    console.log("busySlotsByDate[dateStr]:", busySlotsByDate[dateStr]);
 
- const container = box.querySelector(".time-slots");
- const horaInput = box.querySelector(".hora");
+    const container = box.querySelector(".time-slots");
+    const horaInput = box.querySelector(".hora");
 
- container.innerHTML = "";
- horaInput.value = "";
+    container.innerHTML = "";
+    horaInput.value = "";
 
- if (!dateStr) return;
+    if (!dateStr) return;
 
- // Tu lógica: ocupadas ya normalizadas a "HH:MM"
- const busy = (busySlotsByDate[dateStr] || []).map(h => h.slice(0, 5));
+    const busy = (busySlotsByDate[dateStr] || []).map(h => h.slice(0, 5));
 
- allSlots.forEach(time => {
- const div = document.createElement("div");
- div.textContent = time;
- div.classList.add("slot");
+    allSlots.forEach(time => {
+      const div = document.createElement("div");
+      div.textContent = time;
+      div.classList.add("slot");
 
- if (busy.includes(time)) {
- div.classList.add("busy"); // 🔴 Hora ocupada
+      if (busy.includes(time)) {
+        div.classList.add("busy");
 
- // 👇 Al hacer click en una hora ocupada, mostramos/quitamos el icono 🚫
- div.addEventListener("click", () => {
- if (!div.dataset.marked) {
- div.innerHTML = `${time} <span class="slot-icon">🚫</span>`;
- div.dataset.marked = "1";
- } else {
- div.textContent = time;
- delete div.dataset.marked;
- }
- });
- } else {
- div.classList.add("free");
- div.addEventListener("click", () => {
- container.querySelectorAll(".slot.selected")
- .forEach(el => el.classList.remove("selected"));
- div.classList.add("selected");
- horaInput.value = time;
- });
- }
+        div.addEventListener("click", () => {
+          if (!div.dataset.marked) {
+            div.innerHTML = `${time} <span class="slot-icon">🚫</span>`;
+            div.dataset.marked = "1";
+          } else {
+            div.textContent = time;
+            delete div.dataset.marked;
+          }
+        });
+      } else {
+        div.classList.add("free");
+        div.addEventListener("click", () => {
+          container.querySelectorAll(".slot.selected")
+            .forEach(el => el.classList.remove("selected"));
+          div.classList.add("selected");
+          horaInput.value = time;
+        });
+      }
 
- container.appendChild(div);
- });
-}
+      container.appendChild(div);
+    });
+  }
 
 
   /* ================= CALENDARIO ================= */
@@ -491,7 +489,6 @@ document.addEventListener("DOMContentLoaded", function () {
       locale: "es",
       disableMobile: true,
 
-      // 🚫 Sábados y domingos deshabilitados
       disable: [
         function (date) {
           const day = date.getDay();
@@ -501,13 +498,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       onDayCreate: function (dObj, dStr, fp, dayElem) {
         const dateObj = dayElem.dateObj;
-
-        // 🔥 FIX 1: usar fecha LOCAL (NO toISOString)
         const dateStr = fp.formatDate(dateObj, "Y-m-d");
-
         const day = dateObj.getDay();
 
-        // 🟤 Fin de semana
         if (day === 0 || day === 6) {
           dayElem.style.background = "#e5e7eb";
           dayElem.style.color = "#6b7280";
@@ -516,20 +509,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const busy = busySlotsByDate[dateStr] || [];
 
-        // 🔴 Día completo
         if (busy.length === allSlots.length && allSlots.length > 0) {
           dayElem.style.background = "#f2b6b6";
           dayElem.style.color = "#7f1d1d";
           return;
         }
 
-        // 🟢 Día con horas libres
         dayElem.style.background = "#b6f2c2";
         dayElem.style.color = "#14532d";
       },
 
       onChange: function (selectedDates, dateStr) {
-        renderSlots(box, dateStr); // ✅ AHORA SÍ
+        renderSlots(box, dateStr);
       }
     });
   });
@@ -537,6 +528,18 @@ document.addEventListener("DOMContentLoaded", function () {
   /* ================= BOTÓN CARRITO ================= */
   document.querySelectorAll(".agregar-carrito").forEach(boton => {
     boton.addEventListener("click", function (e) {
+      
+      // 🔥 EL CANDADO: Validación estricta de sesión activa
+      const token = localStorage.getItem('token');
+      if (!token) {
+        e.preventDefault();   
+        e.stopPropagation();  
+        
+        alert("👋 ¡Hola! Para poder reservar una cita o adquirir el curso, necesitas iniciar sesión o registrarte primero.");
+        window.location.href = '/formulario.html'; 
+        return;
+      }
+
       const cursoId = boton.dataset.cursoId;
 
       if (cursoId === "10") {
@@ -559,9 +562,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-});
+}); // <--- ✅ AQUÍ ESTÁ EL CIERRE QUE FALTABA Y QUE CAUSABA EL ERROR
 </script>
-
 
 
 <script>

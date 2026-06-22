@@ -192,7 +192,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             const payload = {
                 productos,
                 total: Math.round(total * 100),
-                userEmail: data.usuario.email
+                userEmail: data.usuario.email,
+                userId: data.usuario.id
             };
     
             console.log('📦 Enviando datos a /crear-checkout:', payload);
