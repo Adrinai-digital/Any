@@ -70,13 +70,14 @@ router.post('/crear-checkout', async (req, res) => {
 
         // Si es Método Learn, pasamos metadata con fecha, hora y teléfono
         if (cita) {
-            sessionData.metadata = {
-                curso_id: cita.curso_id,
-                fecha: cita.fecha,
-                hora: cita.hora,
-                telefono: cita.telefono || ''
-            };
-        }
+  sessionData.metadata = {
+    user_id: req.user.id,
+    curso_id: cita.curso_id,
+    fecha: cita.fecha,
+    hora: cita.hora,
+    telefono: cita.telefono || ''
+  };
+}
 
         const session = await stripe.checkout.sessions.create(sessionData);
 
