@@ -23,7 +23,7 @@ app.use((req, res, next) => {
   console.log("📍 REQUEST:", req.method, req.originalUrl);
   next();
 });
-
+const stripeWebhook = require('./routes/stripe-webhook');
 // middlewares de parseo y cookies
 app.use('/webhook/stripe', express.raw({ type: 'application/json' }), stripeWebhook);
 app.use(bodyParser.json());
@@ -60,7 +60,7 @@ const verificarToken = (req, res, next) => {
 };
 
 // ----------------- WEBHOOK STRIPE -----------------
-const stripeWebhook = require('./routes/stripe-webhook');
+
 app.use('/', paymentRoutes);
 
 
