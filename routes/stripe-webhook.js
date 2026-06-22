@@ -5,7 +5,7 @@ const db = require("../db");
 const { enviarAviso } = require("../services/emailService");
 const { addCalendarEvent } = require("../services/googleCalendar");
 
-router.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
+router.post("/", express.raw({ type: "application/json" }), async (req, res) =>  {
   const sig = req.headers["stripe-signature"];
   let event;
 
