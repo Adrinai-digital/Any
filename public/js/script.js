@@ -246,6 +246,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
         verificarEstadoCompletado(video, index);
     });
+    await cargarProgresoUsuario();
 });
 
 // ==========================================
