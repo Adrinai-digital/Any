@@ -71,17 +71,36 @@ router.post("/webhook/stripe", express.raw({ type: "application/json" }), async 
       } 
       // 🔀 CASO 2: Es un Curso Normal de Pago Único o Recurrente (Suscripción)
       else if (cursoId) {
+        // 1️⃣ Buscamos primero el ID numérico real de nuestro curso en la base de datos
+        const idCursoNumerico = await new Promise((resolve, reject) => {
+          db.query(
+            `SELECT id FROM cursos WHERE id = ? OR stripe_price_id = ? OR stripe_product_id = ? LIMIT 1`,
+            [cursoId, cursoId, cursoId],
+            (err, rows) => {
+              if (err) return reject(err);
+              // Si lo encuentra, devolvemos el id de la tabla. Si no, usamos el que traía por si acaso
+              resolve(rows && rows.length > 0 ? rows[0].id : null);
+            }
+          );
+        });
+
+        // Verificamos si no se ha encontrado en la base de datos para no colgar el proceso
+        if (!idCursoNumerico) {
+          console.error(`❌ No se encontró ningún curso en tu BD que coincida con el ID enviado por Stripe: ${cursoId}`);
+          return res.status(400).send("Curso no encontrado en la base de datos interna");
+        }
+
+        // 2️⃣ Ahora que ya tenemos el número real (ej: 1, 2, 3), hacemos el INSERT sin romper nada
         await new Promise((resolve, reject) => {
-          // 🔔 Insertamos usando los nombres exactos de tus columnas
           db.query(
             `INSERT INTO pagos (usuario_id, curso_id, stripe_session_id, estado, estado_pago, fecha, fecha_pago)
              VALUES (?, ?, ?, 'completado', 'completado', NOW(), NOW())
              ON DUPLICATE KEY UPDATE estado='completado', estado_pago='completado', fecha_pago=NOW()`,
-            [userId, cursoId, session.id],
+            [userId, idCursoNumerico, session.id],
             (err, result) => (err ? reject(err) : resolve(result))
           );
         });
-        console.log(`... Curso ${cursoId} activado con éxito para el usuario ${userId}`);
+        console.log(`✅ Curso ${idCursoNumerico} activado con éxito para el usuario ${userId}`);
       }
 
     } catch (err) {
@@ -92,5 +111,4 @@ router.post("/webhook/stripe", express.raw({ type: "application/json" }), async 
 
   res.status(200).json({ received: true });
 });
-
 module.exports = router;
