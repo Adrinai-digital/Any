@@ -1,3 +1,5 @@
+const express = require('express');
+const app = express();
 const path = require('path');
 const fs = require('fs');
 
@@ -15,17 +17,25 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const citasRoutes = require('./routes/citasRoutes');
 const PORT = process.env.PORT || 3000;
-const express = require('express');
-const app = express();
 const paymentRoutes = require('./routes/paymentRoutes');
-// ---------------- MIDDLEWARES ----------------
+
+// ---------------- MIDDLEWARES DE CONTROL ----------------
 app.use((req, res, next) => {
   console.log("📍 REQUEST:", req.method, req.originalUrl);
   next();
 });
 
-// middlewares de parseo y cookies
-app.use(bodyParser.json());
+// 🛡️ EXCEPCIÓN CRUCIAL PARA STRIPE: 
+// Evitamos que bodyParser procese las rutas que empiezan por /webhook
+app.use((req, res, next) => {
+  if (req.originalUrl.startsWith('/webhook')) {
+    next(); // Si va al webhook, pasa de largo en formato bruto (raw)
+  } else {
+    bodyParser.json()(req, res, next); // Para el resto de la web, procesa el JSON normal
+  }
+});
+
+// El resto de parses comunes se quedan aquí abajo
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
@@ -58,64 +68,22 @@ const verificarToken = (req, res, next) => {
     }
 };
 
-// ----------------- WEBHOOK STRIPE -----------------
+// ----------------- WEBHOOK STRIPE (UNIFICADO) -----------------
 const stripeWebhook = require('./routes/stripe-webhook');
-app.use('/webhook', stripeWebhook);
+// Lo montamos en la raíz '/' porque dentro del archivo de rutas ya pusimos app.post('/webhook/stripe')
+app.use('/', stripeWebhook);
 app.use('/', paymentRoutes);
 
-app.post("/webhook/stripe",
-  bodyParser.raw({ type: "application/json" }),
-  (req, res) => {
-    const sig = req.headers["stripe-signature"];
-    let event;
-
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-    } catch (err) {
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    if (event.type === "checkout.session.completed") {
-      const s = event.data.object;
-      const userId = s.metadata.user_id;
-      const cursoId = s.metadata.curso_id;
-      const fecha = s.metadata?.fecha;
-      const hora = s.metadata?.hora;
-
-      if (userId && cursoId && fecha && hora) {
-        db.query(
-          `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado, fecha, hora)
-           VALUES (?, ?, ?, 'pagado', ?, ?)`,
-          [userId, cursoId, s.payment_intent, fecha, hora],
-          (err) => {
-            if (err) console.error("Error creando cita de coaching:", err);
-            else console.log(`✅ Cita de coaching creada para ${userId} en ${fecha} ${hora}`);
-          }
-        );
-      } else if (userId && cursoId) {
-        db.query(
-          `INSERT INTO citas (user_id, curso_id, stripe_payment_id, estado)
-           VALUES (?, ?, ?, 'pagado')`,
-          [userId, cursoId, s.payment_intent],
-          (err) => {
-            if (err) console.error("Error creando cita de otro curso:", err);
-            else console.log(`✅ Cita creada para otro curso para usuario ${userId}`);
-          }
-        );
-      }
-    }
-
-    res.json({ received: true });
-  }
-);
+// ❌ EL BLOQUE ANTERIOR DUPLICADO DE app.post("/webhook/stripe", ...) HA SIDO ELIMINADO ❌
 
 
-// ----------------- RUTAS -----------------
-const protectedRoutes = require('./routes/protectedRoutes'); // 1. Añade esta línea arriba con los requires o aquí
+// ----------------- RUTAS GENERALES -----------------
+const protectedRoutes = require('./routes/protectedRoutes'); 
 
 app.use('/api/citas', citasRoutes);
-app.use('/curso', citasRoutes); // para /curso/metodo-learn
-app.use('/', protectedRoutes);    // 🔥 2. Añade esto aquí para activar las rutas protegidas en la raíz
+app.use('/curso', citasRoutes); 
+app.use('/', protectedRoutes);    
+
 // Registro
 app.post('/register', async (req, res) => {
     const { nombre, email, password, telefono } = req.body;
@@ -257,7 +225,7 @@ app.post("/create-checkout-session", (req, res) => {
 
  try {
  const session = await stripe.checkout.sessions.create({
- mode: 'subscription', // antes: 'payment'
+ mode: 'subscription', 
  line_items: [{ price: curso.stripe_price_id, quantity: 1 }],
  mode,
  success_url: "https://autoconocimientoygratitud.com/success.html?session_id={CHECKOUT_SESSION_ID}",
@@ -295,9 +263,10 @@ app.get("/citas-ocupadas", (req, res) => {
       }
     });
 
-    res.json(busy); // ✅ Devuelve JSON correcto
+    res.json(busy); 
   });
 });
+
 app.post('/marcar-completado', verificarToken, (req, res) => {
  const usuario_id = req.user.id;
  const { video_id, cursoId } = req.body;
@@ -318,7 +287,6 @@ app.post('/marcar-completado', verificarToken, (req, res) => {
  }
  );
 });
-// ====== PEGA ESTO JUSTO DEBAJO DE TU APP.POST ======
 
 app.get('/lecciones-completadas', verificarToken, (req, res) => {
     const usuario_id = req.user.id;
@@ -327,7 +295,6 @@ app.get('/lecciones-completadas', verificarToken, (req, res) => {
         return res.status(400).json({ error: 'Usuario no identificado' });
     }
 
-    // Buscamos todas las lecciones que este usuario específico ya completó
     db.query(
         `SELECT video_id FROM lecciones_completadas WHERE usuario_id = ? AND completado = 1`,
         [usuario_id],
@@ -336,13 +303,11 @@ app.get('/lecciones-completadas', verificarToken, (req, res) => {
                 console.error("❌ Error al consultar el progreso:", err);
                 return res.status(500).json({ error: 'Error obteniendo progreso' });
             }
-
-            // results será un array de objetos tipo: [{ video_id: 'dQw4w9WgXcQ' }, ...]
-            // Se lo enviamos al frontend como JSON
             return res.json({ completados: results });
         }
     );
 });
+
 // ----------------- LISTEN -----------------
 app.listen(PORT, () => {
     const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
