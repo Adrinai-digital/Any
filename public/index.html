@@ -528,40 +528,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ================= BOTÓN CARRITO ================= */
   document.querySelectorAll(".agregar-carrito").forEach(boton => {
-    boton.addEventListener("click", function (e) {
+  boton.addEventListener("click", function (e) {
+    
+    // 🔥 EL CANDADO: Validación estricta de sesión activa
+    const token = localStorage.getItem('token');
+    if (!token) {
+      e.preventDefault();   
+      e.stopPropagation();  
       
-      // 🔥 EL CANDADO: Validación estricta de sesión activa
-      const token = localStorage.getItem('token');
-      if (!token) {
-        e.preventDefault();   
-        e.stopPropagation();  
-        
-        alert("👋 ¡Hola! Para poder reservar una cita o adquirir el curso, necesitas iniciar sesión o registrarte primero.");
-        window.location.href = '/formulario.html'; 
+      alert("👋 ¡Hola! Para poder reservar una cita o adquirir el curso, necesitas iniciar sesión o registrarte primero.");
+      window.location.href = '/formulario.html'; 
+      return;
+    }
+
+    // 🔔 CAPTURAMOS EL ID DEL CURSO DESDE EL BOTÓN
+    const cursoId = boton.dataset.cursoId;
+
+    // 🔀 CASO A: Si es el Método LEAR / Citas (ID 10)
+    if (cursoId === "10") {
+      const box = boton.closest(".box");
+      const fecha = box.querySelector(".fecha").value;
+      const hora = box.querySelector(".hora").value;
+
+      if (!fecha || !hora) {
+        e.preventDefault();
+        alert("Debes seleccionar día y hora.");
         return;
       }
 
-      const cursoId = boton.dataset.cursoId;
+      localStorage.setItem("cita_metodo_learn", JSON.stringify({
+        curso_id: 10,
+        fecha,
+        hora
+      }));
+    } 
+    // 🔀 CASO B: Si es cualquier otro curso normal (Milagros, Tarot, Gratitud...)
+    else {
+      // Guardamos en el localStorage el ID del curso seleccionado para que luego lo recoja tu pasarela
+      localStorage.setItem("curso_seleccionado_id", cursoId);
+    }
 
-      if (cursoId === "10") {
-        const box = boton.closest(".box");
-        const fecha = box.querySelector(".fecha").value;
-        const hora = box.querySelector(".hora").value;
-
-        if (!fecha || !hora) {
-          e.preventDefault();
-          alert("Debes seleccionar día y hora.");
-          return;
-        }
-
-        localStorage.setItem("cita_metodo_learn", JSON.stringify({
-          curso_id: 10,
-          fecha,
-          hora
-        }));
-      }
-    });
   });
+});
 
 }); // <--- ✅ AQUÍ ESTÁ EL CIERRE QUE FALTABA Y QUE CAUSABA EL ERROR
 </script>

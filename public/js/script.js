@@ -181,10 +181,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     
             localStorage.setItem('userData', JSON.stringify(data.usuario));
     
+            // 🔥 AQUÍ ESTÁ EL CAMBIO DEFINITIVO:
+            // Mapeamos los productos inyectando "cursoId" usando el item.id (que tiene el valor 1, 3, 4...)
             const productos = carrito.map(item => ({
                 id: item.id,
                 priceId: item.priceId,
-                cantidad: item.cantidad
+                cantidad: item.cantidad,
+                cursoId: item.id // 👈 ¡Inyectamos esta línea para tu pasarela!
             }));
     
             const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
@@ -229,7 +232,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         });
     }
-
     // Inicializar listeners del carrito
     cargarEventListeners();
 
