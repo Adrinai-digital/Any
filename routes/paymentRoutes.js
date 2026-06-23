@@ -4,9 +4,8 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 exports.stripe = stripe;
 
-// 1. RUTA PRINCIPAL DE CHECKOUT
+// 1. RUTA PRINCIPAL DE CHECKOUT (Cursos normales y membresías)
 router.post('/create-checkout-session', async (req, res) => {
-    // 🔥 Ahora pedimos de forma obligatoria el userId
     const { items, userEmail, userId } = req.body;
     
     if (!items || !userEmail || !userId || userId === "null" || userId === "undefined") { 
@@ -21,24 +20,28 @@ router.post('/create-checkout-session', async (req, res) => {
     if (hasRecurring && hasOneTime) {
         return res.status(400).json({ error: "No se pueden mezclar suscripciones y pago único en el mismo checkout." });
     }
+
+    // 🔔 EXTRAEMOS EL CURSO ID: Sacamos el ID del primer artículo que compra
+    const cursoId = items[0]?.cursoId || items[0]?.curso_id || items[0]?.id;
     
     const basePayload = {
         line_items,
         customer_email: userEmail,
         success_url: `${process.env.BASE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.BASE_URL}/cancel.html`,
-        // 🔥 Guardamos el ID del usuario en los metadatos generales
+        // 🔥 Ahora guardamos el user_id Y el curso_id para el Webhook
         metadata: {
-            user_id: String(userId)
+            user_id: String(userId),
+            curso_id: cursoId ? String(cursoId) : ''
         }
     };
 
     try {
-        const modeGuess = items.some(i => String(i.tipo).toLowerCase() === "suscripcion")
+        const modeGuess = items.some(i => String(i.tipo).toLowerCase() === "suscripcion" || String(i.tipo).toLowerCase() === "membresia")
             ? "subscription"
             : "payment";
 
-        console.log("checkout items:", items.map(i => ({ tipo: i.tipo, priceId: i.priceId })), "modeGuess:", modeGuess);
+        console.log("checkout items:", items.map(i => ({ tipo: i.tipo, priceId: i.priceId, cursoId })), "modeGuess:", modeGuess);
 
         const session = await stripe.checkout.sessions.create({ ...basePayload, mode: modeGuess });
         return res.json({ url: session.url });
@@ -51,7 +54,6 @@ router.post('/create-checkout-session', async (req, res) => {
 // 2. SEGUNDA RUTA DE CHECKOUT (MÉTODO LEARN / CITAS)
 router.post('/crear-checkout', async (req, res) => {
     try {
-        // 🔥 Pedimos de forma obligatoria el userId aquí también
         const { productos, userEmail, userId, cita } = req.body;
 
         if (!productos || !userEmail || !userId || userId === "null" || userId === "undefined") {
@@ -73,6 +75,9 @@ router.post('/crear-checkout', async (req, res) => {
         
         const mode = hasRecurring ? "subscription" : "payment";
         
+        // 🔔 EXTRAEMOS EL CURSO ID: También por si compran un curso normal desde aquí
+        const cursoIdNormal = productos[0]?.cursoId || productos[0]?.curso_id || productos[0]?.id;
+
         const sessionData = {
             payment_method_types: ['card'],
             line_items: lineItems,
@@ -80,17 +85,17 @@ router.post('/crear-checkout', async (req, res) => {
             customer_email: userEmail,
             success_url: `${process.env.BASE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.BASE_URL}/cancel.html`,
-            // 🔥 Siempre inyectamos el user_id para que el webhook lo asocie
             metadata: {
-                user_id: String(userId)
+                user_id: String(userId),
+                curso_id: cursoIdNormal ? String(cursoIdNormal) : ''
             }
         };
 
-        // Si es el Método Learn (cita), añadimos sus datos extras respetando el user_id
+        // Si es el Método Learn (cita), añadimos sus datos extras sobreescribiendo el curso_id si hace falta
         if (cita) {
             sessionData.metadata = {
                 ...sessionData.metadata,
-                curso_id: cita.curso_id,
+                curso_id: String(cita.curso_id),
                 fecha: cita.fecha,
                 hora: cita.hora,
                 telefono: cita.telefono || ''
