@@ -5,7 +5,7 @@ const db = require("../db");
 const { enviarAviso } = require("../services/emailService");
 const { addCalendarEvent } = require("../services/googleCalendar");
 
-router.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
+router.post("/webhook/stripe", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
 
@@ -26,43 +26,67 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
 
     const userId = metadata.user_id;
     const cursoId = metadata.curso_id;
-    const fecha = metadata.fecha;
-    const hora = metadata.hora;
+    const fecha = metadata.fecha; // Solo viene en sesiones/coaching
+    const hora = metadata.hora;   // Solo viene en sesiones/coaching
+
+    if (!userId) {
+      console.error("❌ Error: Evento recibido sin user_id en metadata.");
+      return res.status(400).send("Falta el ID de usuario");
+    }
 
     try {
-      await new Promise((resolve, reject) => {
-        db.query(
-          `INSERT INTO citas (user_id, curso_id, fecha, hora, estado)
-           VALUES (?, ?, ?, ?, 'pagado')
-           ON DUPLICATE KEY UPDATE estado='pagado'`,
-          [userId, cursoId, fecha, hora],
-          (err, result) => (err ? reject(err) : resolve(result))
-        );
-      });
+      // 🔀 CASO 1: Es una Cita / Sesión de Coaching (tiene fecha y hora)
+      if (fecha && hora) {
+        await new Promise((resolve, reject) => {
+          db.query(
+            `INSERT INTO citas (user_id, curso_id, fecha, hora, stripe_payment_id, estado)
+             VALUES (?, ?, ?, ?, ?, 'pagado')
+             ON DUPLICATE KEY UPDATE estado='pagado'`,
+            [userId, cursoId || null, fecha, hora, session.payment_intent],
+            (err, result) => (err ? reject(err) : resolve(result))
+          );
+        });
 
-      const cita = {
-        user_id: userId,
-        curso_id: cursoId,
-        fecha,
-        hora,
-        nombre: session.customer_details?.name || "Usuario",
-        email: session.customer_email,
-        telefono: session.customer_details?.phone || ""
-      };
+        // Notificaciones automáticas en segundo plano (Calendar y Email)
+        const cita = {
+          user_id: userId,
+          curso_id: cursoId,
+          fecha,
+          hora,
+          nombre: session.customer_details?.name || "Usuario",
+          email: session.customer_email || session.customer_details?.email,
+          telefono: session.customer_details?.phone || ""
+        };
 
-      setImmediate(async () => {
-        try {
-          await enviarAviso(cita);
-          await addCalendarEvent(cita);
-          console.log("✅ Email y Google Calendar enviados");
-        } catch (err) {
-          console.error("❌ Error notificando cita:", err);
-        }
-      });
+        setImmediate(async () => {
+          try {
+            await enviarAviso(cita);
+            await addCalendarEvent(cita);
+            console.log("✅ Cita de coaching: Email y Google Calendar gestionados");
+          } catch (err) {
+            console.error("❌ Error notificando cita:", err);
+          }
+        });
+
+      } 
+      // 🔀 CASO 2: Es un Curso Normal de Pago Único o Recurrente (Suscripción)
+      else if (cursoId) {
+        await new Promise((resolve, reject) => {
+          // 🔔 Insertamos usando los nombres exactos de tus columnas
+          db.query(
+            `INSERT INTO pagos (usuario_id, curso_id, stripe_session_id, estado, estado_pago, fecha, fecha_pago)
+             VALUES (?, ?, ?, 'completado', 'completado', NOW(), NOW())
+             ON DUPLICATE KEY UPDATE estado='completado', estado_pago='completado', fecha_pago=NOW()`,
+            [userId, cursoId, session.id],
+            (err, result) => (err ? reject(err) : resolve(result))
+          );
+        });
+        console.log(`... Curso ${cursoId} activado con éxito para el usuario ${userId}`);
+      }
 
     } catch (err) {
-      console.error("❌ Error guardando cita pagada:", err);
-      return res.status(500).send("Error al actualizar cita");
+      console.error("❌ Error procesando la compra en la base de datos:", err);
+      return res.status(500).send("Error interno al procesar la compra");
     }
   }
 

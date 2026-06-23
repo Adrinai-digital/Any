@@ -109,7 +109,7 @@ app.post("/webhook/stripe",
   }
 );
 
-// ----------------- RUTAS -----------------
+
 // ----------------- RUTAS -----------------
 const protectedRoutes = require('./routes/protectedRoutes'); // 1. Añade esta línea arriba con los requires o aquí
 
