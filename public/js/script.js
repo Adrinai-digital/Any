@@ -191,12 +191,14 @@ document.addEventListener("DOMContentLoaded", async function () {
     
             // 🔥 AQUÍ ESTÁ EL CAMBIO DEFINITIVO:
             // Mapeamos los productos inyectando "cursoId" usando el item.id (que tiene el valor 1, 3, 4...)
+            // 🔥 AQUÍ ESTÁ EL CAMBIO DEFINITIVO CORREGIDO:
+            // Mapeamos los productos inyectando el cursoId numérico real (1, 3, 4...)
             const productos = carrito.map(item => ({
-                id: item.id,
-                priceId: item.priceId,
+                id: item.id,            // Sigue siendo el "prod_..." de Stripe
+                priceId: item.priceId,  // Sigue siendo el "price_..." de Stripe
                 cantidad: item.cantidad,
-                cursoId: item.id,
-                curso_id: item.id // 👈 ¡Inyectamos esta línea para tu pasarela!
+                cursoId: item.cursoId,  // 👈 ¡Cambiado! Ahora manda el número real (ej: "1")
+                curso_id: item.cursoId  // 👈 ¡Cambiado! Manda también el número real
             }));
     
             const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
