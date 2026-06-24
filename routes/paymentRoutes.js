@@ -51,7 +51,7 @@ router.post('/create-checkout-session', async (req, res) => {
     }
 });
 
-// 2. SEGUNDA RUTA DE CHECKOUT (MÉTODO LEARN / CITAS)
+// 2. SEGUNDA RUTA DE CHECKOUT (MÉTODO LEARN / CITAS Y CARRITO DEFINITIVO)
 router.post('/crear-checkout', async (req, res) => {
     try {
         const { productos, userEmail, userId, cita } = req.body;
@@ -75,7 +75,8 @@ router.post('/crear-checkout', async (req, res) => {
         
         const mode = hasRecurring ? "subscription" : "payment";
         
-        // 🔔 EXTRAEMOS EL CURSO ID: También por si compran un curso normal desde aquí
+        // 🔔 PRIORIDAD AL ID NUMÉRICO DEL CURSO:
+        // Buscamos primero 'cursoId', que es donde inyectamos el item.id numérico en el procesarPago
         const cursoIdNormal = productos[0]?.cursoId || productos[0]?.curso_id || productos[0]?.id;
 
         const sessionData = {
@@ -87,11 +88,11 @@ router.post('/crear-checkout', async (req, res) => {
             cancel_url: `${process.env.BASE_URL}/cancel.html`,
             metadata: {
                 user_id: String(userId),
-                curso_id: cursoIdNormal ? String(cursoIdNormal) : ''
+                curso_id: String(cursoIdNormal) // 👈 Aquí viajará el "1" impecable hacia Stripe
             }
         };
 
-        // Si es el Método Learn (cita), añadimos sus datos extras sobreescribiendo el curso_id si hace falta
+        // Si es el Método Learn (cita), añadimos sus datos extras
         if (cita) {
             sessionData.metadata = {
                 ...sessionData.metadata,
@@ -103,7 +104,7 @@ router.post('/crear-checkout', async (req, res) => {
         }
 
         const session = await stripe.checkout.sessions.create(sessionData);
-        console.log("✅ Stripe session creada:", session);
+        console.log("✅ Stripe session creada con metadata:", session.metadata);
         res.json({ url: session.url });
     } catch (error) {
         console.error("❌ Error en /crear-checkout:", error);

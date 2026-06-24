@@ -200,48 +200,6 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-// Crear checkout
-app.post("/create-checkout-session", (req, res) => {
- const { userId, cursoId, fecha, hora } = req.body;
-
- if (!userId || !cursoId || !fecha || !hora) {
- return res.status(400).send("Faltan datos: userId, cursoId, fecha u hora");
- }
-
- db.query(
- "SELECT tipo, stripe_price_id FROM cursos WHERE id = ? LIMIT 1",
- [cursoId],
- async (err, rows) => {
- if (err) {
- console.error("Error leyendo curso:", err);
- return res.status(500).send("Error leyendo el curso");
- }
- if (!rows || rows.length === 0) return res.status(404).send("Curso no encontrado");
-
- const curso = rows[0];
- if (!curso.stripe_price_id) return res.status(400).send("Curso sin stripe_price_id");
-
- const mode = (curso.tipo === "membresia") ? "subscription" : "payment";
-
- try {
- const session = await stripe.checkout.sessions.create({
- mode: 'subscription', 
- line_items: [{ price: curso.stripe_price_id, quantity: 1 }],
- mode,
- success_url: "https://autoconocimientoygratitud.com/success.html?session_id={CHECKOUT_SESSION_ID}",
- cancel_url: "https://autoconocimientoygratitud.com/cancel.html",
- client_reference_id: String(userId),
- metadata: { user_id: String(userId), curso_id: String(cursoId), fecha, hora }
- });
-
- return res.json({ url: session.url });
- } catch (e) {
- console.error("Error creando sesión de Checkout:", e);
- return res.status(500).send("Error creando sesión de pago");
- }
- }
- );
-});
 
 // ----------------- RUTA CITAS OCUPADAS -----------------
 app.get("/citas-ocupadas", (req, res) => {
