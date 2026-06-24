@@ -49,35 +49,43 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     function leerDatosElemento(elemento) {
-        const precioTexto = elemento.querySelector('.Precio, .precio')?.textContent.trim();
-        if (!precioTexto) {
-            console.error("❌ No se pudo obtener el precio del elemento.");
-            return;
-        }
-
-        const precio = parseFloat(precioTexto.replace(/[^\d.-]/g, '').replace(',', '.'));
-        if (isNaN(precio)) {
-            console.error("❌ El precio no es un número válido:", precioTexto);
-            return;
-        }
-        const priceId = elemento.querySelector('.agregar-carrito')?.getAttribute('data-price-id');
-        const infoElemento = {
-            imagen: elemento.querySelector('img').src,
-            titulo: elemento.querySelector('h3').textContent.trim(),
-            precio: precio,
-            id: elemento.querySelector('a').getAttribute('data-id'),
-            priceId: priceId,
-            cantidad: 1
-        };
-
-        if ((!infoElemento.priceId || infoElemento.priceId === '') && infoElemento.precio > 0) {
-            console.error("⚠️ El producto de pago no tiene un priceId válido de Stripe");
-            return;
-        }
-
-        agregarAlCarrito(infoElemento);
+    const precioTexto = elemento.querySelector('.Precio, .precio')?.textContent.trim();
+    if (!precioTexto) {
+        console.error("❌ No se pudo obtener el precio del elemento.");
+        return;
     }
 
+    const precio = parseFloat(precioTexto.replace(/[^\d.-]/g, '').replace(',', '.'));
+    if (isNaN(precio)) {
+        console.error("❌ El precio no es un número válido:", precioTexto);
+        return;
+    }
+    
+    // Captura el priceId del botón, o de la caja contenedora si falla
+    const priceId = elemento.querySelector('.agregar-carrito')?.getAttribute('data-price-id') 
+                    || elemento.getAttribute('data-price-id');
+
+    // 🔔 AQUÍ ESTÁ LA MAGIA: Capturamos el número "1", "3", "4" de la caja contenedora
+    const cursoIdNumerico = elemento.getAttribute('data-curso-id');
+
+    const infoElemento = {
+        imagen: elemento.querySelector('img').src,
+        titulo: elemento.querySelector('h3').textContent.trim(),
+        precio: precio,
+        // Captura el ID de Stripe del botón, o de la caja contenedora
+        id: elemento.querySelector('a')?.getAttribute('data-id') || elemento.getAttribute('data-id'),
+        priceId: priceId,
+        cursoId: cursoIdNumerico, // 👈 ¡Guardamos el ID numérico de la DB aquí!
+        cantidad: 1
+    };
+
+    if ((!infoElemento.priceId || infoElemento.priceId === '') && infoElemento.precio > 0) {
+        console.error("⚠️ El producto de pago no tiene un priceId válido de Stripe");
+        return;
+    }
+
+    agregarAlCarrito(infoElemento);
+}
     function agregarAlCarrito(nuevoElemento) {
         const existe = carrito.find(item => item.id === nuevoElemento.id && item.priceId === nuevoElemento.priceId);
         if (existe) {
