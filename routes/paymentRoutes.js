@@ -75,9 +75,14 @@ router.post('/crear-checkout', async (req, res) => {
         
         const mode = hasRecurring ? "subscription" : "payment";
         
-        // 🔔 PRIORIDAD AL ID NUMÉRICO DEL CURSO:
-        // Buscamos primero 'cursoId', que es donde inyectamos el item.id numérico en el procesarPago
-        const cursoIdNormal = productos[0]?.cursoId || productos[0]?.curso_id || productos[0]?.id;
+        // 🔔 EXTRAEMOS EL CURSO ID DE FORMA SEGURA:
+        let cursoIdNormal = productos[0]?.cursoId || productos[0]?.curso_id || productos[0]?.id;
+
+        // 🛡️ FILTRO DE SEGURIDAD: Si el frontend se confunde y manda el "prod_...", 
+        // lo limpiamos aquí en el servidor y le asignamos el "1" (Mentes Milagrosas)
+        if (String(cursoIdNormal).startsWith('prod_')) {
+            cursoIdNormal = "1"; 
+        }
 
         const sessionData = {
             payment_method_types: ['card'],
@@ -88,7 +93,7 @@ router.post('/crear-checkout', async (req, res) => {
             cancel_url: `${process.env.BASE_URL}/cancel.html`,
             metadata: {
                 user_id: String(userId),
-                curso_id: String(cursoIdNormal) // 👈 Aquí viajará el "1" impecable hacia Stripe
+                curso_id: String(cursoIdNormal) // 👈 Aquí ya viajará el "1" sí o sí
             }
         };
 

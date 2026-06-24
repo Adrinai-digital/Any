@@ -187,7 +187,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 id: item.id,
                 priceId: item.priceId,
                 cantidad: item.cantidad,
-                cursoId: item.id // 👈 ¡Inyectamos esta línea para tu pasarela!
+                cursoId: item.id,
+                curso_id: item.id // 👈 ¡Inyectamos esta línea para tu pasarela!
             }));
     
             const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
