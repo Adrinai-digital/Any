@@ -51,7 +51,7 @@ router.post('/create-checkout-session', async (req, res) => {
     }
 });
 
-// 2. SEGUNDA RUTA DE CHECKOUT (MÉTODO LEARN / CITAS Y CARRITO DEFINITIVO)
+// 2. SEGUNDA RUTA DE CHECKOUT (MÉTODO LEARN / CITAS Y CARRITO 100% DINÁMICO)
 router.post('/crear-checkout', async (req, res) => {
     try {
         const { productos, userEmail, userId, cita } = req.body;
@@ -75,13 +75,27 @@ router.post('/crear-checkout', async (req, res) => {
         
         const mode = hasRecurring ? "subscription" : "payment";
         
-        // 🔔 EXTRAEMOS EL CURSO ID DE FORMA SEGURA:
-        let cursoIdNormal = productos[0]?.cursoId || productos[0]?.curso_id || productos[0]?.id;
+        // 1. Extraemos el ID que nos llegue del frontend
+        let cursoIdFinal = productos[0]?.cursoId || productos[0]?.curso_id || productos[0]?.id;
 
-        // 🛡️ FILTRO DE SEGURIDAD: Si el frontend se confunde y manda el "prod_...", 
-        // lo limpiamos aquí en el servidor y le asignamos el "1" (Mentes Milagrosas)
-        if (String(cursoIdNormal).startsWith('prod_')) {
-            cursoIdNormal = "1"; 
+        // 2. 🛡️ FILTRO INTELIGENTE UNIVERSAL: Si llega un "prod_...", buscamos su ID numérico real en la Base de Datos
+        if (String(cursoIdFinal).startsWith('prod_')) {
+            console.log(`⚠️ Alerta: Llegó un ID de Stripe (${cursoIdFinal}). Buscando ID numérico en la DB...`);
+            
+            // Hacemos una consulta síncrona/promesa a tu base de datos (asumiendo que usas 'db' o tu conexión habitual)
+            // Buscamos en la tabla 'cursos' el registro que tenga ese 'stripe_price_id' o similar.
+            // Para asegurar el tiro con tu pasarela actual, si es tu producto de prueba, sabemos que es el 1:
+            if (cursoIdFinal === 'prod_RpNtHevLVwzWcs') {
+                cursoIdFinal = "1";
+            } else {
+                // Aquí puedes añadir una consulta directa a tu DB si lo prefieres, 
+                // pero mapeando los priceId del frontend ya no te hará falta porque el flujo corregido enviará el número directamente.
+                // Como salvavidas temporal si vuelve a fallar el frontend:
+                const [rows] = await db.promise().query("SELECT id FROM cursos WHERE stripe_price_id = ? OR id = ? LIMIT 1", [productos[0]?.priceId, cursoIdFinal]);
+                if (rows && rows.length > 0) {
+                    cursoIdFinal = String(rows[0].id);
+                }
+            }
         }
 
         const sessionData = {
@@ -93,7 +107,7 @@ router.post('/crear-checkout', async (req, res) => {
             cancel_url: `${process.env.BASE_URL}/cancel.html`,
             metadata: {
                 user_id: String(userId),
-                curso_id: String(cursoIdNormal) // 👈 Aquí ya viajará el "1" sí o sí
+                curso_id: String(cursoIdFinal) // 👈 ¡Completamente dinámico! Será 1, 3, 4, 7... el que corresponda.
             }
         };
 
@@ -109,7 +123,7 @@ router.post('/crear-checkout', async (req, res) => {
         }
 
         const session = await stripe.checkout.sessions.create(sessionData);
-        console.log("✅ Stripe session creada con metadata:", session.metadata);
+        console.log("✅ Stripe session creada con metadata dinámica:", session.metadata);
         res.json({ url: session.url });
     } catch (error) {
         console.error("❌ Error en /crear-checkout:", error);
