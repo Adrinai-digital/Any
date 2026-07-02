@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+    
+<head>
+  <!-- Metadatos básicos -->
+  <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- Título de la página -->
+<title>Método LEARN | Acompañamiento Personalizado</title>
+
+<!-- Meta para SEO -->
+<meta name="description" content="Transforma tu realidad con el Método LEARN. Un proceso profundo de 6 sesiones individuales para liberar bloqueos, integrar claridad y reprogramar tu camino." />
+
+<!-- Meta para redes sociales (Open Graph) -->
+<meta property="og:title" content="Método LEARN | Proceso de Acompañamiento de 6 Sesiones" />
+<meta property="og:description" content="Transforma tu realidad con el Método LEARN. Un proceso profundo de 6 sesiones individuales para liberar bloqueos, integrar claridad y reprogramar tu camino." />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"/>
+
+  <!-- Fuentes externas -->
+  <link href="https://fonts.googleapis.com/css2?family=Lora&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  
+  <!-- Iconos -->
+  <script src="https://kit.fontawesome.com/a2e0e6ebf3.js" crossorigin="anonymous"></script>
+
+  <!-- Estilos internos -->
+  <style>
+    /* Variables de color */
+    :root {
+      --bg: #cdc2bc;
+      --accent: #83514a;
+      --primary: #ae8981;
+      --secondary: #b7b4b1;
+      --soft: #c1aaa4;
+      --text: #2d2d2d;
+    }
+
+    /* Estilos de header */
+    .header {
+      background-image: url('/images/circulo_creativo.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      color: white;
+      text-align: center;
+      padding: 80px 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .header h1, .header p { position: relative; z-index: 1; }
+    .header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      z-index: -1;
+    }
+
+    /* Estilos de body y secciones */
+    body {
+      margin: 0;
+      font-family: 'Lora', serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    section {
+      padding: 3rem 1rem;
+      max-width: 900px;
+      margin: auto;
+    }
+    section h2 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    section p, li {
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+    ul { padding-left: 1.2rem; }
+
+    /* Imágenes y módulos */
+    .box img {
+      width: 150px;
+      height: auto;
+      object-fit: contain;
+    }
+    .module {
+      background-color: var(--soft);
+      padding: 2rem;
+      margin: 2rem 0;
+      border-left: 6px solid var(--accent);
+      border-radius: 6px;
+    }
+
+    /* Testimonios */
+    .testimonio {
+      background-color: #f2e9e7;
+      border-left: 4px solid var(--primary);
+      padding: 2rem;
+      font-style: italic;
+      color: var(--text);
+      border-radius: 5px;
+    }
+
+    /* Llamadas a la acción */
+    .cta {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      background-color: var(--primary);
+      color: white;
+    }
+    .cta a {
+      background-color: white;
+      color: var(--accent);
+      padding: 0.8rem 1.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 5px;
+      margin-top: 1rem;
+      display: inline-block;
+      border: 2px solid var(--accent);
+      transition: all 0.3s ease;
+    }
+    .cta a:hover {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    /* Precios */
+    .precio {
+      background-color: var(--soft);
+      padding: 2rem;
+      margin-top: 2rem;
+      border-radius: 6px;
+    }
+    .precio h3 { color: var(--primary); }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      font-weight: bold;
+      background-color: var(--secondary);
+      color: var(--accent);
+    }
+
+    /* Animaciones */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1.2s ease-out forwards;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Botones de pago */
+    /* Botones de pago */
+    .btn-pago {
+      display: inline-block;
+      width: auto;
+      margin-top: 15px;
+      background: var(--accent);
+      color: white;
+      padding: 0.9rem 1.5rem;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .btn-pago:hover { background: white; color: var(--accent); }
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.8rem; }
+      section h2 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+  <h1>Método LEARN</h1>
+  <p>(Un espacio profundo de introspección, claridad y alineación interior para recordar tu esencia y disolver limitaciones.)</p>
+</header>
+
+<section>
+  <p><strong>¿Qué es el Método LEARN?</strong><br>
+  No es un curso tradicional ni una formación grupal pasiva. Se trata de un proceso de acompañamiento individualizado y consciente. A través de este método, integramos herramientas de <a href="https://es.wikipedia.org/wiki/Autoconocimiento" target="_blank" rel="noopener">autoconocimiento</a> profundo para desarmar los patrones de pensamiento que bloquean tu bienestar, permitiéndote avanzar con total certeza y paz mental.</p>
+ 
+  <h2>Lo que vas a lograr</h2>
+  <p>Este método está diseñado para generar un cambio tangible y duradero en tu día a día a través de la práctica consciente:</p>
+  <ul>
+    <li>✦ <strong>Claridad Absoluta:</strong> Identifica el origen exacto de tus bloqueos emocionales y mentales.</li>
+    <li>✦ <strong>Liberación de Patrones:</strong> Deshazte de viejas estructuras limitantes y creencias arraigadas.</li>
+    <li>✦ <strong>Alineación Interior:</strong> Toma decisiones conectadas con tu paz, tu propósito y tu centro.</li>
+    <li>✦ <strong>Soporte Diario:</strong> Adquiere herramientas prácticas que te sostendrán mucho más allá de las sesiones.</li>
+  </ul>
+  <p>Porque el verdadero bienestar requiere un compromiso contigo mismo. Al utilizar la <a href="https://es.wikipedia.org/wiki/Psicolog%C3%ADa_humanista" target="_blank" rel="noopener">psicología humanista</a> y la guía espiritual práctica, el Método LEARN te ofrece un mapa claro hacia tu autoliberación.</p>
+
+  <h2>Cómo funciona el proceso</h2>
+  <p>El Método LEARN une el acompañamiento individual en vivo con material exclusivo de estudio para que vivas una transformación estructurada e integrada.</p>
+
+  <div class="module">
+    <h3>✨ 1. El Acompañamiento (6 Sesiones Individuales)</h3>
+    <ul>
+      <li>Seis encuentros privados de 60 minutos conmigo vía Zoom.</li>
+      <li>Espacio seguro, confidencial y 100% personalizado según tus necesidades actuales.</li>
+      <li>Flexibilidad total para agendar las citas a tu propio ritmo a través del calendario.</li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <h3>✨ 2. El Material de Soporte (Dos Guías en PDF)</h3>
+    <ul>
+      <li><strong>PDF 1 — Cuaderno de Trabajo Práctico:</strong> Ejercicios diseñados para integrar lo aprendido entre sesión y sesión.</li>
+      <li><strong>PDF 2 — Guía de Reprogramación y Enfoque:</strong> Herramientas diarias para anclar tu mente en la paz y la certeza.</li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <h3>✨ 3. El Sistema en 3 Pasos</h3>
+    <ul>
+      <li><strong>Paso 1:</strong> Haces clic en el botón de reserva inferior y completas el pago seguro en Stripe.</li>
+      <li><strong>Paso 2:</strong> De inmediato, accedes a la pantalla de éxito donde podrás descargar tus 2 PDFs.</li>
+      <li><strong>Paso 3:</strong> En esa misma pantalla encontrarás tu enlace exclusivo para reservar tus 6 citas cuando desees.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="fade-in testimonio">
+  <p>“El Método LEARN cambió por completo mi forma de gestionar los bloqueos. Tener 6 sesiones me dio el tiempo y el espacio para profundizar de verdad, y los PDFs son el ancla perfecta para mi día a día. Siento una paz que hace mucho no experimentaba.”<br>— Elena R., alumna del Método LEARN.</p>
+</section>
+
+<section class="fade-in cta">
+  <h2>Estoy Listo para Iniciar Mi Proceso de Transformación</h2>
+  <p>Si tienes dudas previas sobre el método, puedes hablar conmigo directamente.</p>
+  <a href="https://wa.me/34671176196" target="_blank" rel="noopener">Escríbeme por WhatsApp</a>
+
+  <div class="box">
+    <img src="/images/por_circulo_creativo.png" alt="Método LEARN – Acompañamiento Estratégico e Individual">
+    <div class="product-txt">
+      <h3>Acceso al Método LEARN</h3>
+      <p>Incluye el pack completo de 6 sesiones individuales uno a uno de 60 minutos en vivo, junto con las 2 guías descargables en formato PDF.</p>
+      
+      <!-- AQUÍ PEGAS TU LINK DE STRIPE EN EL ENLACE (href) -->
+      <a href="https://buy.stripe.com/cNi9ATgN5coBdbacKZ5c406" target="_blank" rel="noopener"
+         class="btn-pago">
+         Reservar el Método Learn
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="fade-in precio">
+  <h2>💸 Inversión en tu Paz Interior</h2>
+  <p>El precio incluye todo el proceso de acompañamiento de principio a fin, sin cuotas mensuales ni sorpresas adicionales:</p>
+  <ul>
+    <li>✦ 6 Sesiones individuales conmigo vía Zoom (60 min cada una).</li>
+    <li>✦ Grabación de cada sesión disponible para ti de por vida.</li>
+    <li>✦ Los 2 cuadernillos y guías de trabajo en formato PDF.</li>
+    <li>✦ Soporte y guía en un entorno seguro y profesional.</li>
+  </ul>
+  <h3>Precio del programa completo:</h3>
+  <ul>
+    <li>🔹 Pago único: <strong>217 USD</strong> (o el equivalente en tu moneda)</li>
+  </ul>
+  <p><em>Tu bienestar no es un gasto, es tu mayor inversión. Recuerda que la transformación real comienza en el momento en que decides priorizarte.</em></p>
+</section>
+
+
+  <div class="footer">
+    “La claridad no se encuentra afuera; se descubre al remover todo aquello que te impide ver tu luz original.”
+  </div>
+
+</body>
+
+</html>
