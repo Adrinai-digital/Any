@@ -299,50 +299,17 @@ _____________________________________-
   }
 }
 
-#header.quecoaching{
-  background-image: url('/images/PORTADA-BLOG.jpg');
-  min-height: 80vh;
-  background-size: cover;
-  background-position: center;
-}
-#header.sesionescoaching{
-  background-image: url('/images/bosque.jpg');
-  min-height: 80vh;
-  background-size: cover;
-  background-position: center;
-}
-#header.tarot{
-  background-image: url('/images/tarotpor.jpg');
-  min-height: 80vh;
-  background-size: cover;
-  background-position: center;
-}
-#header.fascinantemundo{
-  background-image: url('/images/portadaartitaror.jpg');
-  min-height: 80vh;
-  background-size: cover;
-  background-position: center;
-}
-#header.milagros{
-  background-image: url('/images/milagros.jpg');
-  min-height: 80vh;
-  background-size: cover;
-  background-position: center;
-}
-#header.coaching{
-  background-image: url('/images/PORCOACHING.jpg');
-  min-height: 80vh;
-  background-size: cover;
-  background-position: center;
-}
+/* ==========================================================================
+   Ajustes Base para Escritorio (Tu configuración inicial)
+   ========================================================================== */
+#header.quecoaching { background-image: url('/images/PORTADA-BLOG.jpg'); min-height: 80vh; background-size: cover; background-position: center; }
+#header.sesionescoaching { background-image: url('/images/bosque.jpg'); min-height: 80vh; background-size: cover; background-position: center; }
+#header.tarot { background-image: url('/images/tarotpor.jpg'); min-height: 80vh; background-size: cover; background-position: center; }
+#header.fascinantemundo { background-image: url('/images/portadaartitaror.jpg'); min-height: 80vh; background-size: cover; background-position: center; }
+#header.milagros { background-image: url('/images/milagros.jpg'); min-height: 80vh; background-size: cover; background-position: center; }
+#header.coaching { background-image: url('/images/PORCOACHING.jpg'); min-height: 80vh; background-size: cover; background-position: center; }
+#header.constelaciones { background-image: url('/images/PORCONSTELACIONES.jpg'); min-height: 80vh; background-size: cover; background-position: center; }
 
-#header.constelaciones{
-  background-image: url('/images/PORCONSTELACIONES.jpg');
-  min-height: 80vh;
-  background-size: cover;
-  background-position: center;
-}
-/* Reglas generales aplicadas a todas las cabeceras para optimizar rendimiento */
 #header.quecoaching,
 #header.sesionescoaching,
 #header.tarot,
@@ -351,11 +318,12 @@ _____________________________________-
 #header.coaching,
 #header.constelaciones {
     background-repeat: no-repeat;
-    /* Asegura transiciones suaves si cambias de tamaño dinámicamente */
-    transition: min-height 0.3s ease; 
+    transition: all 0.3s ease; 
 }
 
-/* 📱 Dispositivos Móviles (Pantallas de hasta 576px de ancho) */
+/* ==========================================================================
+   📱 SOLUCIÓN PARA MÓVILES (Pantallas de hasta 576px de ancho)
+   ========================================================================== */
 @media (max-width: 576px) {
     #header.quecoaching,
     #header.sesionescoaching,
@@ -364,14 +332,20 @@ _____________________________________-
     #header.milagros,
     #header.coaching,
     #header.constelaciones {
-        /* Reducimos la altura en móviles para que no ocupe toda la pantalla y la imagen se encuadre mejor */
-        min-height: 40vh; 
-        /* Si notas que la parte vital de la imagen se corta, puedes probar 'top' o 'center' según el diseño */
-        background-position: center center; 
+        /* 'contain' obliga a que la imagen se muestre completa, sin cortar los lados */
+        background-size: contain; 
+        background-position: center top;
+        
+        /* Como tus imágenes son proporciones panorámicas (aprox 1000x430), 
+           cambiamos 'vh' por 'vw' para que la altura de la cabecera se calcule de forma 
+           exacta según el ancho de la pantalla del celular. Evita que queden huecos en blanco. */
+        min-height: 43vw; 
     }
 }
 
-/* ➔ Tablets (Pantallas entre 577px y 992px de ancho) */
+/* ==========================================================================
+   ➔ TABLETS (Pantallas entre 577px y 992px de ancho)
+   ========================================================================== */
 @media (min-width: 577px) and (max-width: 992px) {
     #header.quecoaching,
     #header.sesionescoaching,
@@ -380,14 +354,10 @@ _____________________________________-
     #header.milagros,
     #header.coaching,
     #header.constelaciones {
-        /* Una altura intermedia idónea para tablets */
-        min-height: 55vh; 
+        background-size: cover;
+        min-height: 45vh; 
         background-position: center center;
     }
-}
-
-@media (max-width: 576px) {
-    #header.tarot { background-position: center top; } /* Muestra la parte superior */
 }
 .logo{
     
