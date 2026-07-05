@@ -38,15 +38,17 @@ img {
    ========================================================================== */
 @media (max-width: 576px) {
     .header {
-        /* 'contain' obliga a mostrar la portada completa sin recortes laterales */
-        background-size: contain; 
+        /* Forzamos a que la imagen ocupe el 100% del ancho del dispositivo */
+        background-size: 100% auto !important; 
         
-        /* Alinea la imagen en la parte superior del contenedor móvil */
-        background-position: center top; 
+        /* Alinea la imagen arriba para que no queden huecos */
+        background-position: center top !important; 
         
-        /* Ajusta la altura proporcionalmente al ancho de la pantalla del celular.
-           Un valor de 43vw es el ideal matemático para imágenes de formato 1000x430 */
-        min-height: 43vw; 
+        /* Ajustamos la altura proporcional para que mantenga el formato 1000x430 */
+        min-height: 43.5vw !important; 
+        
+        /* Aseguramos que el contenedor ocupe todo el ancho disponible */
+        width: 100% !important;
     }
 }
 
