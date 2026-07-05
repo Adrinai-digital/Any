@@ -329,6 +329,12 @@ _____________________________________-
   background-size: cover;
   background-position: center;
 }
+#header.coaching{
+  background-image: url('/images/PORCOACHING.jpg');
+  min-height: 80vh;
+  background-size: cover;
+  background-position: center;
+}
 
 .logo{
     
