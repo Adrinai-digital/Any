@@ -112,97 +112,109 @@
         font-weight: 300;
     }
 
-    /* Rejilla para las tarjetas de descarga */
+    /* Rejilla configurada para dos columnas en pantallas grandes */
+.download-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Fuerza las 2 columnas */
+    gap: 35px;
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Estilo de cada tarjeta de recurso con borde y sombra definidos */
+.resource-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 35px;
+    border: 1px solid #eadecc; /* Borde suave en tono arena/crema */
+    box-shadow: 0 8px 24px rgba(74, 46, 86, 0.08); /* Sombra suave con tinte morado */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Efecto al pasar el cursor (Hover) */
+.resource-card:hover {
+    transform: translateY(-5px);
+    border-color: #c5a880; /* El borde cambia al dorado corporativo */
+    box-shadow: 0 12px 32px rgba(74, 46, 86, 0.15); /* La sombra se intensifica */
+}
+
+.resource-card h3 {
+    font-family: 'Playfair Display', serif;
+    color: #4a2e56;
+    font-size: 1.7rem; /* Encabezados imponentes */
+    margin-top: 0;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.resource-card p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.15rem; /* Contenido descriptivo optimizado */
+    color: #666666;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    flex-grow: 1;
+    text-align: left;
+}
+
+/* Botón de descarga con el dorado/ocre de tus portadas */
+.download-button {
+    display: inline-block;
+    background-color: #c5a880; 
+    color: #ffffff !important;
+    text-decoration: none;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: center;
+    letter-spacing: 0.5px;
+    transition: background-color 0.3s ease;
+}
+
+.download-button:hover {
+    background-color: #aa8f66; /* Oscurece al pasar el cursor */
+}
+
+/* Nota de soporte final */
+.support-note {
+    max-width: 900px;
+    margin: 60px auto 40px auto;
+    padding: 30px;
+    background-color: #f7f2ea;
+    border-radius: 12px;
+    border-left: 4px solid #c5a880;
+    text-align: center;
+}
+
+.support-note p {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #4a2e56;
+    line-height: 1.7;
+}
+
+.support-note a {
+    color: #c5a880;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.support-note a:hover {
+    text-decoration: underline;
+}
+
+/* Adaptación responsive para que mantenga la armonía en dispositivos móviles */
+@media (max-width: 768px) {
     .download-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 35px;
-        margin: 40px 0;
+        grid-template-columns: 1fr; /* Cambia a 1 columna automáticamente en móviles */
+        gap: 25px;
     }
-
-    /* Estilo de cada tarjeta de recurso */
-    .resource-card {
-        background-color: #ffffff;
-        border-radius: 16px;
-        padding: 35px;
-        box-shadow: 0 10px 30px rgba(74, 46, 86, 0.05); /* Sombra suave con tinte morado */
-        border: 1px solid #f3ebe1;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .resource-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 35px rgba(74, 46, 86, 0.12);
-    }
-
-    .resource-card h3 {
-        font-family: 'Playfair Display', serif;
-        color: #4a2e56;
-        font-size: 1.7rem; /* Encabezados más imponentes */
-        margin-top: 0;
-        margin-bottom: 15px;
-        line-height: 1.4;
-    }
-
-    .resource-card p {
-        font-family: 'Poppins', sans-serif;
-        font-size: 1.15rem; /* Contenido descriptivo optimizado */
-        color: #666666;
-        line-height: 1.6;
-        margin-bottom: 30px;
-        flex-grow: 1;
-        text-align: left;
-    }
-
-    /* Botón de descarga con el dorado/ocre de tus portadas */
-    .download-button {
-        display: inline-block;
-        background-color: #c5a880; 
-        color: #ffffff !important;
-        text-decoration: none;
-        padding: 14px 24px;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 1.1rem;
-        text-align: center;
-        letter-spacing: 0.5px;
-        transition: background-color 0.3s ease;
-    }
-
-    .download-button:hover {
-        background-color: #aa8f66; /* Oscurece al pasar el cursor */
-    }
-
-    /* Nota de soporte final */
-    .support-note {
-        max-width: 900px;
-        margin: 60px auto 40px auto;
-        padding: 30px;
-        background-color: #f7f2ea;
-        border-radius: 12px;
-        border-left: 4px solid #c5a880;
-        text-align: center;
-    }
-
-    .support-note p {
-        margin: 0;
-        font-size: 1.2rem;
-        color: #4a2e56;
-        line-height: 1.7;
-    }
-
-    .support-note a {
-        color: #c5a880;
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .support-note a:hover {
-        text-decoration: underline;
-    }
+}
   </style>
 </head>
 

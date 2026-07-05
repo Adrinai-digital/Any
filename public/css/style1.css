@@ -342,7 +342,53 @@ _____________________________________-
   background-size: cover;
   background-position: center;
 }
+/* Reglas generales aplicadas a todas las cabeceras para optimizar rendimiento */
+#header.quecoaching,
+#header.sesionescoaching,
+#header.tarot,
+#header.fascinantemundo,
+#header.milagros,
+#header.coaching,
+#header.constelaciones {
+    background-repeat: no-repeat;
+    /* Asegura transiciones suaves si cambias de tamaño dinámicamente */
+    transition: min-height 0.3s ease; 
+}
 
+/* 📱 Dispositivos Móviles (Pantallas de hasta 576px de ancho) */
+@media (max-width: 576px) {
+    #header.quecoaching,
+    #header.sesionescoaching,
+    #header.tarot,
+    #header.fascinantemundo,
+    #header.milagros,
+    #header.coaching,
+    #header.constelaciones {
+        /* Reducimos la altura en móviles para que no ocupe toda la pantalla y la imagen se encuadre mejor */
+        min-height: 40vh; 
+        /* Si notas que la parte vital de la imagen se corta, puedes probar 'top' o 'center' según el diseño */
+        background-position: center center; 
+    }
+}
+
+/* ➔ Tablets (Pantallas entre 577px y 992px de ancho) */
+@media (min-width: 577px) and (max-width: 992px) {
+    #header.quecoaching,
+    #header.sesionescoaching,
+    #header.tarot,
+    #header.fascinantemundo,
+    #header.milagros,
+    #header.coaching,
+    #header.constelaciones {
+        /* Una altura intermedia idónea para tablets */
+        min-height: 55vh; 
+        background-position: center center;
+    }
+}
+
+@media (max-width: 576px) {
+    #header.tarot { background-position: center top; } /* Muestra la parte superior */
+}
 .logo{
     
   width: 100px; /* o el tamaño que prefieras */
