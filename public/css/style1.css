@@ -336,6 +336,13 @@ _____________________________________-
   background-position: center;
 }
 
+#header.constelaciones{
+  background-image: url('/images/PORCONSTELACIONES.jpg');
+  min-height: 80vh;
+  background-size: cover;
+  background-position: center;
+}
+
 .logo{
     
   width: 100px; /* o el tamaño que prefieras */
