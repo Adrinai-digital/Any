@@ -109,6 +109,92 @@ body {
   background-size: cover;             /* 📏 hace que cubra todo */
   background-position: center;        /* 🎯 centra la imagen */
 }
+
+/* ==========================================================================
+   ➔ Ajustes Generales y Transiciones
+   ========================================================================== */
+.course-header,
+.tarot-header, 
+.mentes-header, 
+.gratitud-header, 
+.gratitud1-header, 
+.sostenible-header, 
+.almas-header {
+    transition: all 0.3s ease;
+}
+
+/* ==========================================================================
+   ➔ TABLETS (Pantallas entre 577px y 992px de ancho)
+   ========================================================================== */
+@media (min-width: 577px) and (max-width: 992px) {
+    .course-header {
+        height: 45vh;
+    }
+    
+    .tarot-header, .mentes-header, .gratitud-header, .gratitud1-header, .sostenible-header, .almas-header {
+        height: 40vh;
+        width: 100%; /* Asegura consistencia frente al 100vw */
+    }
+
+    .course-header h1, .tarot-header h1 {
+        font-size: 2.2rem;
+    }
+
+    .course-header p, .tarot-header p {
+        font-size: 1.1rem;
+    }
+}
+
+/* ==========================================================================
+   📱 DISPOSITIVOS MÓVILES (Pantallas de hasta 576px de ancho)
+   ========================================================================== */
+@media (max-width: 576px) {
+    
+    /* Forzado de imagen completa a ancho completo sin recortes */
+    .course-header,
+    .tarot-header, 
+    .mentes-header, 
+    .gratitud-header, 
+    .gratitud1-header, 
+    .sostenible-header, 
+    .almas-header {
+        background-size: 100% auto !important;
+        background-position: center top !important;
+        /* Proporción ideal basada en tus imágenes horizontales */
+        height: auto !important;
+        min-height: 44vw !important; 
+        width: 100% !important;
+        padding: 20px 15px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* Corrección de posición absoluta en course-header para móvil */
+    .course-header .container {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin: 0 auto !important;
+        padding-top: 10px;
+    }
+
+    /* Reducción tipográfica equilibrada para smartphones */
+    .course-header h1, 
+    .tarot-header h1 {
+        font-size: 1.5rem !important;
+        margin-bottom: 8px !important;
+        line-height: 1.3;
+    }
+
+    .course-header p, 
+    .tarot-header p {
+        font-size: 0.95rem !important;
+        margin-top: 8px !important;
+        line-height: 1.4;
+    }
+}
 .contenedor-dos-columnas {
   display: grid;
   grid-template-columns: 1fr 1fr; /* dos columnas iguales */
