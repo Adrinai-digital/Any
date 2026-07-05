@@ -121,27 +121,28 @@
     }
 
     /* Estilo de cada tarjeta de recurso */
-    .resource-card {
+   .resource-card {
         background-color: #ffffff;
         border-radius: 16px;
         padding: 35px;
-        box-shadow: 0 10px 30px rgba(74, 46, 86, 0.05); /* Sombra suave con tinte morado */
-        border: 1px solid #f3ebe1;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #eadecc; 
+        box-shadow: 0 8px 24px rgba(74, 46, 86, 0.08); 
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
     }
 
-    .resource-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 35px rgba(74, 46, 86, 0.12);
+   .resource-card:hover {
+        transform: translateY(-5px);
+        border-color: #c5a880; 
+        box-shadow: 0 12px 32px rgba(74, 46, 86, 0.15); 
     }
 
     .resource-card h3 {
         font-family: 'Playfair Display', serif;
         color: #4a2e56;
-        font-size: 1.7rem; /* Encabezados más imponentes */
+        font-size: 1.7rem; 
         margin-top: 0;
         margin-bottom: 15px;
         line-height: 1.4;
@@ -149,13 +150,14 @@
 
     .resource-card p {
         font-family: 'Poppins', sans-serif;
-        font-size: 1.15rem; /* Contenido descriptivo optimizado */
+        font-size: 1.15rem; 
         color: #666666;
         line-height: 1.6;
         margin-bottom: 30px;
         flex-grow: 1;
         text-align: left;
     }
+
 
     /* Botón de descarga con el dorado/ocre de tus portadas */
     .download-button {
