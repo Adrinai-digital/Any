@@ -17,18 +17,37 @@ body {
 img {
     max-width: 100%;
 }
+/* ==========================================================================
+   Configuración para Escritorio (Tu código base)
+   ========================================================================== */
 .header {
-    background-image: url('/images/portada0.jpg');     /* Mostrar imagen completa sin recorte */
-    background-repeat: no-repeat; /* Evita que se repita */
-    background-position: center;  /* Centra la imagen */
+    background-image: url('/images/portada0.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
     background-size: cover;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    min-height: 80vh; /* o el alto que quieras */
+    min-height: 80vh; 
     position: relative;
-/* Arriba | Derecha | Abajo | Izquierda */
+    transition: all 0.3s ease; /* Transición suave al cambiar de tamaño */
+}
 
+/* ==========================================================================
+   📱 ADAPTACIÓN PARA MÓVILES (Pantallas de hasta 576px de ancho)
+   ========================================================================== */
+@media (max-width: 576px) {
+    .header {
+        /* 'contain' obliga a mostrar la portada completa sin recortes laterales */
+        background-size: contain; 
+        
+        /* Alinea la imagen en la parte superior del contenedor móvil */
+        background-position: center top; 
+        
+        /* Ajusta la altura proporcionalmente al ancho de la pantalla del celular.
+           Un valor de 43vw es el ideal matemático para imágenes de formato 1000x430 */
+        min-height: 43vw; 
+    }
 }
 
 .header::before {
