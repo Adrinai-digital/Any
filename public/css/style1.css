@@ -309,6 +309,8 @@ _____________________________________-
 #header.milagros { background-image: url('/images/milagros.jpg'); min-height: 80vh; background-size: cover; background-position: center; }
 #header.coaching { background-image: url('/images/PORCOACHING.jpg'); min-height: 80vh; background-size: cover; background-position: center; }
 #header.constelaciones { background-image: url('/images/PORCONSTELACIONES.jpg'); min-height: 80vh; background-size: cover; background-position: center; }
+#header.espiritualidad { background-image: url('/images/PORESPIRITUALIDAD.jpg'); min-height: 80vh; background-size: cover; background-position: center; }
+#header.finanzas { background-image: url('/images/PORFINANZAS.jpg'); min-height: 80vh; background-size: cover; background-position: center; }
 
 #header.quecoaching,
 #header.sesionescoaching,
@@ -316,7 +318,9 @@ _____________________________________-
 #header.fascinantemundo,
 #header.milagros,
 #header.coaching,
-#header.constelaciones {
+#header.constelaciones,
+#header.espiritualidad,
+#header.finanzas {
     background-repeat: no-repeat;
     transition: all 0.3s ease; 
 }
@@ -331,7 +335,9 @@ _____________________________________-
     #header.fascinantemundo,
     #header.milagros,
     #header.coaching,
-    #header.constelaciones {
+    #header.constelaciones,
+    #header.espiritualidad,
+    #header.finanzas {
         /* 'contain' obliga a que la imagen se muestre completa, sin cortar los lados */
         background-size: contain; 
         background-position: center top;
@@ -353,7 +359,9 @@ _____________________________________-
     #header.fascinantemundo,
     #header.milagros,
     #header.coaching,
-    #header.constelaciones {
+    #header.constelaciones,
+    #header.espiritualidad,
+    #header.finanzas {
         background-size: cover;
         min-height: 45vh; 
         background-position: center center;
