@@ -95,6 +95,48 @@
       height: 100% !important; 
       border: none !important;
   }
+  /* Estilos para el botón de la App con animación */
+.btn-app-animado {
+    background: linear-gradient(135deg, #a8e063, #56ab2f);
+    color: #ffffff !important;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 25px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(86, 171, 47, 0.4);
+    transition: all 0.3s ease;
+    animation: pulsoSuave 2.5s infinite;
+}
+
+.btn-app-animado:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 20px rgba(86, 171, 47, 0.6);
+    background: linear-gradient(135deg, #b2ec68, #5ebd34);
+}
+
+.btn-app-animado i {
+    font-size: 1.2rem;
+}
+
+/* Animación de latido/pulso suave */
+@keyframes pulsoSuave {
+    0% {
+        box-shadow: 0 0 0 0 rgba(168, 224, 99, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 12px rgba(168, 224, 99, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(168, 224, 99, 0);
+    }
+}
+.btn-menu-app {
+    color: #7bc043 !important;
+    font-weight: bold;
+}
 </style>
 </head>
 
@@ -120,6 +162,9 @@
                     <li><a href="/noticias.html">Noticias</a></li>
                     <li><a href="/contact.html">Contacto</a></li>
                     <li><a href="/formulario.html">Usuario</a></li>
+                    <li><a href="/app/autoconocimiento.apk" download class="btn-menu-app"><i class="fab fa-android"></i> Descargar App</a>
+</li>
+        </li>
                 </ul>
 
             </nav>
@@ -157,6 +202,10 @@
         </p>
         <a href="https://wa.me/34671176196?text=Estoy%20interesado/a%20en%20información%20sobre%20las%20terapias" class="btn-1">Información</a>
         <a href="#" class="btn-1" onclick="abrirMiAgendaMagica(event)">Reservar cita</a>
+        <!-- NUEVO BOTÓN DE LA APP -->
+    <a href="/app/autoconocimiento.apk" download class="btn-app-animado">
+        <i class="fab fa-android"></i> Descargar App
+    </a>
     </div> 
   </div>
   <div id="popup-agenda-protegido" class="pantalla-oscura-secreta-cal">
@@ -179,6 +228,9 @@
     <div class="botones-movil-flex">
         <a href="https://wa.me/34671176196?text=Estoy%20interesado/a%20en%20información%20sobre%20las%20terapias" class="btn-1">Información</a>
         <a href="#" class="btn-1" onclick="abrirMiAgendaMagica(event)">Reservar cita</a>
+        <a href="/app/autoconocimiento.apk" download class="btn-app-animado">
+        <i class="fab fa-android"></i> Descargar App
+    </a>
     </div>
 </div>
     
