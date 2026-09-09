@@ -84,6 +84,7 @@ img {
         align-items: center;
         justify-content: space-between;
         padding: 0 100px;
+        z-index: 10; /* Asegura que el menú quede siempre por encima de la caja */
     }
     
     .menu > div:last-child {
@@ -167,15 +168,18 @@ th, td{
     font-weight: 800;
     cursor: pointer;
 }
-.header-content{
+.header-content {
     background-color: #4E485076;
     border-radius: 20px;
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     width: 450px;
-    padding: 30px 20px;
-    margin-left: 175px; /* 👈 Separado un poco del borde */
-    margin-right: auto; /* Pegado al borde izquierdo */
+    padding: 20px; /* Reducido de 30px a 20px para ajustar el espacio vertical */
+    margin-left: 175px;
+    margin-right: auto;
+    margin-top: 70px; /* ⬅️ Esto baja la caja lo justo para despejar el menú */
+    position: relative;
+    z-index: 1; /* Necesario para que respete las capas */
 }
 .header-txt {
     text-align: center; /* Centra todo lo que hay dentro del bloque */
