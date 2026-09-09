@@ -61,7 +61,7 @@ img {
 }
 .header-content {
     position: relative; /* Para que el contenido quede por encima de la capa oscura */
-    padding: 160px 0 80px 0; /* Aquí pones el padding, NO en .header */
+    padding: 30px 0 40px 0; /* Aquí pones el padding, NO en .header */
     z-index: 1;
 }
 
@@ -180,7 +180,10 @@ th, td{
 .header-txt {
     text-align: center; /* Centra todo lo que hay dentro del bloque */
     font-family: "Indie Flower", cursive;
-    margin-top: 120px; /* ⬅️ Añade esto para bajar la caja. Sube o baja el número a tu gusto */
+    margin-top: 20px; /* ⬅️ Añade esto para bajar la caja. Sube o baja el número a tu gusto */
+    height: auto !important;
+    display:inline-block; 
+    max-width: 500px; /* Evita que se expanda a todo el ancho */
 }
 .header-txt span,
 .header-txt h1 {
