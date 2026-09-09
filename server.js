@@ -46,7 +46,11 @@ app.use(cors({
 // motor de vistas
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+// Configurar tipo MIME para descargas de APK en Express
+express.static.mime.define({'application/vnd.android.package-archive': ['apk']});
 
+// Tu línea habitual para servir la carpeta public
+app.use(express.static('public'));
 // static
 app.use(express.static(path.join(__dirname, 'public')));
 
