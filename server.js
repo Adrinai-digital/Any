@@ -47,7 +47,16 @@ app.use(cors({
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 // Configurar tipo MIME para descargas de APK en Express
-express.static.mime.define({'application/vnd.android.package-archive': ['apk']});
+app.use(express.static('public', {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.apk')) {
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.android.package-archive'
+      );
+    }
+  }
+}));
 
 // Tu línea habitual para servir la carpeta public
 app.use(express.static('public'));
