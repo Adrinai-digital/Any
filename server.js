@@ -188,8 +188,8 @@ app.get('/perfil-data', verificarToken, (req, res) => {
     const userId = req.user.id;
 
     db.query(
-        'SELECT * FROM cursos WHERE id IN (SELECT curso_id FROM pagos WHERE usuario_id = ?)',
-        [userId],
+        'SELECT * FROM cursos WHERE id IN (SELECT curso_id FROM pagos WHERE usuario_id = ? AND estado = ?)',
+        [userId, 'completado'],
         (err, cursos) => {
             if (err) {
                 console.error('Error al obtener los cursos:', err);
