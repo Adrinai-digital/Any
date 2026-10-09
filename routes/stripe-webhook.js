@@ -107,6 +107,28 @@ router.post("/webhook/stripe", express.raw({ type: "application/json" }), async 
     }
   }
 
+    // Suscripción cancelada o terminada: retirar el acceso
+  if (event.type === "customer.subscription.deleted") {
+    const sub = event.data.object;
+    try {
+      const sesiones = await stripe.checkout.sessions.list({ subscription: sub.id, limit: 1 });
+      const sessionId = sesiones.data[0] && sesiones.data[0].id;
+      if (sessionId) {
+        await new Promise((resolve, reject) => {
+          db.query(
+            `UPDATE pagos SET estado='cancelado', estado_pago='cancelado' WHERE stripe_session_id = ?`,
+            [sessionId],
+            (err, result) => (err ? reject(err) : resolve(result))
+          );
+        });
+        console.log(`✅ Suscripción ${sub.id} cancelada, acceso retirado`);
+      }
+    } catch (err) {
+      console.error("❌ Error procesando la cancelación:", err);
+      return res.status(500).send("Error interno al procesar la cancelación");
+    }
+  }
+
   res.status(200).json({ received: true });
 });
 module.exports = router;
