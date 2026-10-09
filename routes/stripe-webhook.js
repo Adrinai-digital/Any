@@ -116,7 +116,7 @@ router.post("/webhook/stripe", express.raw({ type: "application/json" }), async 
       if (sessionId) {
         await new Promise((resolve, reject) => {
           db.query(
-            `UPDATE pagos SET estado='cancelado', estado_pago='cancelado' WHERE stripe_session_id = ?`,
+           `UPDATE pagos SET estado='fallido', estado_pago='cancelado' WHERE stripe_session_id = ?`,
             [sessionId],
             (err, result) => (err ? reject(err) : resolve(result))
           );
