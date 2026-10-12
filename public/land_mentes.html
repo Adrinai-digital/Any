@@ -1032,7 +1032,27 @@
     </div>
   </section>
 
-  
+  <!-- 11. TESTIMONIOS -->
+  <section class="section" id="testimonios">
+    <span class="kicker">Experiencias</span>
+    <h2>Lo que cuentan quienes ya caminan este proceso.</h2>
+    <div class="testimonials">
+      <div class="testimonial glass reveal">
+        <p>"Empecé buscando respuestas y terminé aprendiendo a hacerme preguntas diferentes."</p>
+        <div class="who">María · 47 años</div>
+      </div>
+      <div class="testimonial glass reveal">
+        <p>"Las lecciones empezaron a cambiar la manera en que reaccionaba ante situaciones que antes me alteraban."</p>
+        <div class="who">Alumno del Curso</div>
+      </div>
+      <div class="testimonial glass reveal">
+        <p>"No siento que el Curso haya cambiado mi vida desde fuera. Ha cambiado la forma en que la estaba mirando."</p>
+        <div class="who">Alumna del Curso</div>
+      </div>
+    </div>
+    <p class="testimonials-note">Testimonios de ejemplo, utilizados con fines ilustrativos.</p>
+  </section>
+
   <!-- 12. QUE PUEDES ENCONTRAR -->
   <section class="section">
     <span class="kicker">Contenidos</span>
@@ -1071,6 +1091,11 @@
     </div>
   </section>
 
+  <!-- 14. TESTIMONIAL DESTACADO -->
+  <section class="section highlight-quote reveal">
+    <p>"Quizá la paz que estabas buscando no estaba al otro lado de tu vida. Estaba al otro lado de tu percepción."</p>
+    <div class="attr">— Experiencia de un alumno, texto ilustrativo</div>
+  </section>
 
   <!-- 15. PRICING -->
   <section class="section">
@@ -1167,7 +1192,7 @@
       <h5>INFORMACIÓN</h5>
       <ul>
         <li><a href="#faq">Preguntas frecuentes</a></li>
-        <li><a href="https://wa.me/34671176196">Contacto</a></li>
+        <li><a href="#">Contacto</a></li>
         <li><a href="#">Privacidad</a></li>
         <li><a href="#">Aviso legal</a></li>
       </ul>
@@ -1175,9 +1200,9 @@
     <div class="footer-col">
       <h5>SÍGUENOS</h5>
       <ul>
-        <li><a href="https://www.instagram.com/anysabelvidacoach">Instagram</a></li>
-        <li><a href="https://youtube.com/@gaiasoberanos1461">YouTube</a></li>
-        <li><a href="https://www.facebook.com/ani.acosta.5015">Facebook</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">YouTube</a></li>
+        <li><a href="#">Facebook</a></li>
       </ul>
     </div>
   </div>
@@ -1212,6 +1237,10 @@
   let comprando = false;
 
   function irALogin(){
+    // Recuerda de dónde viene para poder volver tras iniciar sesión (caduca a los 30 min).
+    try {
+      localStorage.setItem('volver_a_compra', JSON.stringify({ url: window.location.pathname, t: Date.now() }));
+    } catch(e) {}
     window.location.href = LOGIN_URL;
   }
 
@@ -1258,9 +1287,20 @@
         return String(c.id) === CURSO.cursoId || (c.stripe_price_id && c.stripe_price_id === CURSO.priceId);
       });
       if(yaLoTiene){
-        alert('Ya tienes este curso en tu perfil. Te llevamos allí.');
-        window.location.href = '/perfil';
-        throw new Error('Ya lo tiene');
+        // Comprueba que la página /perfil se abre con la sesión actual (cookie válida).
+        return fetch('/perfil', { credentials: 'same-origin' })
+          .then(function(res){
+            const perfilOk = res.ok && res.url.indexOf('/perfil') !== -1;
+            if(perfilOk){
+              alert('Ya tienes este curso en tu perfil. Te llevamos allí.');
+              window.location.href = '/perfil';
+            } else {
+              try { localStorage.removeItem('token'); } catch(e) {}
+              alert('Inicia sesión para acceder a tu curso.');
+              irALogin();
+            }
+            throw new Error('Ya lo tiene');
+          });
       }
 
       return fetch('/crear-checkout', {

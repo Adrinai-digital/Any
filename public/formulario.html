@@ -141,7 +141,15 @@ document.getElementById("form-login").addEventListener("submit", async function(
             localStorage.setItem("user", JSON.stringify(data.usuario));
 
             // Redirigir a la página del perfil
-            window.location.href = "/perfil";
+            let destino = "/perfil";
+try {
+    const v = JSON.parse(localStorage.getItem("volver_a_compra"));
+    localStorage.removeItem("volver_a_compra");
+    if (v && v.url && v.url.charAt(0) === "/" && v.url.indexOf("//") !== 0 && Date.now() - v.t < 30 * 60 * 1000) {
+        destino = v.url;
+    }
+} catch (e) {}
+window.location.href = destino;
         } else {
             alert(data.error || "Error en el inicio de sesión");
         }
