@@ -29,9 +29,9 @@ router.post("/webhook/stripe", express.raw({ type: "application/json" }), async 
     const fecha = metadata.fecha; // Solo viene en sesiones/coaching
     const hora = metadata.hora;   // Solo viene en sesiones/coaching
 
-    if (!userId) {
-      console.error("❌ Error: Evento recibido sin user_id en metadata.");
-      return res.status(400).send("Falta el ID de usuario");
+        if (!userId) {
+      console.log("ℹ️ Pago sin user_id (cal.com u otro enlace externo), se ignora:", session.id);
+      return res.status(200).json({ received: true, ignored: true });
     }
 
     try {
