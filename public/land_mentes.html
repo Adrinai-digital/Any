@@ -2,8 +2,25 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Un Curso de Milagros — Una nueva manera de ver</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Un Curso de Milagros — Una nueva manera de ver</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"/>
+
+  <!-- Metaetiquetas SEO -->
+  <meta name="description" content="Un Curso de Milagros: una experiencia de aprendizaje y práctica basada en el cambio de percepción, el perdón y la paz interior.">
+  <meta name="keywords" content="Un Curso de Milagros, UCDM, cambio de percepcion, perdon, paz interior, entrenamiento mental">
+
+  <!-- Open Graph / Redes Sociales -->
+  <meta property="og:title" content="Un Curso de Milagros — Una nueva manera de ver" />
+  <meta property="og:description" content="Una experiencia de aprendizaje y práctica basada en el cambio de percepción, el perdón y la paz interior." />
+  <meta property="og:url" content="https://autoconocimientoygratitud.com/" />
+  <meta property="og:image" content="https://autoconocimientoygratitud.com/images/og-image.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:type" content="website" />
 <meta name="description" content="Un Curso de Milagros: una experiencia de aprendizaje y práctica basada en el cambio de percepción, el perdón y la paz interior.">
 <style>
   :root{
@@ -382,14 +399,27 @@
   .part-card p{ font-size: 14.5px; color: var(--ink-50); }
 
   /* ---------- LECCIONES ---------- */
-  .lessons-scroll{
-    display:flex;
-    gap: 20px;
-    margin-top: 54px;
-    overflow-x: auto;
-    padding-bottom: 14px;
-    scrollbar-width: thin;
-  }
+  .lessons-scroll {
+  display: flex;
+  gap: 20px;
+  margin-top: 54px;
+  overflow-x: auto;
+  padding-bottom: 14px;
+}
+
+/* Estilos de barra de desplazamiento para Safari, iOS y Chromium */
+.lessons-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.lessons-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.lessons-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--amber);
+  border-radius: 10px;
+}
   .lesson-card{
     min-width: 300px;
     flex: 0 0 auto;
@@ -776,7 +806,14 @@
     white-space: nowrap;
   }
   .toast.show{ opacity:1; transform: translateY(0); }
-
+.rel-cards-grid {
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 0;
+}
+.btn-large {
+  padding: 16px 36px;
+  font-size: 14px;
+}
   /* ---------- RESPONSIVE ---------- */
   @media (max-width: 1200px){
     .topics-grid, .parts-grid{ grid-template-columns: repeat(3,1fr); gap:16px; }
@@ -991,7 +1028,7 @@
   <section class="section">
     <div class="split reverse reveal">
       <div class="split-visual">
-        <div class="rel-cards" style="grid-template-columns:repeat(2,1fr); margin-top:0;">
+        <div class="rel-cards">
           <div class="rel-card glass">Pareja</div>
           <div class="rel-card glass">Familia</div>
           <div class="rel-card glass">Trabajo</div>
@@ -1038,16 +1075,21 @@
     <h2>Lo que cuentan quienes ya caminan este proceso.</h2>
     <div class="testimonials">
       <div class="testimonial glass reveal">
-        <p>"Empecé buscando respuestas y terminé aprendiendo a hacerme preguntas diferentes."</p>
-        <div class="who">María · 47 años</div>
+        <p>"Total agradecimiento por este curso que me ha servido mucho para aprender y seguir creciendo, gracias ❤️❤️❤️."</p>
+        <div class="who">Adriana Gómez</div>
       </div>
       <div class="testimonial glass reveal">
-        <p>"Las lecciones empezaron a cambiar la manera en que reaccionaba ante situaciones que antes me alteraban."</p>
-        <div class="who">Alumno del Curso</div>
+        <p>"Tengo cáncer de mama y tengo 5 días que me quitaron mi seno y gracias por el contenido del curso, me a ayudado mucho."</p>
+        <div class="who">Herlinda Luna</div>
       </div>
       <div class="testimonial glass reveal">
-        <p>"No siento que el Curso haya cambiado mi vida desde fuera. Ha cambiado la forma en que la estaba mirando."</p>
-        <div class="who">Alumna del Curso</div>
+        <p>"Para mi se ha convertido en una maravillosa herramienta que me ayuda a que día inicie con otra percepción y que la práctica durante el día me ha apoyado a darme cuenta que en cada situación de dificultades puedo elegir como vivirla! Así que muchas gracias por toda tu guía y dedicación para comprender el UCDM."</p>
+        <div class="who">Anomimo</div>
+      </div>
+
+      <div class="testimonial glass reveal">
+        <p>"A veces a mi me cuesta tomarme el tiempo para las lecciones, tengo un tema de leer y luego hacer, sin embargo es una locura que cuando me tomo el tiempo para la lección me transforma el pensamiento, me hace respirar un aire más liviano, tu don en muchas ocasiones ha hecho que un dolor intenso disminuya, que el sobrepensamiento deje de enredar la pita y se forme un hilo de claridad, he tenido un año de un aprendizaje muy profundo y venir a la leerte es una curita en mi corazón, Gracias Any tu labor es muy inspiradora!."</p>
+        <div class="who">Lili Ec</div>
       </div>
     </div>
     <p class="testimonials-note">Testimonios de ejemplo, utilizados con fines ilustrativos.</p>
@@ -1166,7 +1208,7 @@
     <h1>No necesitas verlo todo claro. Solo necesitas estar dispuesto a mirar de nuevo.</h1>
     <p class="lead">Empieza tu recorrido y descubre una nueva manera de acercarte a las ideas de Un Curso de Milagros.</p>
     <div class="final-cta-center">
-      <a href="#" class="btn btn-gold btn-buy" aria-label="Comenzar el curso" style="padding:16px 36px; font-size:14px;">Comenzar ahora</a>
+      <a href="#" class="btn btn-gold btn-buy" aria-label="Comenzar el curso">Comenzar ahora</a>
       <p class="final-cta-meta">Acceso online · Compra segura · Empieza cuando quieras</p>
     </div>
   </section>
@@ -1184,25 +1226,24 @@
       <ul>
         <li><a href="#curso">El Curso</a></li>
         <li><a href="#lecciones">Lecciones</a></li>
-        <li><a href="#">Reflexiones</a></li>
-        <li><a href="#">Recursos</a></li>
+        
       </ul>
     </div>
     <div class="footer-col">
       <h5>INFORMACIÓN</h5>
       <ul>
         <li><a href="#faq">Preguntas frecuentes</a></li>
-        <li><a href="#">Contacto</a></li>
-        <li><a href="#">Privacidad</a></li>
-        <li><a href="#">Aviso legal</a></li>
+        <li><a href="/contact.html">Contacto</a></li>
+        <li><a href="/privacidad.html">Privacidad</a></li>
+        <li><a href="/aviso_legal.html">Aviso legal</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h5>SÍGUENOS</h5>
       <ul>
-        <li><a href="#">Instagram</a></li>
-        <li><a href="#">YouTube</a></li>
-        <li><a href="#">Facebook</a></li>
+        <li><a href="https://www.instagram.com/anysabelvidacoach/">Instagram</a></li>
+        <li><a href="https://youtube.com/@gaiasoberanos1461">YouTube</a></li>
+        <li><a href="https://www.facebook.com/ani.acosta.5015">Facebook</a></li>
       </ul>
     </div>
   </div>
