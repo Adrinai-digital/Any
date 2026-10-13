@@ -524,6 +524,7 @@
     margin-top: 48px;
   }
   .testimonial{ padding: 32px 28px; }
+  .testimonial:last-child:nth-child(3n+1){ grid-column: 2; }
   .testimonial p{
     font-family: var(--serif);
     font-style: italic;
@@ -560,74 +561,6 @@
     flex-shrink:0;
   }
   .find-item span.label{ font-size: 14.5px; color: var(--ink-70); }
-
-  /* ---------- LEAD MAGNET ---------- */
-  .magnet{
-    margin-top: 0;
-    padding: clamp(40px, 6vw, 70px);
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 50px;
-    align-items:center;
-  }
-  .book-mock{
-    aspect-ratio: 3/4;
-    max-width: 280px;
-    margin: 0 auto;
-    border-radius: 6px;
-    background: linear-gradient(145deg, #14101a, #0b0e18 60%, #060608);
-    border: 1px solid rgba(232,199,122,0.18);
-    box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7), inset 0 0 40px rgba(232,199,122,0.04);
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding: 30px;
-    position:relative;
-  }
-  .book-mock::before{
-    content:'';
-    position:absolute; inset: 14px;
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 3px;
-  }
-  .book-mock .book-title{
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 17px;
-    color: var(--warm);
-    line-height: 1.5;
-  }
-  .magnet-features{ list-style:none; display:flex; flex-direction:column; gap: 12px; margin: 26px 0 32px; }
-  .magnet-features li{ font-size: 14.5px; color: var(--ink-50); }
-  .magnet-features li span{ color: var(--amber); margin-right: 8px; }
-
-  form.inline-form{
-    display:flex;
-    gap: 12px;
-    max-width: 420px;
-  }
-  form.inline-form input[type="email"]{
-    flex:1;
-    padding: 13px 16px;
-    border-radius: 4px;
-    border: 1px solid var(--glass-border);
-    background: rgba(255,255,255,0.025);
-    color: var(--warm);
-    font-family: var(--sans);
-    font-size: 14px;
-  }
-  form.inline-form input[type="email"]::placeholder{ color: var(--ink-35); }
-  form.inline-form input[type="email"]:focus{ outline:none; border-color: rgba(232,199,122,0.45); }
-  form.inline-form button{ border:none; }
-
-  .magnet-meta{
-    margin-top: 16px;
-    font-family: var(--mono);
-    font-size: 11.5px;
-    color: var(--ink-35);
-  }
 
   /* ---------- TESTIMONIAL DESTACADO ---------- */
   .highlight-quote{
@@ -732,7 +665,6 @@
   }
   .final-cta h1{ margin: 0 auto 24px; max-width: 20ch; }
   .final-cta .lead{ margin: 0 auto 44px; }
-  .final-cta form.inline-form{ margin: 0 auto; }
   .final-cta-center{ display:flex; flex-direction:column; align-items:center; }
   .final-cta-meta{ margin-top: 22px; font-family: var(--mono); font-size: 12px; color: var(--ink-35); }
 
@@ -829,17 +761,16 @@
     .topics-grid, .parts-grid{ grid-template-columns: 1fr; }
     .duality{ grid-template-columns: 1fr; }
     .testimonials{ grid-template-columns: 1fr; }
+    .testimonial:last-child:nth-child(3n+1){ grid-column: auto; }
     .pricing-grid{ grid-template-columns: 1fr; }
     .rel-cards{ grid-template-columns: repeat(2,1fr); }
     .find-grid{ grid-template-columns: repeat(2,1fr); }
     .method-steps{ grid-template-columns: repeat(2,1fr); }
-    .magnet{ grid-template-columns: 1fr; }
     .footer-grid{ grid-template-columns: repeat(2,1fr); }
   }
 
   @media (max-width: 500px){
     .find-grid, .method-steps{ grid-template-columns: 1fr; }
-    form.inline-form{ flex-direction: column; }
     .hero-ctas{ flex-direction:column; align-items:flex-start; }
     .footer-grid{ grid-template-columns: 1fr; }
     .lesson-card{ min-width: 78vw; }
@@ -1091,6 +1022,18 @@
         <p>"A veces a mi me cuesta tomarme el tiempo para las lecciones, tengo un tema de leer y luego hacer, sin embargo es una locura que cuando me tomo el tiempo para la lección me transforma el pensamiento, me hace respirar un aire más liviano, tu don en muchas ocasiones ha hecho que un dolor intenso disminuya, que el sobrepensamiento deje de enredar la pita y se forme un hilo de claridad, he tenido un año de un aprendizaje muy profundo y venir a la leerte es una curita en mi corazón, Gracias Any tu labor es muy inspiradora!."</p>
         <div class="who">Lili Ec</div>
       </div>
+      <div class="testimonial glass reveal">
+        <p>"Llevaba años sintiendo que reaccionaba a todo con enfado y no sabía por qué. Con las lecciones diarias he empezado a notar el momento exacto en que interpreto algo desde el miedo. Solo ese darme cuenta ya me ha devuelto mucha calma."</p>
+        <div class="who">Marcela R.</div>
+      </div>
+      <div class="testimonial glass reveal">
+        <p>"No tenía ninguna base y pensé que me iba a perder, pero todo se explica de forma muy sencilla. Cada día dedico unos minutos y se nota durante toda la jornada. Gracias por hacerlo tan cercano."</p>
+        <div class="who">Carlos P.</div>
+      </div>
+      <div class="testimonial glass reveal">
+        <p>"El tema del perdón me tenía bloqueada con una situación de familia. Poco a poco he podido mirarla de otra manera y por primera vez siento paz en lugar de rencor. Es un regalo."</p>
+        <div class="who">Sofía M.</div>
+      </div>
     </div>
     <p class="testimonials-note">Testimonios de ejemplo, utilizados con fines ilustrativos.</p>
   </section>
@@ -1106,30 +1049,6 @@
       <div class="find-item glass reveal"><span class="dot"></span><span class="label">Aplicación cotidiana</span></div>
       <div class="find-item glass reveal"><span class="dot"></span><span class="label">Relaciones</span></div>
       <div class="find-item glass reveal"><span class="dot"></span><span class="label">Perdón</span></div>
-    </div>
-  </section>
-
-  <!-- 13. LEAD MAGNET -->
-  <section class="section">
-    <div class="magnet glass reveal">
-      <div>
-        <span class="kicker">Empieza por aquí</span>
-        <h2>7 días para empezar a mirar de otra manera.</h2>
-        <ul class="magnet-features">
-          <li><span>→</span>Una práctica diaria</li>
-          <li><span>→</span>Reflexiones sencillas</li>
-          <li><span>→</span>Aplicación a situaciones reales</li>
-          <li><span>→</span>Sin necesidad de conocimientos previos</li>
-        </ul>
-        <form class="inline-form" id="form-magnet">
-          <input type="email" placeholder="Tu email" required>
-          <button type="submit" class="btn btn-gold">Quiero recibirlo</button>
-        </form>
-        <p class="magnet-meta">Gratis · Sin spam · Puedes darte de baja cuando quieras</p>
-      </div>
-      <div class="book-mock">
-        <p class="book-title">7 días · 7 prácticas · una nueva mirada</p>
-      </div>
     </div>
   </section>
 
@@ -1416,12 +1335,6 @@
       setTimeout(function(){ el.remove(); }, 600);
     }, 3600);
   }
-
-  document.getElementById('form-magnet').addEventListener('submit', function(e){
-    e.preventDefault();
-    showToast('Perfecto. Tu guía está en camino.');
-    e.target.reset();
-  });
 
   /* =========================================================
      2. FAQ ACCORDION
